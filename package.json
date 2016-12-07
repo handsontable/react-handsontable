@@ -2,7 +2,8 @@
   "name": "react-handsontable",
   "version": "0.0.1",
   "description": "A Handsontable component for ReactJS.",
-  "author": "Handsoncode",
+  "main": "./dist/react-handsontable.js",
+  "author": "Handsoncode <hello@handsontable.com>",
   "license": "MIT",
   "keywords": [
     "react",
@@ -20,10 +21,10 @@
     "css-loader": "^0.26.0",
     "style-loader": "^0.13.1",
     "expose-loader": "^0.7.1",
-    "handsontable": "^0.29.0",
-    "webpack": "~1.11.0"
+    "handsontable": "^0.29.0"
   },
   "dependencies": {
+    "webpack": "~1.11.0",
     "babel-runtime": "~5.8.20",
     "react": "^15.4.1",
     "react-dom": "^15.4.1"
