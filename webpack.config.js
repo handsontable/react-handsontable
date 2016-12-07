@@ -24,6 +24,10 @@ module.exports = {
         test: (/\.css$/), loader: "style-loader!css-loader"
       },
       {
+        test: require.resolve('handsontable'),
+        loader: 'expose?Handsontable'
+      },
+      {
         test: require.resolve('numbro'),
         loader: 'expose?numbro'
       },

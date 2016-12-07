@@ -1,4 +1,8 @@
 export default class HotSettingsMapper {
+  constructor() {
+    this.registeredHooks = Handsontable.hooks.getRegistered();
+  }
+
   getSettings(properties) {
     let newSettings = {};
 
@@ -6,7 +10,7 @@ export default class HotSettingsMapper {
       let settings = properties.settings;
       for (const key in settings) {
         if (settings.hasOwnProperty(key)) {
-          newSettings[key] = settings[key];
+          newSettings[this.trimHookPrefix(key)] = settings[key];
         }
       }
 
@@ -15,10 +19,21 @@ export default class HotSettingsMapper {
 
     for (const key in properties) {
       if (properties.hasOwnProperty(key)) {
-        newSettings[key] = properties[key];
+        newSettings[this.trimHookPrefix(key)] = properties[key];
       }
     }
 
     return newSettings;
+  }
+
+  trimHookPrefix(prop) {
+    if (prop.indexOf('on') === 0) {
+      let hookName = prop.charAt(2).toLowerCase() + prop.slice(3, prop.length);
+      if (this.registeredHooks.indexOf(hookName)) {
+        return hookName;
+      }
+    }
+
+    return prop;
   }
 }
