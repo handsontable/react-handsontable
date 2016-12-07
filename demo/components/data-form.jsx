@@ -27,7 +27,7 @@ class DataForm extends React.Component {
   }
 
   handleCheckboxChange(event) {
-    this.setState({val: null, readOnly: event.target.checked});
+    this.setState({val: void 0, readOnly: event.target.checked});
   }
 
   render() {
@@ -35,7 +35,7 @@ class DataForm extends React.Component {
       <div>
         <textarea onChange={this.handleChange} value={this.state.value} /><br/>
         Make read-only: <input onChange={this.handleCheckboxChange} type="checkbox"/><br/>
-        <HotTable root="hot" readOnly={this.state.readOnly} data={this.state.val} />
+        <HotTable root="hot" contextMenu="true" colHeaders={true} width="600" height="300" stretchH="all" readOnly={this.state.readOnly} data={this.state.val} />
       </div>
     );
   }

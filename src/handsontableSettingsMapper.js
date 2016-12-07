@@ -1,146 +1,24 @@
-class HotSettingsMapper {
-  constructor() {
-    this.defaultSettings = {
-      data: void 0,
-      dataSchema: void 0,
-      width: void 0,
-      height: void 0,
-      startRows: 5,
-      startCols: 5,
-      rowHeaders: void 0,
-      colHeaders: null,
-      colWidths: void 0,
-      rowHeights: void 0,
-      columns: void 0,
-      cells: void 0,
-      cell: [],
-      comments: false,
-      customBorders: false,
-      minRows: 0,
-      minCols: 0,
-      maxRows: Infinity,
-      maxCols: Infinity,
-      minSpareRows: 0,
-      minSpareCols: 0,
-      allowInsertRow: true,
-      allowInsertColumn: true,
-      allowRemoveRow: true,
-      allowRemoveColumn: true,
-      multiSelect: true,
-      fillHandle: true,
-      fixedRowsTop: 0,
-      fixedRowsBottom: 0,
-      fixedColumnsLeft: 0,
-      outsideClickDeselects: true,
-      enterBeginsEditing: true,
-      enterMoves: {row: 1, col: 0},
-      tabMoves: {row: 0, col: 1},
-      autoWrapRow: false,
-      autoWrapCol: false,
-      copyRowsLimit: 1000,
-      copyColsLimit: 1000,
-      pasteMode: 'overwrite',
-      persistentState: void 0,
-      currentRowClassName: void 0,
-      currentColClassName: void 0,
-      currentHeaderClassName: 'ht__highlight',
-      className: void 0,
-      tableClassName: void 0,
-      stretchH: 'none',
-      // isEmptyRow: function(row) {
-      //   var col, colLen, value, meta;      for (col = 0, colLen = this.countCols(); col < colLen; col++) {
-      //     value = this.getDataAtCell(row, col);        if (value !== '' && value !== null && isDefined(value)) {
-      //       if (typeof value === 'object') {
-      //         meta = this.getCellMeta(row, col);            return isObjectEquals(this.getSchema()[meta.prop], value);
-      //       }
-      //       return false;
-      //     }
-      //   }      return true;
-      // },
-      // isEmptyCol: function(col) {
-      //   var row, rowLen, value;        for (row = 0, rowLen = this.countRows(); row < rowLen; row++) {
-      //     value = this.getDataAtCell(row, col);          if (value !== '' && value !== null && isDefined(value)) {
-      //       return false;
-      //     }
-      //   }        return true;
-      // },
-      observeDOMVisibility: true,
-      allowInvalid: true,
-      allowEmpty: true,
-      invalidCellClassName: 'htInvalid',
-      placeholder: false,
-      placeholderCellClassName: 'htPlaceholder',
-      readOnlyCellClassName: 'htDimmed',
-      renderer: void 0,
-      commentedCellClassName: 'htCommentCell',
-      fragmentSelection: false,
-      readOnly: false,
-      skipColumnOnPaste: false,
-      search: false,
-      type: 'text',
-      copyable: true,
-      editor: void 0,
-      autoComplete: void 0,
-      visibleRows: 10,
-      trimDropdown: true,
-      debug: false,
-      wordWrap: true,
-      noWordWrapClassName: 'htNoWrap',
-      contextMenu: void 0,
-      contextMenuCopyPaste: void 0,
-      copyPaste: void 0,
-      undo: void 0,
-      columnSorting: void 0,
-      manualColumnMove: void 0,
-      manualColumnResize: void 0,
-      manualRowMove: void 0,
-      manualRowResize: void 0,
-      mergeCells: false,
-      viewportRowRenderingOffset: 'auto',
-      viewportColumnRenderingOffset: 'auto',
-      validator: void 0,
-      disableVisualSelection: false,
-      sortIndicator: void 0,
-      manualColumnFreeze: void 0,
-      trimWhitespace: true,      settings: void 0,
-      source: void 0,
-      title: void 0,
-      checkedTemplate: void 0,
-      uncheckedTemplate: void 0,
-      label: void 0,
-      format: void 0,
-      language: void 0,
-      selectOptions: void 0,
-      autoColumnSize: void 0,
-      autoRowSize: void 0,
-      dateFormat: void 0,
-      correctFormat: false,
-      defaultDate: void 0,
-      strict: void 0,
-      allowHtml: false,
-      renderAllRows: void 0,
-      preventOverflow: false,
-      bindRowsWithHeaders: void 0,
-      collapsibleColumns: void 0,
-      columnSummary: void 0,
-      dropdownMenu: void 0,
-      filters: void 0,
-      formulas: void 0,
-      ganttChart: void 0,
-      headerTooltips: void 0,
-      hiddenColumns: void 0,
-      hiddenRows: void 0,
-      nestedHeaders: void 0,
-      trimRows: void 0,
-      rowHeaderWidth: void 0,
-      columnHeaderHeight: void 0,
-      observeChanges: void 0,
-      sortFunction: void 0,
-      sortByRelevance: true,
-      filter: true,
-      filteringCaseSensitive: false,
+export default class HotSettingsMapper {
+  getSettings(properties) {
+    let newSettings = {};
+
+    if(properties.settings) {
+      let settings = properties.settings;
+      for (const key in settings) {
+        if (settings.hasOwnProperty(key)) {
+          newSettings[key] = settings[key];
+        }
+      }
+
+      delete properties.settings;
     }
+
+    for (const key in properties) {
+      if (properties.hasOwnProperty(key)) {
+        newSettings[key] = properties[key];
+      }
+    }
+
+    return newSettings;
   }
 }
-
-export {HotSettingsMapper};

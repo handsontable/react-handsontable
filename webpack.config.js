@@ -20,7 +20,23 @@ module.exports = {
           presets: ['react', 'es2015'],
         }
       },
-      { test: (/\.css$/), loader: "style-loader!css-loader" }
+      {
+        test: (/\.css$/), loader: "style-loader!css-loader"
+      },
+      {
+        test: require.resolve('numbro'),
+        loader: 'expose?numbro'
+      },
+      {
+        test: require.resolve('moment'),
+        loader: 'expose?moment'
+      }, {
+        test: require.resolve('pikaday'),
+        loader: 'expose?Pikaday'
+      }, {
+        test: require.resolve('zeroclipboard'),
+        loader: 'expose?ZeroClipboard'
+      }
     ]
   }
 };
