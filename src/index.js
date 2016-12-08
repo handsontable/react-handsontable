@@ -1,4 +1,2 @@
-module.exports = {
-  hotTable: require('./react-handsontable.jsx')
-};
+module.exports = require('./react-handsontable.jsx').default;
 

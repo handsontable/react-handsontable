@@ -1,4 +1,4 @@
-import {HotTable} from '../../src/react-handsontable.jsx';
+import HotTable from '../../src/react-handsontable.jsx';
 
 class DataForm extends React.Component {
   constructor(props) {
