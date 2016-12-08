@@ -1,24 +1,29 @@
 import React from 'react';
-import numbro from 'numbro';
 import moment from 'moment';
+import numbro from 'numbro';
 import pikaday from 'pikaday';
 import Zeroclipboard from 'zeroclipboard';
 import Handsontable from 'handsontable';
 import HotSettingsMapper from './handsontableSettingsMapper';
 require('handsontable/dist/handsontable.full.css');
 
-class HotTable extends React.Component {
+/**
+ * @class HotTable
+ */
+export default class HotTable extends React.Component {
   constructor() {
     super();
 
     this.hotInstance = null;
     this.hotSettingsMapper = new HotSettingsMapper();
+    this.root = null;
   }
 
   //TODO: docs
   componentDidMount() {
     const newSettings = this.hotSettingsMapper.getSettings(this.props);
-    this.hotInstance = new Handsontable(document.getElementById(this.props.root), newSettings);
+
+    this.hotInstance = new Handsontable(document.getElementById(this.root), newSettings);
   }
 
   //TODO: docs
@@ -30,7 +35,8 @@ class HotTable extends React.Component {
 
   //TODO: docs
   render() {
-    return <div id={this.props.root}></div>
+    this.root = this.props.root || 'hot' + new Date().getTime();
+    return <div id={this.root}></div>
   }
 
   //TODO: docs
@@ -38,5 +44,3 @@ class HotTable extends React.Component {
     this.hotInstance.updateSettings(newSettings);
   }
 }
-
-export { HotTable };
