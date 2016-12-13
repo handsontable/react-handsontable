@@ -1,4 +1,12 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import moment from 'moment';
+import numbro from 'numbro';
+import pikaday from 'pikaday';
+import Zeroclipboard from 'zeroclipboard';
+import Handsontable from 'handsontable';
 import HotTable from '../../src/react-handsontable.jsx';
+import 'handsontable/dist/handsontable.full.css';
 
 class DataForm extends React.Component {
   constructor(props) {
@@ -35,7 +43,7 @@ class DataForm extends React.Component {
       <div>
         <textarea onChange={this.handleChange} value={this.state.value} /><br/>
         Make read-only: <input onChange={this.handleCheckboxChange} type="checkbox"/><br/>
-        <HotTable root="hot" contextMenu="true" colHeaders={true} width="600" height="300" stretchH="all" readOnly={this.state.readOnly} data={this.state.val} />
+        <HotTable root="hot" contextMenu={true} colHeaders={true} width="600" height="300" stretchH="all" readOnly={this.state.readOnly} data={this.state.val} />
       </div>
     );
   }
