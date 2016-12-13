@@ -1,6 +1,6 @@
 {
   "name": "react-handsontable",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A Handsontable component for ReactJS.",
   "author": "Handsoncode <hello@handsontable.com>",
   "license": "MIT",
