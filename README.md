@@ -5,7 +5,6 @@ A React wrapper for the the [Handsontable](https://github.com/handsontable/hands
 1. [Installation](#installation)
 2. [Basic usage](#basic-usage)
 3. [Examples](#examples)
-4. [Documentation](#documentation)
 6. [License](#license)
 7. [Contact](#contact)
 5. [Other wrappers](#other-wrappers)
@@ -56,16 +55,16 @@ Note, that you can provide the Handsontable options either as:
 * an object passed to a single `settings` property
 ```jsx
 <HotTable root="hot" settings={{
-  data: this.handsontableData,
-  colHeaders: true,
-  rowHeaders: true,
-  width: 600,
-  height: 300,
-  stretchH: 'all'
+    data: this.handsontableData,
+    colHeaders: true,
+    rowHeaders: true,
+    width: 600,
+    height: 300,
+    stretchH: 'all'
 }} />
 ```
 
-The `root` declares the `id` property of the root element for the table. It is optional - if it isn't provided, the table will get a random generated `id`.
+The `root` property declares the `id` of the root element for the table. It is optional - if it isn't provided, the table will get a random generated `id`.
 
 ## Examples
 - [Simple react-handsontable implementation](http://codepen.io/handsoncode/pen/ygvaxv?editors=0010)
