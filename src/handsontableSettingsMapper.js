@@ -13,12 +13,10 @@ export default class HotSettingsMapper {
           newSettings[this.trimHookPrefix(key)] = settings[key];
         }
       }
-
-      delete properties.settings;
     }
 
     for (const key in properties) {
-      if (properties.hasOwnProperty(key)) {
+      if (key != 'settings' && properties.hasOwnProperty(key)) {
         newSettings[this.trimHookPrefix(key)] = properties[key];
       }
     }

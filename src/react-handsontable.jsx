@@ -37,7 +37,6 @@ export default class HotTable extends React.Component {
    */
   componentDidMount() {
     const newSettings = this.hotSettingsMapper.getSettings(this.props);
-
     this.hotInstance = new Handsontable(document.getElementById(this.root), newSettings);
   }
 

@@ -140,7 +140,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      var newSettings = this.hotSettingsMapper.getSettings(this.props);
-	
 	      this.hotInstance = new Handsontable(document.getElementById(this.root), newSettings);
 	    }
 	
@@ -4365,12 +4364,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            newSettings[this.trimHookPrefix(key)] = settings[key];
 	          }
 	        }
-	
-	        delete properties.settings;
 	      }
 	
 	      for (var _key in properties) {
-	        if (properties.hasOwnProperty(_key)) {
+	        if (_key != 'settings' && properties.hasOwnProperty(_key)) {
 	          newSettings[this.trimHookPrefix(_key)] = properties[_key];
 	        }
 	      }
@@ -42375,11 +42372,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
 	 * ZeroClipboard
-	 * The ZeroClipboard library provides an easy way to copy text to the clipboard using an invisible Adobe Flash movie and a JavaScript interface.
-	 * Copyright (c) 2009-2014 Jon Rohan, James M. Greene
+	 * The ZeroClipboard library provides an easy way to copy text to the clipboard using an invisible Adobe Flash movie and a JavaScript interface
+	 * Copyright (c) 2009-2016 Jon Rohan, James M. Greene
 	 * Licensed MIT
 	 * http://zeroclipboard.org/
-	 * v2.2.0
+	 * v2.3.0
 	 */
 	(function(window, undefined) {
 	  "use strict";
@@ -42387,7 +42384,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Store references to critically important global functions that may be
 	 * overridden on certain web pages.
 	 */
-	  var _window = window, _document = _window.document, _navigator = _window.navigator, _setTimeout = _window.setTimeout, _clearTimeout = _window.clearTimeout, _setInterval = _window.setInterval, _clearInterval = _window.clearInterval, _getComputedStyle = _window.getComputedStyle, _encodeURIComponent = _window.encodeURIComponent, _ActiveXObject = _window.ActiveXObject, _Error = _window.Error, _parseInt = _window.Number.parseInt || _window.parseInt, _parseFloat = _window.Number.parseFloat || _window.parseFloat, _isNaN = _window.Number.isNaN || _window.isNaN, _now = _window.Date.now, _keys = _window.Object.keys, _defineProperty = _window.Object.defineProperty, _hasOwn = _window.Object.prototype.hasOwnProperty, _slice = _window.Array.prototype.slice, _unwrap = function() {
+	  var _window = window, _document = _window.document, _navigator = _window.navigator, _setTimeout = _window.setTimeout, _clearTimeout = _window.clearTimeout, _setInterval = _window.setInterval, _clearInterval = _window.clearInterval, _getComputedStyle = _window.getComputedStyle, _encodeURIComponent = _window.encodeURIComponent, _ActiveXObject = _window.ActiveXObject, _Error = _window.Error, _parseInt = _window.Number.parseInt || _window.parseInt, _parseFloat = _window.Number.parseFloat || _window.parseFloat, _isNaN = _window.Number.isNaN || _window.isNaN, _now = _window.Date.now, _keys = _window.Object.keys, _hasOwn = _window.Object.prototype.hasOwnProperty, _slice = _window.Array.prototype.slice, _unwrap = function() {
 	    var unwrapper = function(el) {
 	      return el;
 	    };
@@ -42595,7 +42592,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (scripts.length === 1) {
 	      return scripts[0].src || undefined;
 	    }
-	    if ("readyState" in scripts[0]) {
+	    if ("readyState" in (scripts[0] || document.createElement("script"))) {
 	      for (i = scripts.length; i--; ) {
 	        if (scripts[i].readyState === "interactive" && (jsPath = scripts[i].src)) {
 	          return jsPath;
@@ -42647,12 +42644,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return jsDir + "ZeroClipboard.swf";
 	  };
 	  /**
+	 * Is the client's operating system some version of Windows?
+	 *
+	 * @returns Boolean
+	 * @private
+	 */
+	  var _isWindows = function() {
+	    var isWindowsRegex = /win(dows|[\s]?(nt|me|ce|xp|vista|[\d]+))/i;
+	    return !!_navigator && (isWindowsRegex.test(_navigator.appVersion || "") || isWindowsRegex.test(_navigator.platform || "") || (_navigator.userAgent || "").indexOf("Windows") !== -1);
+	  };
+	  /**
 	 * Keep track of if the page is framed (in an `iframe`). This can never change.
 	 * @private
 	 */
 	  var _pageIsFramed = function() {
-	    return window.opener == null && (!!window.top && window != window.top || !!window.parent && window != window.parent);
+	    return _window.opener == null && (!!_window.top && _window != _window.top || !!_window.parent && _window != _window.parent);
 	  }();
+	  /**
+	 * Keep track of if the page is XHTML (vs. HTML), which requires that everything
+	 * be rendering in XML mode.
+	 * @private
+	 */
+	  var _pageIsXhtml = _document.documentElement.nodeName === "html";
 	  /**
 	 * Keep track of the state of the Flash object.
 	 * @private
@@ -42661,9 +42674,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    bridge: null,
 	    version: "0.0.0",
 	    pluginType: "unknown",
+	    sandboxed: null,
 	    disabled: null,
 	    outdated: null,
-	    sandboxed: null,
+	    insecure: null,
 	    unavailable: null,
 	    degraded: null,
 	    deactivated: null,
@@ -42722,9 +42736,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _eventMessages = {
 	    ready: "Flash communication is established",
 	    error: {
+	      "flash-sandboxed": "Attempting to run Flash in a sandboxed iframe, which is impossible",
 	      "flash-disabled": "Flash is disabled or not installed. May also be attempting to run Flash in a sandboxed iframe, which is impossible.",
 	      "flash-outdated": "Flash is too outdated to support ZeroClipboard",
-	      "flash-sandboxed": "Attempting to run Flash in a sandboxed iframe, which is impossible",
+	      "flash-insecure": "Flash will be unable to communicate due to a protocol mismatch between your `swfPath` configuration and the page",
 	      "flash-unavailable": "Flash is unable to communicate bidirectionally with JavaScript",
 	      "flash-degraded": "Flash is unable to preserve data fidelity when communicating with JavaScript",
 	      "flash-deactivated": "Flash is too outdated for your browser and/or is configured as click-to-activate.\nThis may also mean that the ZeroClipboard SWF object could not be loaded, so please check your `swfPath` configuration and/or network connectivity.\nMay also be attempting to run Flash in a sandboxed iframe, which is impossible.",
@@ -42732,7 +42747,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      "version-mismatch": "ZeroClipboard JS version number does not match ZeroClipboard SWF version number",
 	      "clipboard-error": "At least one error was thrown while ZeroClipboard was attempting to inject your data into the clipboard",
 	      "config-mismatch": "ZeroClipboard configuration does not match Flash's reality",
-	      "swf-not-found": "The ZeroClipboard SWF object could not be loaded, so please check your `swfPath` configuration and/or network connectivity"
+	      "swf-not-found": "The ZeroClipboard SWF object could not be loaded, so please check your `swfPath` configuration and/or network connectivity",
+	      "browser-unsupported": "The browser does not support the required HTML DOM and JavaScript features"
 	    }
 	  };
 	  /**
@@ -42746,7 +42762,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * variable's property values being updated.
 	 * @private
 	 */
-	  var _flashStateErrorNames = [ "flash-disabled", "flash-outdated", "flash-sandboxed", "flash-unavailable", "flash-degraded", "flash-deactivated", "flash-overdue" ];
+	  var _flashStateErrorNames = [ "flash-sandboxed", "flash-disabled", "flash-outdated", "flash-insecure", "flash-unavailable", "flash-degraded", "flash-deactivated", "flash-overdue" ];
 	  /**
 	 * A RegExp to match the `name` property of `error` events related to Flash.
 	 * @private
@@ -42759,7 +42775,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * which is enabled.
 	 * @private
 	 */
-	  var _flashStateEnabledErrorNameMatchingRegex = new RegExp("^flash-(" + _flashStateErrorNames.slice(1).map(function(errorName) {
+	  var _flashStateEnabledErrorNameMatchingRegex = new RegExp("^flash-(" + _flashStateErrorNames.filter(function(errorName) {
+	    return errorName !== "flash-disabled";
+	  }).map(function(errorName) {
 	    return errorName.replace(/^flash-/, "");
 	  }).join("|") + ")$");
 	  /**
@@ -42768,12 +42786,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	  var _globalConfig = {
 	    swfPath: _getDefaultSwfPath(),
-	    trustedDomains: window.location.host ? [ window.location.host ] : [],
+	    trustedDomains: _window.location.host ? [ _window.location.host ] : [],
 	    cacheBust: true,
 	    forceEnhancedClipboard: false,
 	    flashLoadTimeout: 3e4,
 	    autoActivate: true,
 	    bubbleEvents: true,
+	    fixLineEndings: true,
 	    containerId: "global-zeroclipboard-html-bridge",
 	    containerClass: "global-zeroclipboard-container",
 	    swfObjectId: "global-zeroclipboard-flash-bridge",
@@ -42788,24 +42807,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 */
 	  var _config = function(options) {
-	    if (typeof options === "object" && options !== null) {
-	      for (var prop in options) {
-	        if (_hasOwn.call(options, prop)) {
-	          if (/^(?:forceHandCursor|title|zIndex|bubbleEvents)$/.test(prop)) {
-	            _globalConfig[prop] = options[prop];
-	          } else if (_flashState.bridge == null) {
-	            if (prop === "containerId" || prop === "swfObjectId") {
-	              if (_isValidHtml4Id(options[prop])) {
-	                _globalConfig[prop] = options[prop];
-	              } else {
-	                throw new Error("The specified `" + prop + "` value is not valid as an HTML4 Element ID");
-	              }
-	            } else {
+	    if (typeof options === "object" && options && !("length" in options)) {
+	      _keys(options).forEach(function(prop) {
+	        if (/^(?:forceHandCursor|title|zIndex|bubbleEvents|fixLineEndings)$/.test(prop)) {
+	          _globalConfig[prop] = options[prop];
+	        } else if (_flashState.bridge == null) {
+	          if (prop === "containerId" || prop === "swfObjectId") {
+	            if (_isValidHtml4Id(options[prop])) {
 	              _globalConfig[prop] = options[prop];
+	            } else {
+	              throw new Error("The specified `" + prop + "` value is not valid as an HTML4 Element ID");
 	            }
+	          } else {
+	            _globalConfig[prop] = options[prop];
 	          }
 	        }
-	      }
+	      });
 	    }
 	    if (typeof options === "string" && options) {
 	      if (_hasOwn.call(_globalConfig, options)) {
@@ -42822,7 +42839,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _state = function() {
 	    _detectSandbox();
 	    return {
-	      browser: _pick(_navigator, [ "userAgent", "platform", "appName" ]),
+	      browser: _extend(_pick(_navigator, [ "userAgent", "platform", "appName", "appVersion" ]), {
+	        isSupported: _isBrowserSupported()
+	      }),
 	      flash: _omit(_flashState, [ "bridge" ]),
 	      zeroclipboard: {
 	        version: ZeroClipboard.version,
@@ -42831,11 +42850,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  };
 	  /**
+	 * Does this browser support all of the necessary DOM and JS features necessary?
+	 * @private
+	 */
+	  var _isBrowserSupported = function() {
+	    return !!(_document.addEventListener && _window.Object.keys && _window.Array.prototype.map);
+	  };
+	  /**
 	 * The underlying implementation of `ZeroClipboard.isFlashUnusable`.
 	 * @private
 	 */
 	  var _isFlashUnusable = function() {
-	    return !!(_flashState.disabled || _flashState.outdated || _flashState.sandboxed || _flashState.unavailable || _flashState.degraded || _flashState.deactivated);
+	    return !!(_flashState.sandboxed || _flashState.disabled || _flashState.outdated || _flashState.unavailable || _flashState.degraded || _flashState.deactivated);
 	  };
 	  /**
 	 * The underlying implementation of `ZeroClipboard.on`.
@@ -42845,14 +42871,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var i, len, events, added = {};
 	    if (typeof eventType === "string" && eventType) {
 	      events = eventType.toLowerCase().split(/\s+/);
-	    } else if (typeof eventType === "object" && eventType && typeof listener === "undefined") {
-	      for (i in eventType) {
-	        if (_hasOwn.call(eventType, i) && typeof i === "string" && i && typeof eventType[i] === "function") {
-	          ZeroClipboard.on(i, eventType[i]);
+	    } else if (typeof eventType === "object" && eventType && !("length" in eventType) && typeof listener === "undefined") {
+	      _keys(eventType).forEach(function(key) {
+	        var listener = eventType[key];
+	        if (typeof listener === "function") {
+	          ZeroClipboard.on(key, listener);
 	        }
-	      }
+	      });
 	    }
-	    if (events && events.length) {
+	    if (events && events.length && listener) {
 	      for (i = 0, len = events.length; i < len; i++) {
 	        eventType = events[i].replace(/^on/, "");
 	        added[eventType] = true;
@@ -42867,6 +42894,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	      }
 	      if (added.error) {
+	        if (!_isBrowserSupported()) {
+	          ZeroClipboard.emit({
+	            type: "error",
+	            name: "browser-unsupported"
+	          });
+	        }
 	        for (i = 0, len = _flashStateErrorNames.length; i < len; i++) {
 	          if (_flashState[_flashStateErrorNames[i].replace(/^flash-/, "")] === true) {
 	            ZeroClipboard.emit({
@@ -42897,17 +42930,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (arguments.length === 0) {
 	      events = _keys(_handlers);
 	    } else if (typeof eventType === "string" && eventType) {
-	      events = eventType.split(/\s+/);
-	    } else if (typeof eventType === "object" && eventType && typeof listener === "undefined") {
-	      for (i in eventType) {
-	        if (_hasOwn.call(eventType, i) && typeof i === "string" && i && typeof eventType[i] === "function") {
-	          ZeroClipboard.off(i, eventType[i]);
+	      events = eventType.toLowerCase().split(/\s+/);
+	    } else if (typeof eventType === "object" && eventType && !("length" in eventType) && typeof listener === "undefined") {
+	      _keys(eventType).forEach(function(key) {
+	        var listener = eventType[key];
+	        if (typeof listener === "function") {
+	          ZeroClipboard.off(key, listener);
 	        }
-	      }
+	      });
 	    }
 	    if (events && events.length) {
 	      for (i = 0, len = events.length; i < len; i++) {
-	        eventType = events[i].toLowerCase().replace(/^on/, "");
+	        eventType = events[i].replace(/^on/, "");
 	        perEventHandlers = _handlers[eventType];
 	        if (perEventHandlers && perEventHandlers.length) {
 	          if (listener) {
@@ -42966,11 +43000,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return returnVal;
 	  };
 	  /**
+	 * Get the protocol of the configured SWF path.
+	 * @private
+	 */
+	  var _getSwfPathProtocol = function() {
+	    var swfPath = _globalConfig.swfPath || "", swfPathFirstTwoChars = swfPath.slice(0, 2), swfProtocol = swfPath.slice(0, swfPath.indexOf("://") + 1);
+	    return swfPathFirstTwoChars === "\\\\" ? "file:" : swfPathFirstTwoChars === "//" || swfProtocol === "" ? _window.location.protocol : swfProtocol;
+	  };
+	  /**
 	 * The underlying implementation of `ZeroClipboard.create`.
 	 * @private
 	 */
 	  var _create = function() {
-	    var previousState = _flashState.sandboxed;
+	    var maxWait, swfProtocol, previousState = _flashState.sandboxed;
+	    if (!_isBrowserSupported()) {
+	      _flashState.ready = false;
+	      ZeroClipboard.emit({
+	        type: "error",
+	        name: "browser-unsupported"
+	      });
+	      return;
+	    }
 	    _detectSandbox();
 	    if (typeof _flashState.ready !== "boolean") {
 	      _flashState.ready = false;
@@ -42982,22 +43032,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	        name: "flash-sandboxed"
 	      });
 	    } else if (!ZeroClipboard.isFlashUnusable() && _flashState.bridge === null) {
-	      var maxWait = _globalConfig.flashLoadTimeout;
-	      if (typeof maxWait === "number" && maxWait >= 0) {
-	        _flashCheckTimeout = _setTimeout(function() {
-	          if (typeof _flashState.deactivated !== "boolean") {
-	            _flashState.deactivated = true;
-	          }
-	          if (_flashState.deactivated === true) {
-	            ZeroClipboard.emit({
-	              type: "error",
-	              name: "flash-deactivated"
-	            });
-	          }
-	        }, maxWait);
+	      swfProtocol = _getSwfPathProtocol();
+	      if (swfProtocol && swfProtocol !== _window.location.protocol) {
+	        ZeroClipboard.emit({
+	          type: "error",
+	          name: "flash-insecure"
+	        });
+	      } else {
+	        maxWait = _globalConfig.flashLoadTimeout;
+	        if (typeof maxWait === "number" && maxWait >= 0) {
+	          _flashCheckTimeout = _setTimeout(function() {
+	            if (typeof _flashState.deactivated !== "boolean") {
+	              _flashState.deactivated = true;
+	            }
+	            if (_flashState.deactivated === true) {
+	              ZeroClipboard.emit({
+	                type: "error",
+	                name: "flash-deactivated"
+	              });
+	            }
+	          }, maxWait);
+	        }
+	        _flashState.overdue = false;
+	        _embedSwf();
 	      }
-	      _flashState.overdue = false;
-	      _embedSwf();
 	    }
 	  };
 	  /**
@@ -43028,7 +43086,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    for (var dataFormat in dataObj) {
 	      if (typeof dataFormat === "string" && dataFormat && _hasOwn.call(dataObj, dataFormat) && typeof dataObj[dataFormat] === "string" && dataObj[dataFormat]) {
-	        _clipData[dataFormat] = dataObj[dataFormat];
+	        _clipData[dataFormat] = _fixLineEndings(dataObj[dataFormat]);
 	      }
 	    }
 	  };
@@ -43164,6 +43222,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (_flashStateEnabledErrorNameMatchingRegex.test(event.name)) {
 	        _extend(event, {
 	          version: _flashState.version
+	        });
+	      }
+	      if (event.name === "flash-insecure") {
+	        _extend(event, {
+	          pageProtocol: _window.location.protocol,
+	          swfProtocol: _getSwfPathProtocol()
 	        });
 	      }
 	    }
@@ -43321,10 +43385,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (typeof isSandboxed === "boolean") {
 	        _flashState.sandboxed = isSandboxed;
 	      }
-	      if (_flashStateErrorNames.indexOf(event.name) !== -1) {
+	      if (event.name === "browser-unsupported") {
+	        _extend(_flashState, {
+	          disabled: false,
+	          outdated: false,
+	          unavailable: false,
+	          degraded: false,
+	          deactivated: false,
+	          overdue: false,
+	          ready: false
+	        });
+	      } else if (_flashStateErrorNames.indexOf(event.name) !== -1) {
 	        _extend(_flashState, {
 	          disabled: event.name === "flash-disabled",
 	          outdated: event.name === "flash-outdated",
+	          insecure: event.name === "flash-insecure",
 	          unavailable: event.name === "flash-unavailable",
 	          degraded: event.name === "flash-degraded",
 	          deactivated: event.name === "flash-deactivated",
@@ -43336,6 +43411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _extend(_flashState, {
 	          disabled: false,
 	          outdated: false,
+	          insecure: false,
 	          unavailable: false,
 	          degraded: false,
 	          deactivated: false,
@@ -43350,9 +43426,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _zcSwfVersion = event.swfVersion;
 	      var wasDeactivated = _flashState.deactivated === true;
 	      _extend(_flashState, {
+	        sandboxed: false,
 	        disabled: false,
 	        outdated: false,
-	        sandboxed: false,
+	        insecure: false,
 	        unavailable: false,
 	        degraded: false,
 	        deactivated: false,
@@ -43568,6 +43645,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return htmlBridge || null;
 	  };
 	  /**
+	 *
+	 * @private
+	 */
+	  var _escapeXmlValue = function(val) {
+	    if (typeof val !== "string" || !val) {
+	      return val;
+	    }
+	    return val.replace(/["&'<>]/g, function(chr) {
+	      switch (chr) {
+	       case '"':
+	        return "&quot;";
+	
+	       case "&":
+	        return "&amp;";
+	
+	       case "'":
+	        return "&apos;";
+	
+	       case "<":
+	        return "&lt;";
+	
+	       case ">":
+	        return "&gt;";
+	
+	       default:
+	        return chr;
+	      }
+	    });
+	  };
+	  /**
 	 * Create the SWF object.
 	 *
 	 * @returns The SWF object reference.
@@ -43582,6 +43689,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        jsVersion: ZeroClipboard.version
 	      }, _globalConfig));
 	      var swfUrl = _globalConfig.swfPath + _cacheBust(_globalConfig.swfPath, _globalConfig);
+	      if (_pageIsXhtml) {
+	        swfUrl = _escapeXmlValue(swfUrl);
+	      }
 	      container = _createHtmlBridge();
 	      var divToBeReplaced = _document.createElement("div");
 	      container.appendChild(divToBeReplaced);
@@ -43648,6 +43758,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _flashState.ready = null;
 	      _flashState.bridge = null;
 	      _flashState.deactivated = null;
+	      _flashState.insecure = null;
 	      _zcSwfVersion = undefined;
 	    }
 	  };
@@ -43895,18 +44006,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      classNames = value.split(/\s+/);
 	    }
 	    if (element && element.nodeType === 1 && classNames.length > 0) {
-	      if (element.classList) {
-	        for (c = 0, cl = classNames.length; c < cl; c++) {
-	          element.classList.add(classNames[c]);
+	      className = (" " + (element.className || "") + " ").replace(/[\t\r\n\f]/g, " ");
+	      for (c = 0, cl = classNames.length; c < cl; c++) {
+	        if (className.indexOf(" " + classNames[c] + " ") === -1) {
+	          className += classNames[c] + " ";
 	        }
-	      } else if (element.hasOwnProperty("className")) {
-	        className = " " + element.className + " ";
-	        for (c = 0, cl = classNames.length; c < cl; c++) {
-	          if (className.indexOf(" " + classNames[c] + " ") === -1) {
-	            className += classNames[c] + " ";
-	          }
-	        }
-	        element.className = className.replace(/^\s+|\s+$/g, "");
+	      }
+	      className = className.replace(/^\s+|\s+$/g, "");
+	      if (className !== element.className) {
+	        element.className = className;
 	      }
 	    }
 	    return element;
@@ -43923,16 +44031,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      classNames = value.split(/\s+/);
 	    }
 	    if (element && element.nodeType === 1 && classNames.length > 0) {
-	      if (element.classList && element.classList.length > 0) {
-	        for (c = 0, cl = classNames.length; c < cl; c++) {
-	          element.classList.remove(classNames[c]);
-	        }
-	      } else if (element.className) {
-	        className = (" " + element.className + " ").replace(/[\r\n\t]/g, " ");
+	      if (element.className) {
+	        className = (" " + element.className + " ").replace(/[\t\r\n\f]/g, " ");
 	        for (c = 0, cl = classNames.length; c < cl; c++) {
 	          className = className.replace(" " + classNames[c] + " ", " ");
 	        }
-	        element.className = className.replace(/^\s+|\s+$/g, "");
+	        className = className.replace(/^\s+|\s+$/g, "");
+	        if (className !== element.className) {
+	          element.className = className;
+	        }
 	      }
 	    }
 	    return element;
@@ -44001,6 +44108,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return false;
 	    }
 	    var styles = _getComputedStyle(el, null);
+	    if (!styles) {
+	      return false;
+	    }
 	    var hasCssHeight = _parseFloat(styles.height) > 0;
 	    var hasCssWidth = _parseFloat(styles.width) > 0;
 	    var hasCssTop = _parseFloat(styles.top) >= 0;
@@ -44075,6 +44185,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return typeof zIndex === "number" ? zIndex : "auto";
 	  };
 	  /**
+	 * Ensure OS-compliant line endings, i.e. "\r\n" on Windows, "\n" elsewhere
+	 *
+	 * @returns string
+	 * @private
+	 */
+	  var _fixLineEndings = function(content) {
+	    var replaceRegex = /(\r\n|\r|\n)/g;
+	    if (typeof content === "string" && _globalConfig.fixLineEndings === true) {
+	      if (_isWindows()) {
+	        if (/((^|[^\r])\n|\r([^\n]|$))/.test(content)) {
+	          content = content.replace(replaceRegex, "\r\n");
+	        }
+	      } else if (/\r/.test(content)) {
+	        content = content.replace(replaceRegex, "\n");
+	      }
+	    }
+	    return content;
+	  };
+	  /**
 	 * Attempt to detect if ZeroClipboard is executing inside of a sandboxed iframe.
 	 * If it is, Flash Player cannot be used, so ZeroClipboard is dead in the water.
 	 *
@@ -44082,7 +44211,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @see {@link https://github.com/zeroclipboard/zeroclipboard/issues/511}
 	 * @see {@link http://zeroclipboard.org/test-iframes.html}
 	 *
-	 * @returns `true` (is sandboxed), `false` (is not sandboxed), or `null` (uncertain) 
+	 * @returns `true` (is sandboxed), `false` (is not sandboxed), or `null` (uncertain)
 	 * @private
 	 */
 	  var _detectSandbox = function(doNotReassessFlashSupport) {
@@ -44227,12 +44356,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @readonly
 	 * @property {string}
 	 */
-	  _defineProperty(ZeroClipboard, "version", {
-	    value: "2.2.0",
-	    writable: false,
-	    configurable: true,
-	    enumerable: true
-	  });
+	  ZeroClipboard.version = "2.3.0";
 	  /**
 	 * Update or get a copy of the ZeroClipboard global configuration.
 	 * Returns a copy of the current/updated configuration.
@@ -44389,7 +44513,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *   _clientMeta[client.id] = {
 	 *     instance: client,
 	 *     elements: [],
-	 *     handlers: {}
+	 *     handlers: {},
+	 *     coreWildcardHandler: function(event) { return client.emit(event); }
 	 *   };
 	 */
 	  var _clientMeta = {};
@@ -44428,19 +44553,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 */
 	  var _clientConstructor = function(elements) {
-	    var client = this;
+	    var meta, client = this;
 	    client.id = "" + _clientIdCounter++;
-	    _clientMeta[client.id] = {
+	    meta = {
 	      instance: client,
 	      elements: [],
-	      handlers: {}
+	      handlers: {},
+	      coreWildcardHandler: function(event) {
+	        return client.emit(event);
+	      }
 	    };
+	    _clientMeta[client.id] = meta;
 	    if (elements) {
 	      client.clip(elements);
 	    }
-	    ZeroClipboard.on("*", function(event) {
-	      return client.emit(event);
-	    });
+	    ZeroClipboard.on("*", meta.coreWildcardHandler);
 	    ZeroClipboard.on("destroy", function() {
 	      client.destroy();
 	    });
@@ -44451,20 +44578,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 */
 	  var _clientOn = function(eventType, listener) {
-	    var i, len, events, added = {}, meta = _clientMeta[this.id], handlers = meta && meta.handlers;
+	    var i, len, events, added = {}, client = this, meta = _clientMeta[client.id], handlers = meta && meta.handlers;
 	    if (!meta) {
 	      throw new Error("Attempted to add new listener(s) to a destroyed ZeroClipboard client instance");
 	    }
 	    if (typeof eventType === "string" && eventType) {
 	      events = eventType.toLowerCase().split(/\s+/);
-	    } else if (typeof eventType === "object" && eventType && typeof listener === "undefined") {
-	      for (i in eventType) {
-	        if (_hasOwn.call(eventType, i) && typeof i === "string" && i && typeof eventType[i] === "function") {
-	          this.on(i, eventType[i]);
+	    } else if (typeof eventType === "object" && eventType && !("length" in eventType) && typeof listener === "undefined") {
+	      _keys(eventType).forEach(function(key) {
+	        var listener = eventType[key];
+	        if (typeof listener === "function") {
+	          client.on(key, listener);
 	        }
-	      }
+	      });
 	    }
-	    if (events && events.length) {
+	    if (events && events.length && listener) {
 	      for (i = 0, len = events.length; i < len; i++) {
 	        eventType = events[i].replace(/^on/, "");
 	        added[eventType] = true;
@@ -44500,27 +44628,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }
-	    return this;
+	    return client;
 	  };
 	  /**
 	 * The underlying implementation of `ZeroClipboard.Client.prototype.off`.
 	 * @private
 	 */
 	  var _clientOff = function(eventType, listener) {
-	    var i, len, foundIndex, events, perEventHandlers, meta = _clientMeta[this.id], handlers = meta && meta.handlers;
+	    var i, len, foundIndex, events, perEventHandlers, client = this, meta = _clientMeta[client.id], handlers = meta && meta.handlers;
 	    if (!handlers) {
-	      return this;
+	      return client;
 	    }
 	    if (arguments.length === 0) {
 	      events = _keys(handlers);
 	    } else if (typeof eventType === "string" && eventType) {
 	      events = eventType.split(/\s+/);
-	    } else if (typeof eventType === "object" && eventType && typeof listener === "undefined") {
-	      for (i in eventType) {
-	        if (_hasOwn.call(eventType, i) && typeof i === "string" && i && typeof eventType[i] === "function") {
-	          this.off(i, eventType[i]);
+	    } else if (typeof eventType === "object" && eventType && !("length" in eventType) && typeof listener === "undefined") {
+	      _keys(eventType).forEach(function(key) {
+	        var listener = eventType[key];
+	        if (typeof listener === "function") {
+	          client.off(key, listener);
 	        }
-	      }
+	      });
 	    }
 	    if (events && events.length) {
 	      for (i = 0, len = events.length; i < len; i++) {
@@ -44539,7 +44668,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }
-	    return this;
+	    return client;
 	  };
 	  /**
 	 * The underlying implementation of `ZeroClipboard.Client.prototype.handlers`.
@@ -44561,16 +44690,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 */
 	  var _clientEmit = function(event) {
-	    if (_clientShouldEmit.call(this, event)) {
+	    var eventCopy, client = this;
+	    if (_clientShouldEmit.call(client, event)) {
 	      if (typeof event === "object" && event && typeof event.type === "string" && event.type) {
 	        event = _extend({}, event);
 	      }
-	      var eventCopy = _extend({}, _createEvent(event), {
-	        client: this
+	      eventCopy = _extend({}, _createEvent(event), {
+	        client: client
 	      });
-	      _clientDispatchCallbacks.call(this, eventCopy);
+	      _clientDispatchCallbacks.call(client, eventCopy);
 	    }
-	    return this;
+	    return client;
 	  };
 	  /**
 	 * The underlying implementation of `ZeroClipboard.Client.prototype.clip`.
@@ -44652,11 +44782,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @private
 	 */
 	  var _clientDestroy = function() {
-	    if (!_clientMeta[this.id]) {
+	    var meta = _clientMeta[this.id];
+	    if (!meta) {
 	      return;
 	    }
 	    this.unclip();
 	    this.off();
+	    ZeroClipboard.off("*", meta.coreWildcardHandler);
 	    delete _clientMeta[this.id];
 	  };
 	  /**
@@ -49444,9 +49576,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var domEventHelpers = ($__helpers_47_dom_47_event__ = _dereq_("helpers/dom/event"), $__helpers_47_dom_47_event__ && $__helpers_47_dom_47_event__.__esModule && $__helpers_47_dom_47_event__ || {default: $__helpers_47_dom_47_event__});
 	var HELPERS = [arrayHelpers, browserHelpers, dataHelpers, dateHelpers, featureHelpers, functionHelpers, mixedHelpers, numberHelpers, objectHelpers, settingHelpers, stringHelpers, unicodeHelpers];
 	var DOM = [domHelpers, domEventHelpers];
-	Handsontable.buildDate = 'Tue Nov 08 2016 12:39:38 GMT+0100 (CET)';
+	Handsontable.buildDate = 'Wed Dec 21 2016 13:57:08 GMT+0100 (CET)';
 	Handsontable.packageName = 'handsontable';
-	Handsontable.version = '0.29.0';
+	Handsontable.version = '0.29.2';
 	var baseVersion = '@@baseVersion';
 	if (!/^@@/.test(baseVersion)) {
 	  Handsontable.baseVersion = baseVersion;
@@ -51862,7 +51994,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	DataMap.prototype.get = function(row, prop) {
 	  row = Handsontable.hooks.run(this.instance, 'modifyRow', row);
 	  var dataRow = this.dataSource[row];
-	  var modifiedRowData = Handsontable.hooks.run(this.instance, 'modifyRowData', row, dataRow, 'get');
+	  var modifiedRowData = Handsontable.hooks.run(this.instance, 'modifyRowData', row);
 	  dataRow = isNaN(modifiedRowData) ? modifiedRowData : dataRow;
 	  var value = null;
 	  if (dataRow && dataRow.hasOwnProperty && dataRow.hasOwnProperty(prop)) {
@@ -51903,7 +52035,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	DataMap.prototype.set = function(row, prop, value, source) {
 	  row = Handsontable.hooks.run(this.instance, 'modifyRow', row, source || 'datamapGet');
 	  var dataRow = this.dataSource[row];
-	  var modifiedRowData = Handsontable.hooks.run(this.instance, 'modifyRowData', row, dataRow, 'set', source);
+	  var modifiedRowData = Handsontable.hooks.run(this.instance, 'modifyRowData', row);
 	  dataRow = isNaN(modifiedRowData) ? modifiedRowData : dataRow;
 	  if (Handsontable.hooks.has('modifyData', this.instance)) {
 	    var valueHolder = createObjectPropListener(value);
@@ -51970,6 +52102,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	DataMap.prototype.getLength = function() {
 	  var $__9 = this;
+	  var maxRows,
+	      maxRowsFromSettings = this.instance.getSettings().maxRows;
+	  if (maxRowsFromSettings < 0 || maxRowsFromSettings === 0) {
+	    maxRows = 0;
+	  } else {
+	    maxRows = maxRowsFromSettings || Infinity;
+	  }
 	  var length = this.instance.countSourceRows();
 	  if (Handsontable.hooks.has('modifyRow', this.instance)) {
 	    var reValidate = this.skipCache;
@@ -51992,15 +52131,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  } else {
 	    this.interval.stop();
 	  }
-	  return length;
+	  return Math.min(length, maxRows);
 	};
 	DataMap.prototype.getAll = function() {
 	  var start = {
 	    row: 0,
 	    col: 0
 	  };
+	  var maxRows = this.instance.getSettings().maxRows;
+	  if (maxRows === 0) {
+	    return [];
+	  }
 	  var end = {
-	    row: Math.max(this.instance.countSourceRows() - 1, 0),
+	    row: Math.min(Math.max(maxRows - 1, 0), Math.max(this.instance.countSourceRows() - 1, 0)),
 	    col: Math.max(this.instance.countCols() - 1, 0)
 	  };
 	  if (start.row - end.row === 0 && !this.instance.countSourceRows()) {
@@ -52014,8 +52157,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      c,
 	      clen,
 	      output = [],
-	      row,
-	      rowExists;
+	      row;
 	  var getFn = destination === this.DESTINATION_CLIPBOARD_GENERATOR ? this.getCopyable : this.get;
 	  rlen = Math.max(start.row, end.row);
 	  clen = Math.max(start.col, end.col);
@@ -52023,7 +52165,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    row = [];
 	    var physicalRow = Handsontable.hooks.run(this.instance, 'modifyRow', r);
 	    for (c = Math.min(start.col, end.col); c <= clen; c++) {
-	      var rowValue;
 	      if (physicalRow === null) {
 	        break;
 	      }
@@ -52120,12 +52261,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  getAtCell: function(row, column) {
 	    var result = null;
-	    if (this.data[row]) {
+	    var modifyRowData = this.hot.runHooks('modifyRowData', row);
+	    var dataRow = isNaN(modifyRowData) ? modifyRowData : this.data[row];
+	    if (dataRow) {
 	      var prop = this.colToProp(column);
 	      if (typeof prop === 'string') {
-	        result = getProperty(this.data[row], prop);
+	        result = getProperty(dataRow, prop);
+	      } else if (typeof prop === 'function') {
+	        result = prop(this.data.slice(row, row + 1)[0]);
 	      } else {
-	        result = this.data[row][prop];
+	        result = dataRow[prop];
 	      }
 	    }
 	    return result;
@@ -52621,10 +52766,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.prop = prop;
 	  this.originalValue = originalValue;
 	  this.cellProperties = cellProperties;
-	  var ieIframeDocument = document.activeElement.nodeName === void 0;
-	  if (this.instance.view.isMouseDown() && document.activeElement && document.activeElement !== document.body && !ieIframeDocument) {
+	  var invalidActiveElement = !document.activeElement || (document.activeElement && document.activeElement.nodeName === void 0);
+	  if (this.instance.view.isMouseDown() && document.activeElement && document.activeElement !== document.body && !invalidActiveElement) {
 	    document.activeElement.blur();
-	  } else if (!document.activeElement || (document.activeElement && ieIframeDocument)) {
+	  } else if (invalidActiveElement) {
 	    document.body.focus();
 	  }
 	  this.state = Handsontable.EditorState.VIRGIN;
@@ -55651,17 +55796,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 	var cachedScrollbarWidth;
 	function walkontableCalculateScrollbarWidth() {
-	  var inner = document.createElement('p');
-	  inner.style.width = '100%';
+	  var inner = document.createElement('div');
 	  inner.style.height = '200px';
+	  inner.style.width = '100%';
 	  var outer = document.createElement('div');
+	  outer.style.boxSizing = 'content-box';
+	  outer.style.height = '150px';
+	  outer.style.left = '0px';
+	  outer.style.overflow = 'hidden';
 	  outer.style.position = 'absolute';
 	  outer.style.top = '0px';
-	  outer.style.left = '0px';
-	  outer.style.visibility = 'hidden';
 	  outer.style.width = '200px';
-	  outer.style.height = '150px';
-	  outer.style.overflow = 'hidden';
+	  outer.style.visibility = 'hidden';
 	  outer.appendChild(inner);
 	  (document.body || document.documentElement).appendChild(outer);
 	  var w1 = inner.offsetWidth;
@@ -56882,7 +57028,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	var $__helpers_47_array__,
 	    $__helpers_47_object__;
-	var REGISTERED_HOOKS = ['afterCellMetaReset', 'afterChange', 'afterChangesObserved', 'afterContextMenuDefaultOptions', 'beforeContextMenuSetItems', 'afterDropdownMenuDefaultOptions', 'beforeDropdownMenuSetItems', 'afterContextMenuHide', 'afterContextMenuShow', 'afterCopyLimit', 'beforeCreateCol', 'afterCreateCol', 'beforeCreateRow', 'afterCreateRow', 'afterDeselect', 'afterDestroy', 'afterDocumentKeyDown', 'afterGetCellMeta', 'afterGetColHeader', 'afterGetRowHeader', 'afterInit', 'afterLoadData', 'afterMomentumScroll', 'afterOnCellCornerMouseDown', 'afterOnCellMouseDown', 'afterOnCellMouseOver', 'afterRemoveCol', 'afterRemoveRow', 'afterRender', 'beforeRenderer', 'afterRenderer', 'afterScrollHorizontally', 'afterScrollVertically', 'afterSelection', 'afterSelectionByProp', 'afterSelectionEnd', 'afterSelectionEndByProp', 'afterSetCellMeta', 'afterSetDataAtCell', 'afterSetDataAtRowProp', 'afterUpdateSettings', 'afterValidate', 'beforeAutofill', 'beforeCellAlignment', 'beforeChange', 'beforeChangeRender', 'beforeDrawBorders', 'beforeGetCellMeta', 'beforeInit', 'beforeInitWalkontable', 'beforeKeyDown', 'beforeOnCellMouseDown', 'beforeOnCellMouseOver', 'beforeRemoveCol', 'beforeRemoveRow', 'beforeRender', 'beforeSetRangeStart', 'beforeSetRangeEnd', 'beforeTouchScroll', 'beforeValidate', 'beforeValueRender', 'construct', 'init', 'modifyCol', 'unmodifyCol', 'unmodifyRow', 'modifyColHeader', 'modifyColWidth', 'modifyRow', 'modifyRowHeader', 'modifyRowHeight', 'modifyData', 'persistentStateLoad', 'persistentStateReset', 'persistentStateSave', 'beforeColumnSort', 'afterColumnSort', 'afterAutofillApplyValues', 'modifyCopyableRange', 'beforeColumnMove', 'afterColumnMove', 'beforeRowMove', 'afterRowMove', 'beforeColumnResize', 'afterColumnResize', 'beforeRowResize', 'afterRowResize', 'afterGetColumnHeaderRenderers', 'afterGetRowHeaderRenderers', 'beforeStretchingColumnWidth', 'beforeFilter', 'afterFilter', 'modifyColumnHeaderHeight', 'beforeUndo', 'afterUndo', 'beforeRedo', 'afterRedo', 'modifyRowHeaderWidth', 'beforeAutofillInsidePopulate', 'modifyTransformStart', 'modifyTransformEnd', 'afterModifyTransformStart', 'afterModifyTransformEnd', 'beforeValueRender', 'afterViewportRowCalculatorOverride', 'afterViewportColumnCalculatorOverride', 'afterPluginsInitialized', 'manualRowHeights', 'skipLengthCache', 'afterTrimRow', 'afterUntrimRow', 'afterDropdownMenuShow', 'afterDropdownMenuHide', 'hiddenRow', 'hiddenColumn', 'beforeAddChild', 'afterAddChild', 'beforeDetachChild', 'afterDetachChild', 'afterBeginEditing'];
+	var REGISTERED_HOOKS = ['afterCellMetaReset', 'afterChange', 'afterChangesObserved', 'afterContextMenuDefaultOptions', 'beforeContextMenuSetItems', 'afterDropdownMenuDefaultOptions', 'beforeDropdownMenuSetItems', 'afterContextMenuHide', 'afterContextMenuShow', 'afterCopyLimit', 'beforeCreateCol', 'afterCreateCol', 'beforeCreateRow', 'afterCreateRow', 'afterDeselect', 'afterDestroy', 'afterDocumentKeyDown', 'afterGetCellMeta', 'afterGetColHeader', 'afterGetRowHeader', 'afterInit', 'afterLoadData', 'afterMomentumScroll', 'afterOnCellCornerMouseDown', 'afterOnCellMouseDown', 'afterOnCellMouseOver', 'afterRemoveCol', 'afterRemoveRow', 'afterRender', 'beforeRenderer', 'afterRenderer', 'afterScrollHorizontally', 'afterScrollVertically', 'afterSelection', 'afterSelectionByProp', 'afterSelectionEnd', 'afterSelectionEndByProp', 'afterSetCellMeta', 'afterSetDataAtCell', 'afterSetDataAtRowProp', 'afterUpdateSettings', 'afterValidate', 'beforeAutofill', 'beforeCellAlignment', 'beforeChange', 'beforeChangeRender', 'beforeDrawBorders', 'beforeGetCellMeta', 'beforeInit', 'beforeInitWalkontable', 'beforeKeyDown', 'beforeOnCellMouseDown', 'beforeOnCellMouseOver', 'beforeRemoveCol', 'beforeRemoveRow', 'beforeRender', 'beforeSetRangeStart', 'beforeSetRangeEnd', 'beforeTouchScroll', 'beforeValidate', 'beforeValueRender', 'construct', 'init', 'modifyCol', 'unmodifyCol', 'unmodifyRow', 'modifyColHeader', 'modifyColWidth', 'modifyRow', 'modifyRowHeader', 'modifyRowHeight', 'modifyData', 'modifyRowData', 'persistentStateLoad', 'persistentStateReset', 'persistentStateSave', 'beforeColumnSort', 'afterColumnSort', 'afterAutofillApplyValues', 'modifyCopyableRange', 'beforeColumnMove', 'afterColumnMove', 'beforeRowMove', 'afterRowMove', 'beforeColumnResize', 'afterColumnResize', 'beforeRowResize', 'afterRowResize', 'afterGetColumnHeaderRenderers', 'afterGetRowHeaderRenderers', 'beforeStretchingColumnWidth', 'beforeFilter', 'afterFilter', 'modifyColumnHeaderHeight', 'beforeUndo', 'afterUndo', 'beforeRedo', 'afterRedo', 'modifyRowHeaderWidth', 'beforeAutofillInsidePopulate', 'modifyTransformStart', 'modifyTransformEnd', 'afterModifyTransformStart', 'afterModifyTransformEnd', 'beforeValueRender', 'afterViewportRowCalculatorOverride', 'afterViewportColumnCalculatorOverride', 'afterPluginsInitialized', 'manualRowHeights', 'skipLengthCache', 'afterTrimRow', 'afterUntrimRow', 'afterDropdownMenuShow', 'afterDropdownMenuHide', 'hiddenRow', 'hiddenColumn', 'beforeAddChild', 'afterAddChild', 'beforeDetachChild', 'afterDetachChild', 'afterBeginEditing'];
 	var arrayEach = ($__helpers_47_array__ = _dereq_("helpers/array"), $__helpers_47_array__ && $__helpers_47_array__.__esModule && $__helpers_47_array__ || {default: $__helpers_47_array__}).arrayEach;
 	var objectEach = ($__helpers_47_object__ = _dereq_("helpers/object"), $__helpers_47_object__ && $__helpers_47_object__.__esModule && $__helpers_47_object__ || {default: $__helpers_47_object__}).objectEach;
 	var Hooks = function Hooks() {
@@ -58425,8 +58571,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        sortFunction;
 	    this.hot.sortingEnabled = false;
 	    this.hot.sortIndex.length = 0;
+	    var nrOfRows;
+	    var emptyRows = this.hot.countEmptyRows();
+	    if (this.hot.getSettings().maxRows === Number.POSITIVE_INFINITY) {
+	      nrOfRows = this.hot.countRows() - this.hot.getSettings().minSpareRows;
+	    } else {
+	      nrOfRows = this.hot.countRows() - emptyRows;
+	    }
 	    for (var i = 0,
-	        ilen = this.hot.countRows() - this.hot.getSettings().minSpareRows; i < ilen; i++) {
+	        ilen = nrOfRows; i < ilen; i++) {
 	      this.hot.sortIndex.push([i, this.hot.getDataAtCell(i, this.hot.sortColumn)]);
 	    }
 	    colMeta = this.hot.getCellMeta(0, this.hot.sortColumn);
@@ -62506,7 +62659,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var isHeaderSelection = this.hot.selection.selectedHeader.cols;
 	    var selection = this.hot.getSelectedRange();
 	    var priv = privatePool.get(this);
-	    if (!selection || !isHeaderSelection || priv.pressed || event.button !== 0) {
+	    var isSortingElement = event.realTarget.className.indexOf('columnSorting') > -1;
+	    if (!selection || !isHeaderSelection || priv.pressed || event.button !== 0 || isSortingElement) {
 	      priv.pressed = false;
 	      priv.columnsToMove.length = 0;
 	      removeClass(this.hot.rootElement, [CSS_ON_MOVING, CSS_SHOW_UI]);
@@ -69721,7 +69875,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	
 	// module
-	exports.push([module.id, "/*!\n(The MIT License)\n\nCopyright (c) 2012-2014 Marcin Warpechowski\nCopyright (c) 2015 Handsoncode sp. z o.o. <hello@handsoncode.net>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n'Software'), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n*/\n.handsontable {\n  position: relative;\n}\n\n.handsontable .hide{\n  display: none;\n}\n.handsontable .relative {\n  position: relative;\n}\n\n.handsontable.htAutoSize {\n  visibility: hidden;\n  left: -99000px;\n  position: absolute;\n  top: -99000px;\n}\n\n.handsontable .wtHider {\n  width: 0;\n}\n\n.handsontable .wtSpreader {\n  position: relative;\n  width: 0; /*must be 0, otherwise blank space appears in scroll demo after scrolling max to the right */\n  height: auto;\n}\n\n.handsontable table,\n.handsontable tbody,\n.handsontable thead,\n.handsontable td,\n.handsontable th,\n.handsontable input,\n.handsontable textarea,\n.handsontable div {\n  box-sizing: content-box;\n  -webkit-box-sizing: content-box;\n  -moz-box-sizing: content-box;\n}\n\n.handsontable input,\n.handsontable textarea {\n  min-height: initial;\n}\n\n.handsontable table.htCore {\n  border-collapse: separate;\n  /*it must be separate, otherwise there are offset miscalculations in WebKit: http://stackoverflow.com/questions/2655987/border-collapse-differences-in-ff-and-webkit*/\n  /*this actually only changes appearance of user selection - does not make text unselectable\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -o-user-select: none;\n  -ms-user-select: none;\n  /*user-select: none; /*no browser supports unprefixed version*/\n  border-spacing: 0;\n  margin: 0;\n  border-width: 0;\n  table-layout: fixed;\n  width: 0;\n  outline-width: 0;\n  /* reset bootstrap table style. for more info see: https://github.com/handsontable/handsontable/issues/224 */\n  max-width: none;\n  max-height: none;\n}\n\n.handsontable col {\n  width: 50px;\n}\n\n.handsontable col.rowHeader {\n  width: 50px;\n}\n\n.handsontable th,\n.handsontable td {\n  border-top-width: 0;\n  border-left-width: 0;\n  border-right: 1px solid #CCC;\n  border-bottom: 1px solid #CCC;\n  height: 22px;\n  empty-cells: show;\n  line-height: 21px;\n  padding: 0 4px 0 4px;\n  /* top, bottom padding different than 0 is handled poorly by FF with HTML5 doctype */\n  background-color: #FFF;\n  vertical-align: top;\n  overflow: hidden;\n  outline-width: 0;\n  white-space: pre-line;\n  /* preserve new line character in cell */\n}\n\n.handsontable td.htInvalid {\n  background-color: #ff4c42 !important; /*gives priority over td.area selection background*/\n}\n\n.handsontable td.htNoWrap {\n  white-space: nowrap;\n}\n\n.handsontable th:last-child {\n  /*Foundation framework fix*/\n  border-right: 1px solid #CCC;\n  border-bottom: 1px solid #CCC;\n}\n\n.handsontable tr:first-child th.htNoFrame,\n.handsontable th:first-child.htNoFrame,\n.handsontable th.htNoFrame {\n  border-left-width: 0;\n  background-color: white;\n  border-color: #FFF;\n}\n\n.handsontable th:first-child,\n.handsontable th:nth-child(2),\n.handsontable td:first-of-type,\n.handsontable .htNoFrame + th,\n.handsontable .htNoFrame + td {\n  border-left: 1px solid #CCC;\n}\n\n.handsontable.htRowHeaders thead tr th:nth-child(2) {\n  border-left: 1px solid #CCC;\n}\n\n.handsontable tr:first-child th,\n.handsontable tr:first-child td {\n  border-top: 1px solid #CCC;\n}\n\n.ht_master:not(.innerBorderLeft):not(.emptyColumns) ~ .handsontable tbody tr th,\n.ht_master:not(.innerBorderLeft):not(.emptyColumns) ~ .handsontable:not(.ht_clone_top) thead tr th:first-child {\n  border-right-width: 0;\n}\n\n.ht_master:not(.innerBorderTop) thead tr:last-child th,\n.ht_master:not(.innerBorderTop) ~ .handsontable thead tr:last-child th,\n.ht_master:not(.innerBorderTop) thead tr.lastChild th,\n.ht_master:not(.innerBorderTop) ~ .handsontable thead tr.lastChild th {\n  border-bottom-width: 0;\n}\n\n.handsontable th {\n  background-color: #f3f3f3;\n  color: #222;\n  text-align: center;\n  font-weight: normal;\n  white-space: nowrap;\n}\n\n.handsontable thead th {\n  padding: 0;\n}\n\n.handsontable th.active {\n  background-color: #CCC;\n}\n.handsontable thead th .relative {\n  padding: 2px 4px;\n}\n\n/* selection */\n.handsontable tbody th.ht__highlight,\n.handsontable thead th.ht__highlight {\n  background-color: #dcdcdc;\n}\n.handsontable.ht__selection--columns thead th.ht__highlight,\n.handsontable.ht__selection--rows tbody th.ht__highlight {\n  background-color: #8eb0e7;\n  color: #000;\n}\n\n/* plugins */\n\n/* row + column resizer*/\n.handsontable .manualColumnResizer {\n  position: fixed;\n  top: 0;\n  cursor: col-resize;\n  z-index: 110;\n  width: 5px;\n  height: 25px;\n}\n\n.handsontable .manualRowResizer {\n  position: fixed;\n  left: 0;\n  cursor: row-resize;\n  z-index: 110;\n  height: 5px;\n  width: 50px;\n}\n\n.handsontable .manualColumnResizer:hover,\n.handsontable .manualColumnResizer.active,\n.handsontable .manualRowResizer:hover,\n.handsontable .manualRowResizer.active {\n  background-color: #AAB;\n}\n\n.handsontable .manualColumnResizerGuide {\n  position: fixed;\n  right: 0;\n  top: 0;\n  background-color: #AAB;\n  display: none;\n  width: 0;\n  border-right: 1px dashed #777;\n  margin-left: 5px;\n}\n\n.handsontable .manualRowResizerGuide {\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  background-color: #AAB;\n  display: none;\n  height: 0;\n  border-bottom: 1px dashed #777;\n  margin-top: 5px;\n}\n\n.handsontable .manualColumnResizerGuide.active,\n.handsontable .manualRowResizerGuide.active {\n  display: block;\n  z-index: 199;\n}\n\n.handsontable .columnSorting {\n  position: relative;\n}\n\n.handsontable .columnSorting:hover {\n  text-decoration: underline;\n  cursor: pointer;\n}\n\n.handsontable .columnSorting.ascending::after {\n  content: '\\25B2';\n  color: #5f5f5f;\n  position: absolute;\n  right: -15px;\n}\n\n.handsontable .columnSorting.descending::after {\n  content: '\\25BC';\n  color: #5f5f5f;\n  position: absolute;\n  right: -15px;\n}\n\n/* border line */\n\n.handsontable .wtBorder {\n  position: absolute;\n  font-size: 0;\n}\n.handsontable .wtBorder.hidden{\n  display:none !important;\n}\n\n.handsontable td.area {\n  background: -moz-linear-gradient(top,  rgba(181,209,255,0.34) 0%, rgba(181,209,255,0.34) 100%); /* FF3.6+ */\n  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(181,209,255,0.34)), color-stop(100%,rgba(181,209,255,0.34))); /* Chrome,Safari4+ */\n  background: -webkit-linear-gradient(top,  rgba(181,209,255,0.34) 0%,rgba(181,209,255,0.34) 100%); /* Chrome10+,Safari5.1+ */\n  background: -o-linear-gradient(top,  rgba(181,209,255,0.34) 0%,rgba(181,209,255,0.34) 100%); /* Opera 11.10+ */\n  background: -ms-linear-gradient(top,  rgba(181,209,255,0.34) 0%,rgba(181,209,255,0.34) 100%); /* IE10+ */\n  background: linear-gradient(to bottom,  rgba(181,209,255,0.34) 0%,rgba(181,209,255,0.34) 100%); /* W3C */\n  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#57b5d1ff', endColorstr='#57b5d1ff',GradientType=0 ); /* IE6-9 */\n  background-color: #fff;\n}\n\n/* fill handle */\n\n.handsontable .wtBorder.corner {\n  font-size: 0;\n  cursor: crosshair;\n}\n\n.handsontable .htBorder.htFillBorder {\n  background: red;\n  width: 1px;\n  height: 1px;\n}\n\n.handsontableInput {\n  border:none;\n  outline-width: 0;\n  margin: 0 ;\n  padding: 1px 5px 0 5px;\n  font-family: inherit;\n  line-height: 21px;\n  font-size: inherit;\n  box-shadow: 0 0 0 2px #5292F7 inset;\n  resize: none;\n  /*below are needed to overwrite stuff added by jQuery UI Bootstrap theme*/\n  display: inline-block;\n  color: #000;\n  border-radius: 0;\n  background-color: #FFF;\n  /*overwrite styles potentionally made by a framework*/\n}\n\n.handsontableInputHolder {\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 100;\n}\n\n.htSelectEditor {\n  -webkit-appearance: menulist-button !important;\n  position: absolute;\n  width: auto;\n}\n\n/*\nTextRenderer readOnly cell\n*/\n\n.handsontable .htDimmed {\n  color: #777;\n}\n\n.handsontable .htSubmenu {\n  position: relative;\n}\n\n.handsontable .htSubmenu :after{\n  content: '\\25B6';\n  color: #777;\n  position: absolute;\n  right: 5px;\n}\n\n\n/*\nTextRenderer horizontal alignment\n*/\n.handsontable .htLeft{\n  text-align: left;\n}\n.handsontable .htCenter{\n  text-align: center;\n}\n.handsontable .htRight{\n  text-align: right;\n}\n.handsontable .htJustify{\n  text-align: justify;\n}\n/*\nTextRenderer vertical alignment\n*/\n.handsontable .htTop{\n  vertical-align: top;\n}\n.handsontable .htMiddle{\n  vertical-align: middle;\n}\n.handsontable .htBottom{\n  vertical-align: bottom;\n}\n\n/*\nTextRenderer placeholder value\n*/\n\n.handsontable .htPlaceholder {\n  color: #999;\n}\n\n/*\nAutocompleteRenderer down arrow\n*/\n\n.handsontable .htAutocompleteArrow {\n  float: right;\n  font-size: 10px;\n  color: #EEE;\n  cursor: default;\n  width: 16px;\n  text-align: center;\n}\n\n.handsontable td .htAutocompleteArrow:hover {\n  color: #777;\n}\n\n.handsontable td.area .htAutocompleteArrow {\n  color: #d3d3d3;\n}\n\n/*\nCheckboxRenderer\n*/\n.handsontable .htCheckboxRendererInput {\n  display: inline-block;\n  vertical-align: middle;\n}\n.handsontable .htCheckboxRendererInput.noValue {\n  opacity: 0.5;\n}\n.handsontable .htCheckboxRendererLabel {\n  cursor: pointer;\n  display: inline-block;\n  width: 100%;\n}\n\n@-webkit-keyframes opacity-hide {\n  from {\n    opacity: 1;\n  }\n  to {\n    opacity: 0;\n    /*display: none;*/\n  }\n}\n@keyframes opacity-hide {\n  from {\n    /*display: block;*/\n    opacity: 1;\n  }\n  to {\n    opacity: 0;\n    /*display: none;*/\n  }\n}\n\n@-webkit-keyframes opacity-show {\n  from {\n    opacity: 0;\n    /*display: none;*/\n  }\n  to {\n    opacity: 1;\n    /*display: block;*/\n  }\n}\n@keyframes opacity-show {\n  from {\n    opacity: 0;\n    /*display: none;*/\n  }\n  to {\n    opacity: 1;\n    /*display: block;*/\n  }\n}\n\n/**\n * Handsontable in Handsontable\n */\n\n.handsontable .handsontable.ht_clone_top .wtHider {\n  padding: 0 0 5px 0;\n}\n\n/**\n* Autocomplete Editor\n*/\n.handsontable .autocompleteEditor.handsontable {\n  padding-right: 17px;\n}\n.handsontable .autocompleteEditor.handsontable.htMacScroll {\n  padding-right: 15px;\n}\n\n\n/**\n * Handsontable listbox theme\n */\n\n.handsontable.listbox {\n  margin: 0;\n}\n\n.handsontable.listbox .ht_master table {\n  border: 1px solid #ccc;\n  border-collapse: separate;\n  background: white;\n}\n\n.handsontable.listbox th,\n.handsontable.listbox tr:first-child th,\n.handsontable.listbox tr:last-child th,\n.handsontable.listbox tr:first-child td,\n.handsontable.listbox td {\n  border-color: transparent;\n}\n\n.handsontable.listbox th,\n.handsontable.listbox td {\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n.handsontable.listbox td.htDimmed {\n  cursor: default;\n  color: inherit;\n  font-style: inherit;\n}\n\n.handsontable.listbox .wtBorder {\n  visibility: hidden;\n}\n\n.handsontable.listbox tr td.current,\n.handsontable.listbox tr:hover td {\n  background: #eee;\n}\n\n.ht_clone_top {\n  z-index: 101;\n}\n\n.ht_clone_left {\n  z-index: 102;\n}\n\n.ht_clone_top_left_corner,\n.ht_clone_bottom_left_corner {\n  z-index: 103;\n}\n\n.ht_clone_debug {\n  z-index: 103;\n}\n\n.handsontable td.htSearchResult {\n  background: #fcedd9;\n  color: #583707;\n}\n\n/*\nCell borders\n*/\n.htBordered{\n  /*box-sizing: border-box !important;*/\n  border-width: 1px;\n}\n.htBordered.htTopBorderSolid {\n  border-top-style: solid;\n  border-top-color: #000;\n}\n.htBordered.htRightBorderSolid {\n  border-right-style: solid;\n  border-right-color: #000;\n}\n.htBordered.htBottomBorderSolid {\n  border-bottom-style: solid;\n  border-bottom-color: #000;\n}\n.htBordered.htLeftBorderSolid {\n  border-left-style: solid;\n  border-left-color: #000;\n}\n\n.handsontable tbody tr th:nth-last-child(2) {\n  border-right: 1px solid #CCC;\n}\n\n.handsontable thead tr:nth-last-child(2) th.htGroupIndicatorContainer {\n  border-bottom: 1px solid #CCC;\n  padding-bottom: 5px;\n}\n\n\n.ht_clone_top_left_corner thead tr th:nth-last-child(2) {\n  border-right: 1px solid #CCC;\n}\n\n.htCollapseButton {\n  width: 10px;\n  height: 10px;\n  line-height: 10px;\n  text-align: center;\n  border-radius: 5px;\n  border: 1px solid #f3f3f3;\n  -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);\n  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);\n  cursor: pointer;\n  margin-bottom: 3px;\n  position: relative;\n}\n\n.htCollapseButton:after {\n  content: \"\";\n  height: 300%;\n  width: 1px;\n  display: block;\n  background: #ccc;\n  margin-left: 4px;\n  position: absolute;\n  /*top: -300%;*/\n  bottom: 10px;\n}\n\n\nthead .htCollapseButton {\n  right: 5px;\n  position: absolute;\n  top: 5px;\n  background: #fff;\n}\n\nthead .htCollapseButton:after {\n  height: 1px;\n  width: 700%;\n  right: 10px;\n  top: 4px;\n}\n\n.handsontable tr th .htExpandButton {\n  position: absolute;\n  width: 10px;\n  height: 10px;\n  line-height: 10px;\n  text-align: center;\n  border-radius: 5px;\n  border: 1px solid #f3f3f3;\n  -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);\n  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);\n  cursor: pointer;\n  top: 0;\n  display: none;\n}\n\n.handsontable thead tr th .htExpandButton {\n  /*left: 5px;*/\n  top: 5px;\n}\n\n.handsontable tr th .htExpandButton.clickable {\n  display: block;\n}\n\n.collapsibleIndicator {\n  position: absolute;\n  top: 50%;\n  transform: translate(0% ,-50%);\n  right: 5px;\n  border: 1px solid #A6A6A6;\n  line-height: 10px;\n  color: #222;\n  border-radius: 10px;\n  font-size: 10px;\n  width: 10px;\n  height: 10px;\n  cursor: pointer;\n  -webkit-box-shadow: 0 0 0 6px rgba(238,238,238,1);\n  -moz-box-shadow: 0 0 0 6px rgba(238,238,238,1);\n  box-shadow: 0 0 0 6px rgba(238,238,238,1);\n  background: #eee;\n}\n\n.handsontable col.hidden {\n  width: 0 !important;\n}\n\n.handsontable table tr th.lightRightBorder {\n  border-right: 1px solid #E6E6E6;\n}\n\n.handsontable tr.hidden,\n.handsontable tr.hidden td,\n.handsontable tr.hidden th {\n  display: none;\n}\n\n.ht_master,\n.ht_clone_left,\n.ht_clone_top,\n.ht_clone_bottom {\n  overflow: hidden;\n}\n\n.ht_master .wtHolder {\n  overflow: auto;\n}\n\n.ht_clone_left .wtHolder {\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n\n.ht_clone_top .wtHolder,\n.ht_clone_bottom .wtHolder {\n  overflow-x: auto;\n  overflow-y: hidden;\n}\n\n\n/*WalkontableDebugOverlay*/\n\n.wtDebugHidden {\n  display: none;\n}\n\n.wtDebugVisible {\n  display: block;\n  -webkit-animation-duration: 0.5s;\n  -webkit-animation-name: wtFadeInFromNone;\n  animation-duration: 0.5s;\n  animation-name: wtFadeInFromNone;\n}\n\n@keyframes wtFadeInFromNone {\n  0% {\n    display: none;\n    opacity: 0;\n  }\n\n  1% {\n    display: block;\n    opacity: 0;\n  }\n\n  100% {\n    display: block;\n    opacity: 1;\n  }\n}\n\n@-webkit-keyframes wtFadeInFromNone {\n  0% {\n    display: none;\n    opacity: 0;\n  }\n\n  1% {\n    display: block;\n    opacity: 0;\n  }\n\n  100% {\n    display: block;\n    opacity: 1;\n  }\n}\n/*\n\n Handsontable Mobile Text Editor stylesheet\n\n */\n\n.handsontable.mobile,\n.handsontable.mobile .wtHolder {\n  -webkit-touch-callout:none;\n  -webkit-user-select:none;\n  -khtml-user-select:none;\n  -moz-user-select:none;\n  -ms-user-select:none;\n  user-select:none;\n  -webkit-tap-highlight-color:rgba(0,0,0,0);\n  -webkit-overflow-scrolling: touch;\n}\n\n.htMobileEditorContainer {\n  display: none;\n  position: absolute;\n  top: 0;\n  width: 70%;\n  height: 54pt;\n  background: #f8f8f8;\n  border-radius: 20px;\n  border: 1px solid #ebebeb;\n  z-index: 999;\n  box-sizing: border-box;\n  -webkit-box-sizing: border-box;\n  -webkit-text-size-adjust: none;\n}\n\n.topLeftSelectionHandle:not(.ht_master .topLeftSelectionHandle),\n.topLeftSelectionHandle-HitArea:not(.ht_master .topLeftSelectionHandle-HitArea) {\n  z-index: 9999;\n}\n\n/* Initial left/top coordinates - overwritten when actual position is set */\n.topLeftSelectionHandle,\n.topLeftSelectionHandle-HitArea,\n.bottomRightSelectionHandle,\n.bottomRightSelectionHandle-HitArea {\n  left: -10000px;\n  top: -10000px;\n}\n\n.htMobileEditorContainer.active {\n  display: block;\n}\n\n.htMobileEditorContainer .inputs {\n  position: absolute;\n  right: 210pt;\n  bottom: 10pt;\n  top: 10pt;\n  left: 14px;\n  height: 34pt;\n}\n\n.htMobileEditorContainer .inputs textarea {\n  font-size: 13pt;\n  border: 1px solid #a1a1a1;\n  -webkit-appearance: none;\n  -webkit-box-shadow: none;\n  -moz-box-shadow: none;\n  box-shadow: none;\n  position: absolute;\n  left: 14px;\n  right: 14px;\n  top: 0;\n  bottom: 0;\n  padding: 7pt;\n}\n\n.htMobileEditorContainer .cellPointer {\n  position: absolute;\n  top: -13pt;\n  height: 0;\n  width: 0;\n  left: 30px;\n\n  border-left: 13pt solid transparent;\n  border-right: 13pt solid transparent;\n  border-bottom: 13pt solid #ebebeb;\n}\n\n.htMobileEditorContainer .cellPointer.hidden {\n  display: none;\n}\n\n.htMobileEditorContainer .cellPointer:before {\n  content: '';\n  display: block;\n  position: absolute;\n  top: 2px;\n  height: 0;\n  width: 0;\n  left: -13pt;\n\n  border-left: 13pt solid transparent;\n  border-right: 13pt solid transparent;\n  border-bottom: 13pt solid #f8f8f8;\n}\n\n.htMobileEditorContainer .moveHandle {\n  position: absolute;\n  top: 10pt;\n  left: 5px;\n  width: 30px;\n  bottom: 0px;\n  cursor: move;\n  z-index: 9999;\n}\n\n.htMobileEditorContainer .moveHandle:after {\n  content: \"..\\A..\\A..\\A..\";\n  white-space: pre;\n  line-height: 10px;\n  font-size: 20pt;\n  display: inline-block;\n  margin-top: -8px;\n  color: #ebebeb;\n}\n\n.htMobileEditorContainer .positionControls {\n  width: 205pt;\n  position: absolute;\n  right: 5pt;\n  top: 0;\n  bottom: 0;\n}\n\n.htMobileEditorContainer .positionControls > div {\n  width: 50pt;\n  height: 100%;\n  float: left;\n}\n\n.htMobileEditorContainer .positionControls > div:after {\n  content: \" \";\n  display: block;\n  width: 15pt;\n  height: 15pt;\n  text-align: center;\n  line-height: 50pt;\n}\n\n.htMobileEditorContainer .leftButton:after,\n.htMobileEditorContainer .rightButton:after,\n.htMobileEditorContainer .upButton:after,\n.htMobileEditorContainer .downButton:after {\n  transform-origin: 5pt 5pt;\n  -webkit-transform-origin: 5pt 5pt;\n  margin: 21pt 0 0 21pt;\n}\n\n.htMobileEditorContainer .leftButton:after {\n  border-top: 2px solid #288ffe;\n  border-left: 2px solid #288ffe;\n  -webkit-transform: rotate(-45deg);\n  /*margin-top: 17pt;*/\n  /*margin-left: 20pt;*/\n}\n.htMobileEditorContainer .leftButton:active:after {\n  border-color: #cfcfcf;\n}\n\n.htMobileEditorContainer .rightButton:after {\n  border-top: 2px solid #288ffe;\n  border-left: 2px solid #288ffe;\n  -webkit-transform: rotate(135deg);\n  /*margin-top: 17pt;*/\n  /*margin-left: 10pt;*/\n}\n.htMobileEditorContainer .rightButton:active:after {\n  border-color: #cfcfcf;\n}\n\n.htMobileEditorContainer .upButton:after {\n  /*border-top: 2px solid #cfcfcf;*/\n  border-top: 2px solid #288ffe;\n  border-left: 2px solid #288ffe;\n  -webkit-transform: rotate(45deg);\n  /*margin-top: 22pt;*/\n  /*margin-left: 15pt;*/\n}\n.htMobileEditorContainer .upButton:active:after {\n  border-color: #cfcfcf;\n}\n\n.htMobileEditorContainer .downButton:after {\n  border-top: 2px solid #288ffe;\n  border-left: 2px solid #288ffe;\n  -webkit-transform: rotate(225deg);\n  /*margin-top: 15pt;*/\n  /*margin-left: 15pt;*/\n}\n.htMobileEditorContainer .downButton:active:after {\n  border-color: #cfcfcf;\n}\n\n.handsontable.hide-tween {\n  -webkit-animation: opacity-hide 0.3s;\n  animation: opacity-hide 0.3s;\n  animation-fill-mode: forwards;\n  -webkit-animation-fill-mode: forwards;\n}\n\n.handsontable.show-tween {\n  -webkit-animation: opacity-show 0.3s;\n  animation: opacity-show 0.3s;\n  animation-fill-mode: forwards;\n  -webkit-animation-fill-mode: forwards;\n}\n.htCommentCell {\n    position: relative;\n}\n\n.htCommentCell:after {\n    content: '';\n    position: absolute;\n    top: 0;\n    right: 0;\n    border-left: 6px solid transparent;\n    border-top: 6px solid black;\n}\n\n.htComments {\n    display: none;\n    z-index: 1059;\n    position: absolute;\n}\n\n.htCommentTextArea {\n    box-shadow: rgba(0, 0, 0, 0.117647) 0 1px 3px, rgba(0, 0, 0, 0.239216) 0 1px 2px;\n    border: none;\n    border-left: 3px solid #ccc;\n    background-color: #fff;\n    width: 215px;\n    height: 90px;\n    font-size: 12px;\n    padding: 5px;\n    outline: 0px !important;\n    -webkit-appearance: none;\n}\n\n.htCommentTextArea:focus {\n    box-shadow: rgba(0, 0, 0, 0.117647) 0 1px 3px, rgba(0, 0, 0, 0.239216) 0 1px 2px, inset 0 0 0 1px #5292f7;\n    border-left: 3px solid #5292f7;\n}\n/*!\n * Handsontable ContextMenu\n */\n\n.htContextMenu {\n  display: none;\n  position: absolute;\n  z-index: 1060; /* needs to be higher than 1050 - z-index for Twitter Bootstrap modal (#1569) */\n}\n\n.htContextMenu .ht_clone_top,\n.htContextMenu .ht_clone_left,\n.htContextMenu .ht_clone_corner,\n.htContextMenu .ht_clone_debug {\n  display: none;\n}\n\n.htContextMenu table.htCore {\n  border: 1px solid #ccc;\n  border-bottom-width: 2px;\n  border-right-width: 2px;\n}\n\n.htContextMenu .wtBorder {\n  visibility: hidden;\n}\n\n.htContextMenu table tbody tr td {\n  background: white;\n  border-width: 0;\n  padding: 4px 6px 0 6px;\n  cursor: pointer;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n.htContextMenu table tbody tr td:first-child {\n  border: 0;\n}\n\n.htContextMenu table tbody tr td.htDimmed {\n  font-style: normal;\n  color: #323232;\n}\n\n.htContextMenu table tbody tr td.current,\n.htContextMenu table tbody tr td.zeroclipboard-is-hover {\n  background: #f3f3f3;\n}\n\n.htContextMenu table tbody tr td.htSeparator {\n  border-top: 1px solid #bbb;\n  height: 0;\n  padding: 0;\n  cursor: default;\n}\n\n.htContextMenu table tbody tr td.htDisabled {\n  color: #999;\n  cursor: default;\n}\n\n.htContextMenu table tbody tr td.htDisabled:hover {\n  background: #fff;\n  color: #999;\n  cursor: default;\n}\n\n.htContextMenu table tbody tr.htHidden {\n  display: none;\n}\n\n.htContextMenu table tbody tr td .htItemWrapper {\n  margin-left: 10px;\n  margin-right: 6px;\n}\n\n.htContextMenu table tbody tr td div span.selected {\n  margin-top: -2px;\n  position: absolute;\n  left: 4px;\n}\n\n.htContextMenu .ht_master .wtHolder {\n  overflow: hidden;\n}\n.htRowHeaders .ht_master.innerBorderLeft ~ .ht_clone_top_left_corner th:nth-child(2),\n.htRowHeaders .ht_master.innerBorderLeft ~ .ht_clone_left td:first-of-type {\n  border-left: 0 none;\n}\n.handsontable .wtHider {\n  position: relative;\n}\n.handsontable.ht__manualColumnMove.after-selection--columns thead th.ht__highlight {\n  cursor: move;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n.handsontable.ht__manualColumnMove.on-moving--columns,\n.handsontable.ht__manualColumnMove.on-moving--columns thead th.ht__highlight {\n  cursor: move;\n  cursor: -moz-grabbing;\n  cursor: -webkit-grabbing;\n  cursor: grabbing;\n}\n.handsontable.ht__manualColumnMove.on-moving--columns .manualColumnResizer {\n  display: none;\n}\n.handsontable .ht__manualColumnMove--guideline,\n.handsontable .ht__manualColumnMove--backlight {\n  position: absolute;\n  height: 100%;\n  display: none;\n}\n.handsontable .ht__manualColumnMove--guideline {\n  background: #757575;\n  width: 2px;\n  top: 0;\n  margin-left: -1px;\n  z-index: 105;\n}\n.handsontable .ht__manualColumnMove--backlight {\n  background: #343434;\n  background: rgba(52, 52, 52, 0.25);\n  display: none;\n  z-index: 105;\n  pointer-events: none;\n}\n.handsontable.on-moving--columns.show-ui .ht__manualColumnMove--guideline,\n.handsontable.on-moving--columns .ht__manualColumnMove--backlight {\n  display: block;\n}\n.handsontable .wtHider {\n  position: relative;\n}\n.handsontable.ht__manualRowMove.after-selection--rows tbody th.ht__highlight {\n  cursor: move;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n.handsontable.ht__manualRowMove.on-moving--rows,\n.handsontable.ht__manualRowMove.on-moving--rows tbody th.ht__highlight {\n  cursor: move;\n  cursor: -moz-grabbing;\n  cursor: -webkit-grabbing;\n  cursor: grabbing;\n}\n.handsontable.ht__manualRowMove.on-moving--rows .manualRowResizer {\n  display: none;\n}\n.handsontable .ht__manualRowMove--guideline,\n.handsontable .ht__manualRowMove--backlight {\n  position: absolute;\n  width: 100%;\n  display: none;\n}\n.handsontable .ht__manualRowMove--guideline {\n  background: #757575;\n  height: 2px;\n  left: 0;\n  margin-top: -1px;\n  z-index: 105;\n}\n.handsontable .ht__manualRowMove--backlight {\n  background: #343434;\n  background: rgba(52, 52, 52, 0.25);\n  display: none;\n  z-index: 105;\n  pointer-events: none;\n}\n.handsontable.on-moving--rows.show-ui .ht__manualRowMove--guideline,\n.handsontable.on-moving--rows .ht__manualRowMove--backlight {\n  display: block;\n}\n@charset \"UTF-8\";\n\n/*!\n * Pikaday\n * Copyright © 2014 David Bushell | BSD & MIT license | http://dbushell.com/\n */\n\n.pika-single {\n    z-index: 9999;\n    display: block;\n    position: relative;\n    color: #333;\n    background: #fff;\n    border: 1px solid #ccc;\n    border-bottom-color: #bbb;\n    font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n}\n\n/*\nclear child float (pika-lendar), using the famous micro clearfix hack\nhttp://nicolasgallagher.com/micro-clearfix-hack/\n*/\n.pika-single:before,\n.pika-single:after {\n    content: \" \";\n    display: table;\n}\n.pika-single:after { clear: both }\n.pika-single { *zoom: 1 }\n\n.pika-single.is-hidden {\n    display: none;\n}\n\n.pika-single.is-bound {\n    position: absolute;\n    box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);\n}\n\n.pika-lendar {\n    float: left;\n    width: 240px;\n    margin: 8px;\n}\n\n.pika-title {\n    position: relative;\n    text-align: center;\n}\n\n.pika-label {\n    display: inline-block;\n    *display: inline;\n    position: relative;\n    z-index: 9999;\n    overflow: hidden;\n    margin: 0;\n    padding: 5px 3px;\n    font-size: 14px;\n    line-height: 20px;\n    font-weight: bold;\n    background-color: #fff;\n}\n.pika-title select {\n    cursor: pointer;\n    position: absolute;\n    z-index: 9998;\n    margin: 0;\n    left: 0;\n    top: 5px;\n    filter: alpha(opacity=0);\n    opacity: 0;\n}\n\n.pika-prev,\n.pika-next {\n    display: block;\n    cursor: pointer;\n    position: relative;\n    outline: none;\n    border: 0;\n    padding: 0;\n    width: 20px;\n    height: 30px;\n    /* hide text using text-indent trick, using width value (it's enough) */\n    text-indent: 20px;\n    white-space: nowrap;\n    overflow: hidden;\n    background-color: transparent;\n    background-position: center center;\n    background-repeat: no-repeat;\n    background-size: 75% 75%;\n    opacity: .5;\n    *position: absolute;\n    *top: 0;\n}\n\n.pika-prev:hover,\n.pika-next:hover {\n    opacity: 1;\n}\n\n.pika-prev,\n.is-rtl .pika-next {\n    float: left;\n    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==');\n    *left: 0;\n}\n\n.pika-next,\n.is-rtl .pika-prev {\n    float: right;\n    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAU0lEQVR42u3VOwoAMAgE0dwfAnNjU26bYkBCFGwfiL9VVWoO+BJ4Gf3gtsEKKoFBNTCoCAYVwaAiGNQGMUHMkjGbgjk2mIONuXo0nC8XnCf1JXgArVIZAQh5TKYAAAAASUVORK5CYII=');\n    *right: 0;\n}\n\n.pika-prev.is-disabled,\n.pika-next.is-disabled {\n    cursor: default;\n    opacity: .2;\n}\n\n.pika-select {\n    display: inline-block;\n    *display: inline;\n}\n\n.pika-table {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    border: 0;\n}\n\n.pika-table th,\n.pika-table td {\n    width: 14.285714285714286%;\n    padding: 0;\n}\n\n.pika-table th {\n    color: #999;\n    font-size: 12px;\n    line-height: 25px;\n    font-weight: bold;\n    text-align: center;\n}\n\n.pika-button {\n    cursor: pointer;\n    display: block;\n    box-sizing: border-box;\n    -moz-box-sizing: border-box;\n    outline: none;\n    border: 0;\n    margin: 0;\n    width: 100%;\n    padding: 5px;\n    color: #666;\n    font-size: 12px;\n    line-height: 15px;\n    text-align: right;\n    background: #f5f5f5;\n}\n\n.pika-week {\n    font-size: 11px;\n    color: #999;\n}\n\n.is-today .pika-button {\n    color: #33aaff;\n    font-weight: bold;\n}\n\n.is-selected .pika-button {\n    color: #fff;\n    font-weight: bold;\n    background: #33aaff;\n    box-shadow: inset 0 1px 3px #178fe5;\n    border-radius: 3px;\n}\n\n.is-inrange .pika-button {\n    background: #D5E9F7;\n}\n\n.is-startrange .pika-button {\n    color: #fff;\n    background: #6CB31D;\n    box-shadow: none;\n    border-radius: 3px;\n}\n\n.is-endrange .pika-button {\n    color: #fff;\n    background: #33aaff;\n    box-shadow: none;\n    border-radius: 3px;\n}\n\n.is-disabled .pika-button,\n.is-outside-current-month .pika-button {\n    pointer-events: none;\n    cursor: default;\n    color: #999;\n    opacity: .3;\n}\n\n.pika-button:hover {\n    color: #fff;\n    background: #ff8000;\n    box-shadow: none;\n    border-radius: 3px;\n}\n\n/* styling for abbr */\n.pika-table abbr {\n    border-bottom: none;\n    cursor: help;\n}\n\n", ""]);
+	exports.push([module.id, "/*!\n(The MIT License)\n\nCopyright (c) 2012-2014 Marcin Warpechowski\nCopyright (c) 2015 Handsoncode sp. z o.o. <hello@handsoncode.net>\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n'Software'), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\nCLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n*/\n.handsontable {\n  position: relative;\n}\n\n.handsontable .hide{\n  display: none;\n}\n.handsontable .relative {\n  position: relative;\n}\n\n.handsontable.htAutoSize {\n  visibility: hidden;\n  left: -99000px;\n  position: absolute;\n  top: -99000px;\n}\n\n.handsontable .wtHider {\n  width: 0;\n}\n\n.handsontable .wtSpreader {\n  position: relative;\n  width: 0; /*must be 0, otherwise blank space appears in scroll demo after scrolling max to the right */\n  height: auto;\n}\n\n.handsontable table,\n.handsontable tbody,\n.handsontable thead,\n.handsontable td,\n.handsontable th,\n.handsontable input,\n.handsontable textarea,\n.handsontable div {\n  box-sizing: content-box;\n  -webkit-box-sizing: content-box;\n  -moz-box-sizing: content-box;\n}\n\n.handsontable input,\n.handsontable textarea {\n  min-height: initial;\n}\n\n.handsontable table.htCore {\n  border-collapse: separate;\n  /*it must be separate, otherwise there are offset miscalculations in WebKit: http://stackoverflow.com/questions/2655987/border-collapse-differences-in-ff-and-webkit*/\n  /*this actually only changes appearance of user selection - does not make text unselectable\n  -webkit-user-select: none;\n  -khtml-user-select: none;\n  -moz-user-select: none;\n  -o-user-select: none;\n  -ms-user-select: none;\n  /*user-select: none; /*no browser supports unprefixed version*/\n  border-spacing: 0;\n  margin: 0;\n  border-width: 0;\n  table-layout: fixed;\n  width: 0;\n  outline-width: 0;\n  /* reset bootstrap table style. for more info see: https://github.com/handsontable/handsontable/issues/224 */\n  max-width: none;\n  max-height: none;\n}\n\n.handsontable col {\n  width: 50px;\n}\n\n.handsontable col.rowHeader {\n  width: 50px;\n}\n\n.handsontable th,\n.handsontable td {\n  border-top-width: 0;\n  border-left-width: 0;\n  border-right: 1px solid #CCC;\n  border-bottom: 1px solid #CCC;\n  height: 22px;\n  empty-cells: show;\n  line-height: 21px;\n  padding: 0 4px 0 4px;\n  /* top, bottom padding different than 0 is handled poorly by FF with HTML5 doctype */\n  background-color: #FFF;\n  vertical-align: top;\n  overflow: hidden;\n  outline-width: 0;\n  white-space: pre-line;\n  /* preserve new line character in cell */\n  background-clip: padding-box;\n}\n\n.handsontable td.htInvalid {\n  background-color: #ff4c42 !important; /*gives priority over td.area selection background*/\n}\n\n.handsontable td.htNoWrap {\n  white-space: nowrap;\n}\n\n.handsontable th:last-child {\n  /*Foundation framework fix*/\n  border-right: 1px solid #CCC;\n  border-bottom: 1px solid #CCC;\n}\n\n.handsontable tr:first-child th.htNoFrame,\n.handsontable th:first-child.htNoFrame,\n.handsontable th.htNoFrame {\n  border-left-width: 0;\n  background-color: white;\n  border-color: #FFF;\n}\n\n.handsontable th:first-child,\n.handsontable th:nth-child(2),\n.handsontable td:first-of-type,\n.handsontable .htNoFrame + th,\n.handsontable .htNoFrame + td {\n  border-left: 1px solid #CCC;\n}\n\n.handsontable.htRowHeaders thead tr th:nth-child(2) {\n  border-left: 1px solid #CCC;\n}\n\n.handsontable tr:first-child th,\n.handsontable tr:first-child td {\n  border-top: 1px solid #CCC;\n}\n\n.ht_master:not(.innerBorderLeft):not(.emptyColumns) ~ .handsontable tbody tr th,\n.ht_master:not(.innerBorderLeft):not(.emptyColumns) ~ .handsontable:not(.ht_clone_top) thead tr th:first-child {\n  border-right-width: 0;\n}\n\n.ht_master:not(.innerBorderTop) thead tr:last-child th,\n.ht_master:not(.innerBorderTop) ~ .handsontable thead tr:last-child th,\n.ht_master:not(.innerBorderTop) thead tr.lastChild th,\n.ht_master:not(.innerBorderTop) ~ .handsontable thead tr.lastChild th {\n  border-bottom-width: 0;\n}\n\n.handsontable th {\n  background-color: #f3f3f3;\n  color: #222;\n  text-align: center;\n  font-weight: normal;\n  white-space: nowrap;\n}\n\n.handsontable thead th {\n  padding: 0;\n}\n\n.handsontable th.active {\n  background-color: #CCC;\n}\n.handsontable thead th .relative {\n  padding: 2px 4px;\n}\n\n/* selection */\n.handsontable tbody th.ht__highlight,\n.handsontable thead th.ht__highlight {\n  background-color: #dcdcdc;\n}\n.handsontable.ht__selection--columns thead th.ht__highlight,\n.handsontable.ht__selection--rows tbody th.ht__highlight {\n  background-color: #8eb0e7;\n  color: #000;\n}\n\n/* plugins */\n\n/* row + column resizer*/\n.handsontable .manualColumnResizer {\n  position: fixed;\n  top: 0;\n  cursor: col-resize;\n  z-index: 110;\n  width: 5px;\n  height: 25px;\n}\n\n.handsontable .manualRowResizer {\n  position: fixed;\n  left: 0;\n  cursor: row-resize;\n  z-index: 110;\n  height: 5px;\n  width: 50px;\n}\n\n.handsontable .manualColumnResizer:hover,\n.handsontable .manualColumnResizer.active,\n.handsontable .manualRowResizer:hover,\n.handsontable .manualRowResizer.active {\n  background-color: #AAB;\n}\n\n.handsontable .manualColumnResizerGuide {\n  position: fixed;\n  right: 0;\n  top: 0;\n  background-color: #AAB;\n  display: none;\n  width: 0;\n  border-right: 1px dashed #777;\n  margin-left: 5px;\n}\n\n.handsontable .manualRowResizerGuide {\n  position: fixed;\n  left: 0;\n  bottom: 0;\n  background-color: #AAB;\n  display: none;\n  height: 0;\n  border-bottom: 1px dashed #777;\n  margin-top: 5px;\n}\n\n.handsontable .manualColumnResizerGuide.active,\n.handsontable .manualRowResizerGuide.active {\n  display: block;\n  z-index: 199;\n}\n\n.handsontable .columnSorting {\n  position: relative;\n}\n\n.handsontable .columnSorting:hover {\n  text-decoration: underline;\n  cursor: pointer;\n}\n\n.handsontable .columnSorting.ascending::after {\n  content: '\\25B2';\n  color: #5f5f5f;\n  position: absolute;\n  right: -15px;\n}\n\n.handsontable .columnSorting.descending::after {\n  content: '\\25BC';\n  color: #5f5f5f;\n  position: absolute;\n  right: -15px;\n}\n\n/* border line */\n\n.handsontable .wtBorder {\n  position: absolute;\n  font-size: 0;\n}\n.handsontable .wtBorder.hidden{\n  display:none !important;\n}\n\n.handsontable td.area {\n  background: -moz-linear-gradient(top,  rgba(181,209,255,0.34) 0%, rgba(181,209,255,0.34) 100%); /* FF3.6+ */\n  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(181,209,255,0.34)), color-stop(100%,rgba(181,209,255,0.34))); /* Chrome,Safari4+ */\n  background: -webkit-linear-gradient(top,  rgba(181,209,255,0.34) 0%,rgba(181,209,255,0.34) 100%); /* Chrome10+,Safari5.1+ */\n  background: -o-linear-gradient(top,  rgba(181,209,255,0.34) 0%,rgba(181,209,255,0.34) 100%); /* Opera 11.10+ */\n  background: -ms-linear-gradient(top,  rgba(181,209,255,0.34) 0%,rgba(181,209,255,0.34) 100%); /* IE10+ */\n  background: linear-gradient(to bottom,  rgba(181,209,255,0.34) 0%,rgba(181,209,255,0.34) 100%); /* W3C */\n  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#57b5d1ff', endColorstr='#57b5d1ff',GradientType=0 ); /* IE6-9 */\n  background-color: #fff;\n}\n\n/* fill handle */\n\n.handsontable .wtBorder.corner {\n  font-size: 0;\n  cursor: crosshair;\n}\n\n.handsontable .htBorder.htFillBorder {\n  background: red;\n  width: 1px;\n  height: 1px;\n}\n\n.handsontableInput {\n  border:none;\n  outline-width: 0;\n  margin: 0 ;\n  padding: 1px 5px 0 5px;\n  font-family: inherit;\n  line-height: 21px;\n  font-size: inherit;\n  box-shadow: 0 0 0 2px #5292F7 inset;\n  resize: none;\n  /*below are needed to overwrite stuff added by jQuery UI Bootstrap theme*/\n  display: inline-block;\n  color: #000;\n  border-radius: 0;\n  background-color: #FFF;\n  /*overwrite styles potentionally made by a framework*/\n}\n\n.handsontableInputHolder {\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 100;\n}\n\n.htSelectEditor {\n  -webkit-appearance: menulist-button !important;\n  position: absolute;\n  width: auto;\n}\n\n/*\nTextRenderer readOnly cell\n*/\n\n.handsontable .htDimmed {\n  color: #777;\n}\n\n.handsontable .htSubmenu {\n  position: relative;\n}\n\n.handsontable .htSubmenu :after{\n  content: '\\25B6';\n  color: #777;\n  position: absolute;\n  right: 5px;\n}\n\n\n/*\nTextRenderer horizontal alignment\n*/\n.handsontable .htLeft{\n  text-align: left;\n}\n.handsontable .htCenter{\n  text-align: center;\n}\n.handsontable .htRight{\n  text-align: right;\n}\n.handsontable .htJustify{\n  text-align: justify;\n}\n/*\nTextRenderer vertical alignment\n*/\n.handsontable .htTop{\n  vertical-align: top;\n}\n.handsontable .htMiddle{\n  vertical-align: middle;\n}\n.handsontable .htBottom{\n  vertical-align: bottom;\n}\n\n/*\nTextRenderer placeholder value\n*/\n\n.handsontable .htPlaceholder {\n  color: #999;\n}\n\n/*\nAutocompleteRenderer down arrow\n*/\n\n.handsontable .htAutocompleteArrow {\n  float: right;\n  font-size: 10px;\n  color: #EEE;\n  cursor: default;\n  width: 16px;\n  text-align: center;\n}\n\n.handsontable td .htAutocompleteArrow:hover {\n  color: #777;\n}\n\n.handsontable td.area .htAutocompleteArrow {\n  color: #d3d3d3;\n}\n\n/*\nCheckboxRenderer\n*/\n.handsontable .htCheckboxRendererInput {\n  display: inline-block;\n  vertical-align: middle;\n}\n.handsontable .htCheckboxRendererInput.noValue {\n  opacity: 0.5;\n}\n.handsontable .htCheckboxRendererLabel {\n  cursor: pointer;\n  display: inline-block;\n  width: 100%;\n}\n\n@-webkit-keyframes opacity-hide {\n  from {\n    opacity: 1;\n  }\n  to {\n    opacity: 0;\n    /*display: none;*/\n  }\n}\n@keyframes opacity-hide {\n  from {\n    /*display: block;*/\n    opacity: 1;\n  }\n  to {\n    opacity: 0;\n    /*display: none;*/\n  }\n}\n\n@-webkit-keyframes opacity-show {\n  from {\n    opacity: 0;\n    /*display: none;*/\n  }\n  to {\n    opacity: 1;\n    /*display: block;*/\n  }\n}\n@keyframes opacity-show {\n  from {\n    opacity: 0;\n    /*display: none;*/\n  }\n  to {\n    opacity: 1;\n    /*display: block;*/\n  }\n}\n\n/**\n * Handsontable in Handsontable\n */\n\n.handsontable .handsontable.ht_clone_top .wtHider {\n  padding: 0 0 5px 0;\n}\n\n/**\n* Autocomplete Editor\n*/\n.handsontable .autocompleteEditor.handsontable {\n  padding-right: 17px;\n}\n.handsontable .autocompleteEditor.handsontable.htMacScroll {\n  padding-right: 15px;\n}\n\n\n/**\n * Handsontable listbox theme\n */\n\n.handsontable.listbox {\n  margin: 0;\n}\n\n.handsontable.listbox .ht_master table {\n  border: 1px solid #ccc;\n  border-collapse: separate;\n  background: white;\n}\n\n.handsontable.listbox th,\n.handsontable.listbox tr:first-child th,\n.handsontable.listbox tr:last-child th,\n.handsontable.listbox tr:first-child td,\n.handsontable.listbox td {\n  border-color: transparent;\n}\n\n.handsontable.listbox th,\n.handsontable.listbox td {\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n.handsontable.listbox td.htDimmed {\n  cursor: default;\n  color: inherit;\n  font-style: inherit;\n}\n\n.handsontable.listbox .wtBorder {\n  visibility: hidden;\n}\n\n.handsontable.listbox tr td.current,\n.handsontable.listbox tr:hover td {\n  background: #eee;\n}\n\n.ht_clone_top {\n  z-index: 101;\n}\n\n.ht_clone_left {\n  z-index: 102;\n}\n\n.ht_clone_top_left_corner,\n.ht_clone_bottom_left_corner {\n  z-index: 103;\n}\n\n.ht_clone_debug {\n  z-index: 103;\n}\n\n.handsontable td.htSearchResult {\n  background: #fcedd9;\n  color: #583707;\n}\n\n/*\nCell borders\n*/\n.htBordered{\n  /*box-sizing: border-box !important;*/\n  border-width: 1px;\n}\n.htBordered.htTopBorderSolid {\n  border-top-style: solid;\n  border-top-color: #000;\n}\n.htBordered.htRightBorderSolid {\n  border-right-style: solid;\n  border-right-color: #000;\n}\n.htBordered.htBottomBorderSolid {\n  border-bottom-style: solid;\n  border-bottom-color: #000;\n}\n.htBordered.htLeftBorderSolid {\n  border-left-style: solid;\n  border-left-color: #000;\n}\n\n.handsontable tbody tr th:nth-last-child(2) {\n  border-right: 1px solid #CCC;\n}\n\n.handsontable thead tr:nth-last-child(2) th.htGroupIndicatorContainer {\n  border-bottom: 1px solid #CCC;\n  padding-bottom: 5px;\n}\n\n\n.ht_clone_top_left_corner thead tr th:nth-last-child(2) {\n  border-right: 1px solid #CCC;\n}\n\n.htCollapseButton {\n  width: 10px;\n  height: 10px;\n  line-height: 10px;\n  text-align: center;\n  border-radius: 5px;\n  border: 1px solid #f3f3f3;\n  -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);\n  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);\n  cursor: pointer;\n  margin-bottom: 3px;\n  position: relative;\n}\n\n.htCollapseButton:after {\n  content: \"\";\n  height: 300%;\n  width: 1px;\n  display: block;\n  background: #ccc;\n  margin-left: 4px;\n  position: absolute;\n  /*top: -300%;*/\n  bottom: 10px;\n}\n\n\nthead .htCollapseButton {\n  right: 5px;\n  position: absolute;\n  top: 5px;\n  background: #fff;\n}\n\nthead .htCollapseButton:after {\n  height: 1px;\n  width: 700%;\n  right: 10px;\n  top: 4px;\n}\n\n.handsontable tr th .htExpandButton {\n  position: absolute;\n  width: 10px;\n  height: 10px;\n  line-height: 10px;\n  text-align: center;\n  border-radius: 5px;\n  border: 1px solid #f3f3f3;\n  -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);\n  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);\n  cursor: pointer;\n  top: 0;\n  display: none;\n}\n\n.handsontable thead tr th .htExpandButton {\n  /*left: 5px;*/\n  top: 5px;\n}\n\n.handsontable tr th .htExpandButton.clickable {\n  display: block;\n}\n\n.collapsibleIndicator {\n  position: absolute;\n  top: 50%;\n  transform: translate(0% ,-50%);\n  right: 5px;\n  border: 1px solid #A6A6A6;\n  line-height: 10px;\n  color: #222;\n  border-radius: 10px;\n  font-size: 10px;\n  width: 10px;\n  height: 10px;\n  cursor: pointer;\n  -webkit-box-shadow: 0 0 0 6px rgba(238,238,238,1);\n  -moz-box-shadow: 0 0 0 6px rgba(238,238,238,1);\n  box-shadow: 0 0 0 6px rgba(238,238,238,1);\n  background: #eee;\n}\n\n.handsontable col.hidden {\n  width: 0 !important;\n}\n\n.handsontable table tr th.lightRightBorder {\n  border-right: 1px solid #E6E6E6;\n}\n\n.handsontable tr.hidden,\n.handsontable tr.hidden td,\n.handsontable tr.hidden th {\n  display: none;\n}\n\n.ht_master,\n.ht_clone_left,\n.ht_clone_top,\n.ht_clone_bottom {\n  overflow: hidden;\n}\n\n.ht_master .wtHolder {\n  overflow: auto;\n}\n\n.ht_clone_left .wtHolder {\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n\n.ht_clone_top .wtHolder,\n.ht_clone_bottom .wtHolder {\n  overflow-x: auto;\n  overflow-y: hidden;\n}\n\n\n/*WalkontableDebugOverlay*/\n\n.wtDebugHidden {\n  display: none;\n}\n\n.wtDebugVisible {\n  display: block;\n  -webkit-animation-duration: 0.5s;\n  -webkit-animation-name: wtFadeInFromNone;\n  animation-duration: 0.5s;\n  animation-name: wtFadeInFromNone;\n}\n\n@keyframes wtFadeInFromNone {\n  0% {\n    display: none;\n    opacity: 0;\n  }\n\n  1% {\n    display: block;\n    opacity: 0;\n  }\n\n  100% {\n    display: block;\n    opacity: 1;\n  }\n}\n\n@-webkit-keyframes wtFadeInFromNone {\n  0% {\n    display: none;\n    opacity: 0;\n  }\n\n  1% {\n    display: block;\n    opacity: 0;\n  }\n\n  100% {\n    display: block;\n    opacity: 1;\n  }\n}\n/*\n\n Handsontable Mobile Text Editor stylesheet\n\n */\n\n.handsontable.mobile,\n.handsontable.mobile .wtHolder {\n  -webkit-touch-callout:none;\n  -webkit-user-select:none;\n  -khtml-user-select:none;\n  -moz-user-select:none;\n  -ms-user-select:none;\n  user-select:none;\n  -webkit-tap-highlight-color:rgba(0,0,0,0);\n  -webkit-overflow-scrolling: touch;\n}\n\n.htMobileEditorContainer {\n  display: none;\n  position: absolute;\n  top: 0;\n  width: 70%;\n  height: 54pt;\n  background: #f8f8f8;\n  border-radius: 20px;\n  border: 1px solid #ebebeb;\n  z-index: 999;\n  box-sizing: border-box;\n  -webkit-box-sizing: border-box;\n  -webkit-text-size-adjust: none;\n}\n\n.topLeftSelectionHandle:not(.ht_master .topLeftSelectionHandle),\n.topLeftSelectionHandle-HitArea:not(.ht_master .topLeftSelectionHandle-HitArea) {\n  z-index: 9999;\n}\n\n/* Initial left/top coordinates - overwritten when actual position is set */\n.topLeftSelectionHandle,\n.topLeftSelectionHandle-HitArea,\n.bottomRightSelectionHandle,\n.bottomRightSelectionHandle-HitArea {\n  left: -10000px;\n  top: -10000px;\n}\n\n.htMobileEditorContainer.active {\n  display: block;\n}\n\n.htMobileEditorContainer .inputs {\n  position: absolute;\n  right: 210pt;\n  bottom: 10pt;\n  top: 10pt;\n  left: 14px;\n  height: 34pt;\n}\n\n.htMobileEditorContainer .inputs textarea {\n  font-size: 13pt;\n  border: 1px solid #a1a1a1;\n  -webkit-appearance: none;\n  -webkit-box-shadow: none;\n  -moz-box-shadow: none;\n  box-shadow: none;\n  position: absolute;\n  left: 14px;\n  right: 14px;\n  top: 0;\n  bottom: 0;\n  padding: 7pt;\n}\n\n.htMobileEditorContainer .cellPointer {\n  position: absolute;\n  top: -13pt;\n  height: 0;\n  width: 0;\n  left: 30px;\n\n  border-left: 13pt solid transparent;\n  border-right: 13pt solid transparent;\n  border-bottom: 13pt solid #ebebeb;\n}\n\n.htMobileEditorContainer .cellPointer.hidden {\n  display: none;\n}\n\n.htMobileEditorContainer .cellPointer:before {\n  content: '';\n  display: block;\n  position: absolute;\n  top: 2px;\n  height: 0;\n  width: 0;\n  left: -13pt;\n\n  border-left: 13pt solid transparent;\n  border-right: 13pt solid transparent;\n  border-bottom: 13pt solid #f8f8f8;\n}\n\n.htMobileEditorContainer .moveHandle {\n  position: absolute;\n  top: 10pt;\n  left: 5px;\n  width: 30px;\n  bottom: 0px;\n  cursor: move;\n  z-index: 9999;\n}\n\n.htMobileEditorContainer .moveHandle:after {\n  content: \"..\\A..\\A..\\A..\";\n  white-space: pre;\n  line-height: 10px;\n  font-size: 20pt;\n  display: inline-block;\n  margin-top: -8px;\n  color: #ebebeb;\n}\n\n.htMobileEditorContainer .positionControls {\n  width: 205pt;\n  position: absolute;\n  right: 5pt;\n  top: 0;\n  bottom: 0;\n}\n\n.htMobileEditorContainer .positionControls > div {\n  width: 50pt;\n  height: 100%;\n  float: left;\n}\n\n.htMobileEditorContainer .positionControls > div:after {\n  content: \" \";\n  display: block;\n  width: 15pt;\n  height: 15pt;\n  text-align: center;\n  line-height: 50pt;\n}\n\n.htMobileEditorContainer .leftButton:after,\n.htMobileEditorContainer .rightButton:after,\n.htMobileEditorContainer .upButton:after,\n.htMobileEditorContainer .downButton:after {\n  transform-origin: 5pt 5pt;\n  -webkit-transform-origin: 5pt 5pt;\n  margin: 21pt 0 0 21pt;\n}\n\n.htMobileEditorContainer .leftButton:after {\n  border-top: 2px solid #288ffe;\n  border-left: 2px solid #288ffe;\n  -webkit-transform: rotate(-45deg);\n  /*margin-top: 17pt;*/\n  /*margin-left: 20pt;*/\n}\n.htMobileEditorContainer .leftButton:active:after {\n  border-color: #cfcfcf;\n}\n\n.htMobileEditorContainer .rightButton:after {\n  border-top: 2px solid #288ffe;\n  border-left: 2px solid #288ffe;\n  -webkit-transform: rotate(135deg);\n  /*margin-top: 17pt;*/\n  /*margin-left: 10pt;*/\n}\n.htMobileEditorContainer .rightButton:active:after {\n  border-color: #cfcfcf;\n}\n\n.htMobileEditorContainer .upButton:after {\n  /*border-top: 2px solid #cfcfcf;*/\n  border-top: 2px solid #288ffe;\n  border-left: 2px solid #288ffe;\n  -webkit-transform: rotate(45deg);\n  /*margin-top: 22pt;*/\n  /*margin-left: 15pt;*/\n}\n.htMobileEditorContainer .upButton:active:after {\n  border-color: #cfcfcf;\n}\n\n.htMobileEditorContainer .downButton:after {\n  border-top: 2px solid #288ffe;\n  border-left: 2px solid #288ffe;\n  -webkit-transform: rotate(225deg);\n  /*margin-top: 15pt;*/\n  /*margin-left: 15pt;*/\n}\n.htMobileEditorContainer .downButton:active:after {\n  border-color: #cfcfcf;\n}\n\n.handsontable.hide-tween {\n  -webkit-animation: opacity-hide 0.3s;\n  animation: opacity-hide 0.3s;\n  animation-fill-mode: forwards;\n  -webkit-animation-fill-mode: forwards;\n}\n\n.handsontable.show-tween {\n  -webkit-animation: opacity-show 0.3s;\n  animation: opacity-show 0.3s;\n  animation-fill-mode: forwards;\n  -webkit-animation-fill-mode: forwards;\n}\n.htCommentCell {\n    position: relative;\n}\n\n.htCommentCell:after {\n    content: '';\n    position: absolute;\n    top: 0;\n    right: 0;\n    border-left: 6px solid transparent;\n    border-top: 6px solid black;\n}\n\n.htComments {\n    display: none;\n    z-index: 1059;\n    position: absolute;\n}\n\n.htCommentTextArea {\n    box-shadow: rgba(0, 0, 0, 0.117647) 0 1px 3px, rgba(0, 0, 0, 0.239216) 0 1px 2px;\n    border: none;\n    border-left: 3px solid #ccc;\n    background-color: #fff;\n    width: 215px;\n    height: 90px;\n    font-size: 12px;\n    padding: 5px;\n    outline: 0px !important;\n    -webkit-appearance: none;\n}\n\n.htCommentTextArea:focus {\n    box-shadow: rgba(0, 0, 0, 0.117647) 0 1px 3px, rgba(0, 0, 0, 0.239216) 0 1px 2px, inset 0 0 0 1px #5292f7;\n    border-left: 3px solid #5292f7;\n}\n/*!\n * Handsontable ContextMenu\n */\n\n.htContextMenu {\n  display: none;\n  position: absolute;\n  z-index: 1060; /* needs to be higher than 1050 - z-index for Twitter Bootstrap modal (#1569) */\n}\n\n.htContextMenu .ht_clone_top,\n.htContextMenu .ht_clone_left,\n.htContextMenu .ht_clone_corner,\n.htContextMenu .ht_clone_debug {\n  display: none;\n}\n\n.htContextMenu table.htCore {\n  border: 1px solid #ccc;\n  border-bottom-width: 2px;\n  border-right-width: 2px;\n}\n\n.htContextMenu .wtBorder {\n  visibility: hidden;\n}\n\n.htContextMenu table tbody tr td {\n  background: white;\n  border-width: 0;\n  padding: 4px 6px 0 6px;\n  cursor: pointer;\n  overflow: hidden;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n.htContextMenu table tbody tr td:first-child {\n  border: 0;\n}\n\n.htContextMenu table tbody tr td.htDimmed {\n  font-style: normal;\n  color: #323232;\n}\n\n.htContextMenu table tbody tr td.current,\n.htContextMenu table tbody tr td.zeroclipboard-is-hover {\n  background: #f3f3f3;\n}\n\n.htContextMenu table tbody tr td.htSeparator {\n  border-top: 1px solid #bbb;\n  height: 0;\n  padding: 0;\n  cursor: default;\n}\n\n.htContextMenu table tbody tr td.htDisabled {\n  color: #999;\n  cursor: default;\n}\n\n.htContextMenu table tbody tr td.htDisabled:hover {\n  background: #fff;\n  color: #999;\n  cursor: default;\n}\n\n.htContextMenu table tbody tr.htHidden {\n  display: none;\n}\n\n.htContextMenu table tbody tr td .htItemWrapper {\n  margin-left: 10px;\n  margin-right: 6px;\n}\n\n.htContextMenu table tbody tr td div span.selected {\n  margin-top: -2px;\n  position: absolute;\n  left: 4px;\n}\n\n.htContextMenu .ht_master .wtHolder {\n  overflow: hidden;\n}\n.htRowHeaders .ht_master.innerBorderLeft ~ .ht_clone_top_left_corner th:nth-child(2),\n.htRowHeaders .ht_master.innerBorderLeft ~ .ht_clone_left td:first-of-type {\n  border-left: 0 none;\n}\n.handsontable .wtHider {\n  position: relative;\n}\n.handsontable.ht__manualColumnMove.after-selection--columns thead th.ht__highlight {\n  cursor: move;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n.handsontable.ht__manualColumnMove.on-moving--columns,\n.handsontable.ht__manualColumnMove.on-moving--columns thead th.ht__highlight {\n  cursor: move;\n  cursor: -moz-grabbing;\n  cursor: -webkit-grabbing;\n  cursor: grabbing;\n}\n.handsontable.ht__manualColumnMove.on-moving--columns .manualColumnResizer {\n  display: none;\n}\n.handsontable .ht__manualColumnMove--guideline,\n.handsontable .ht__manualColumnMove--backlight {\n  position: absolute;\n  height: 100%;\n  display: none;\n}\n.handsontable .ht__manualColumnMove--guideline {\n  background: #757575;\n  width: 2px;\n  top: 0;\n  margin-left: -1px;\n  z-index: 105;\n}\n.handsontable .ht__manualColumnMove--backlight {\n  background: #343434;\n  background: rgba(52, 52, 52, 0.25);\n  display: none;\n  z-index: 105;\n  pointer-events: none;\n}\n.handsontable.on-moving--columns.show-ui .ht__manualColumnMove--guideline,\n.handsontable.on-moving--columns .ht__manualColumnMove--backlight {\n  display: block;\n}\n.handsontable .wtHider {\n  position: relative;\n}\n.handsontable.ht__manualRowMove.after-selection--rows tbody th.ht__highlight {\n  cursor: move;\n  cursor: -moz-grab;\n  cursor: -webkit-grab;\n  cursor: grab;\n}\n.handsontable.ht__manualRowMove.on-moving--rows,\n.handsontable.ht__manualRowMove.on-moving--rows tbody th.ht__highlight {\n  cursor: move;\n  cursor: -moz-grabbing;\n  cursor: -webkit-grabbing;\n  cursor: grabbing;\n}\n.handsontable.ht__manualRowMove.on-moving--rows .manualRowResizer {\n  display: none;\n}\n.handsontable .ht__manualRowMove--guideline,\n.handsontable .ht__manualRowMove--backlight {\n  position: absolute;\n  width: 100%;\n  display: none;\n}\n.handsontable .ht__manualRowMove--guideline {\n  background: #757575;\n  height: 2px;\n  left: 0;\n  margin-top: -1px;\n  z-index: 105;\n}\n.handsontable .ht__manualRowMove--backlight {\n  background: #343434;\n  background: rgba(52, 52, 52, 0.25);\n  display: none;\n  z-index: 105;\n  pointer-events: none;\n}\n.handsontable.on-moving--rows.show-ui .ht__manualRowMove--guideline,\n.handsontable.on-moving--rows .ht__manualRowMove--backlight {\n  display: block;\n}\n@charset \"UTF-8\";\n\n/*!\n * Pikaday\n * Copyright © 2014 David Bushell | BSD & MIT license | http://dbushell.com/\n */\n\n.pika-single {\n    z-index: 9999;\n    display: block;\n    position: relative;\n    color: #333;\n    background: #fff;\n    border: 1px solid #ccc;\n    border-bottom-color: #bbb;\n    font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n}\n\n/*\nclear child float (pika-lendar), using the famous micro clearfix hack\nhttp://nicolasgallagher.com/micro-clearfix-hack/\n*/\n.pika-single:before,\n.pika-single:after {\n    content: \" \";\n    display: table;\n}\n.pika-single:after { clear: both }\n.pika-single { *zoom: 1 }\n\n.pika-single.is-hidden {\n    display: none;\n}\n\n.pika-single.is-bound {\n    position: absolute;\n    box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);\n}\n\n.pika-lendar {\n    float: left;\n    width: 240px;\n    margin: 8px;\n}\n\n.pika-title {\n    position: relative;\n    text-align: center;\n}\n\n.pika-label {\n    display: inline-block;\n    *display: inline;\n    position: relative;\n    z-index: 9999;\n    overflow: hidden;\n    margin: 0;\n    padding: 5px 3px;\n    font-size: 14px;\n    line-height: 20px;\n    font-weight: bold;\n    background-color: #fff;\n}\n.pika-title select {\n    cursor: pointer;\n    position: absolute;\n    z-index: 9998;\n    margin: 0;\n    left: 0;\n    top: 5px;\n    filter: alpha(opacity=0);\n    opacity: 0;\n}\n\n.pika-prev,\n.pika-next {\n    display: block;\n    cursor: pointer;\n    position: relative;\n    outline: none;\n    border: 0;\n    padding: 0;\n    width: 20px;\n    height: 30px;\n    /* hide text using text-indent trick, using width value (it's enough) */\n    text-indent: 20px;\n    white-space: nowrap;\n    overflow: hidden;\n    background-color: transparent;\n    background-position: center center;\n    background-repeat: no-repeat;\n    background-size: 75% 75%;\n    opacity: .5;\n    *position: absolute;\n    *top: 0;\n}\n\n.pika-prev:hover,\n.pika-next:hover {\n    opacity: 1;\n}\n\n.pika-prev,\n.is-rtl .pika-next {\n    float: left;\n    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==');\n    *left: 0;\n}\n\n.pika-next,\n.is-rtl .pika-prev {\n    float: right;\n    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAU0lEQVR42u3VOwoAMAgE0dwfAnNjU26bYkBCFGwfiL9VVWoO+BJ4Gf3gtsEKKoFBNTCoCAYVwaAiGNQGMUHMkjGbgjk2mIONuXo0nC8XnCf1JXgArVIZAQh5TKYAAAAASUVORK5CYII=');\n    *right: 0;\n}\n\n.pika-prev.is-disabled,\n.pika-next.is-disabled {\n    cursor: default;\n    opacity: .2;\n}\n\n.pika-select {\n    display: inline-block;\n    *display: inline;\n}\n\n.pika-table {\n    width: 100%;\n    border-collapse: collapse;\n    border-spacing: 0;\n    border: 0;\n}\n\n.pika-table th,\n.pika-table td {\n    width: 14.285714285714286%;\n    padding: 0;\n}\n\n.pika-table th {\n    color: #999;\n    font-size: 12px;\n    line-height: 25px;\n    font-weight: bold;\n    text-align: center;\n}\n\n.pika-button {\n    cursor: pointer;\n    display: block;\n    box-sizing: border-box;\n    -moz-box-sizing: border-box;\n    outline: none;\n    border: 0;\n    margin: 0;\n    width: 100%;\n    padding: 5px;\n    color: #666;\n    font-size: 12px;\n    line-height: 15px;\n    text-align: right;\n    background: #f5f5f5;\n}\n\n.pika-week {\n    font-size: 11px;\n    color: #999;\n}\n\n.is-today .pika-button {\n    color: #33aaff;\n    font-weight: bold;\n}\n\n.is-selected .pika-button {\n    color: #fff;\n    font-weight: bold;\n    background: #33aaff;\n    box-shadow: inset 0 1px 3px #178fe5;\n    border-radius: 3px;\n}\n\n.is-inrange .pika-button {\n    background: #D5E9F7;\n}\n\n.is-startrange .pika-button {\n    color: #fff;\n    background: #6CB31D;\n    box-shadow: none;\n    border-radius: 3px;\n}\n\n.is-endrange .pika-button {\n    color: #fff;\n    background: #33aaff;\n    box-shadow: none;\n    border-radius: 3px;\n}\n\n.is-disabled .pika-button,\n.is-outside-current-month .pika-button {\n    pointer-events: none;\n    cursor: default;\n    color: #999;\n    opacity: .3;\n}\n\n.pika-button:hover {\n    color: #fff;\n    background: #ff8000;\n    box-shadow: none;\n    border-radius: 3px;\n}\n\n/* styling for abbr */\n.pika-table abbr {\n    border-bottom: none;\n    cursor: help;\n}\n\n", ""]);
 	
 	// exports
 

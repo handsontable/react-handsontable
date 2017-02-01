@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define(["react"], factory);
 	else if(typeof exports === 'object')
-		exports["ReactHandsontable"] = factory(require("react"));
+		exports["HotTable"] = factory(require("react"));
 	else
-		root["ReactHandsontable"] = factory(root["react"]);
+		root["HotTable"] = factory(root["React"]);
 })(this, function(__WEBPACK_EXTERNAL_MODULE_2__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -137,7 +137,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      var newSettings = this.hotSettingsMapper.getSettings(this.props);
-	
 	      this.hotInstance = new Handsontable(document.getElementById(this.root), newSettings);
 	    }
 	
@@ -189,9 +188,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 2 */
-/*!************************!*\
-  !*** external "react" ***!
-  \************************/
+/*!****************************************************************************************************!*\
+  !*** external {"root":"React","commonjs2":"react","commonjs":"react","amd":"react","umd":"react"} ***!
+  \****************************************************************************************************/
 /***/ function(module, exports) {
 
 	module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
@@ -232,12 +231,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            newSettings[this.trimHookPrefix(key)] = settings[key];
 	          }
 	        }
-	
-	        delete properties.settings;
 	      }
 	
 	      for (var _key in properties) {
-	        if (properties.hasOwnProperty(_key)) {
+	        if (_key != 'settings' && properties.hasOwnProperty(_key)) {
 	          newSettings[this.trimHookPrefix(_key)] = properties[_key];
 	        }
 	      }
