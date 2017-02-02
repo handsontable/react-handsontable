@@ -1,6 +1,6 @@
 {
   "name": "react-handsontable",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "A Handsontable component for ReactJS.",
   "author": "Handsoncode <hello@handsontable.com>",
   "license": "MIT",
@@ -41,7 +41,9 @@
     "react": "^15.4.1",
     "react-addons-test-utils": "^15.4.1",
     "react-dom": "^15.4.1",
+    "rimraf": "^2.5.4",
     "style-loader": "^0.13.1",
+    "uglify-js": "^2.7.5",
     "webpack": "~1.11.0",
     "zeroclipboard": "^2.3.0"
   },
@@ -51,7 +53,16 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "postinstall": "node ./node_modules/cssstyle/scripts/generate_properties.js",
-    "make-docs": "rm -rf ./docs ; ./node_modules/markdown-styles/bin/generate-md --layout github --input README.md --output ./docs ; mv ./docs/README.html ./docs/index.html"
+    "clean": "rimraf dist",
+    "prepublish": "npm run clean && npm run build",
+    "build": "webpack -d && npm run uglify",
+    "full-build": "npm run build && npm run make-docs",
+    "make-docs": "npm run _clone-readme && npm run _add-md-tags && npm run _generate-docs && npm run _clean-readme-clone",
+    "uglify": "uglifyjs ./dist/react-handsontable.js -m -c -o ./dist/react-handsontable.min.js",
+    "_clone-readme": "cp README.md index.md",
+    "_clean-readme-clone": "rm index.md",
+    "_add-md-tags": "echo $'title: Handsontable component for React\\n---\\n' | cat - index.md > /tmp/out && mv /tmp/out index.md",
+    "_generate-docs": "rimraf ./docs && ./node_modules/markdown-styles/bin/generate-md --layout github --input index.md --output ./docs"
   },
   "jest": {
     "setupFiles": [

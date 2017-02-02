@@ -3,27 +3,51 @@ A React wrapper for the the [Handsontable](https://github.com/handsontable/hands
 
 ## Table of contents
 1. [Installation](#installation)
-2. [Basic usage](#basic-usage)
-3. [Examples](#examples)
-6. [License](#license)
-7. [Contact](#contact)
-5. [Other wrappers](#other-wrappers)
+2. [Building](#building)
+3. [Basic usage](#basic-usage)
+4. [Examples](#examples)
+5. [License](#license)
+6. [Contact](#contact)
+7. [Other wrappers](#other-wrappers)
 
 ## Installation
-You can install the component using npm:
+To install the component, use npm:
 
-```
+```sh
 npm install react-handsontable
 ```
 
-If you don't want to use npm, you can download the latest version as a `.zip` file. The file you need is located in the `/dist/` directory.
+Note, that to use Handsontable within React, you'll have to install the `handsontable` package as well:
 
-[Download ZIP](https://github.com/handsontable/react-handsontable/archive/master.zip)
+```sh
+npm install handsontable
+```
+
+## Building
+If you used npm to download the library, you should be good to go, but if you want to make a build yourself, go to the directory where `react-handsontable` source is located and run:
+
+```sh
+npm run build
+```
+
+This will create a `/dist/` directory with `react-handsontable.js` and `react-handsontable.min.js` for you to use. 
 
 ## Basic usage
-Assuming you have downloaded or otherwise acquired the code, you can use use the `<HotTable>` component just like a normal React component. For example:
+`react-handsontable` creates a `<HotTable>` component. You can use it just like any other React component. For example:
 
 ```jsx
+// import React...
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+// ... Handsontable with its main dependencies...
+import moment from 'moment';
+import numbro from 'numbro';
+import pikaday from 'pikaday';
+import Zeroclipboard from 'zeroclipboard';
+import Handsontable from 'handsontable';
+
+// ... and HotTable
 import HotTable from 'react-handsontable';
 
 class ExampleComponent extends React.Component {
