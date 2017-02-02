@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
-    <title>react-handsontable  [![Build Status](https://travis-ci.org/handsontable/react-handsontable.png?branch&#x3D;master)](https://travis-ci.org/handsontable/react-handsontable)</title>
+    <title>Handsontable component for React</title>
     <link type="text/css" rel="stylesheet" href="assets/css/github-markdown.css">
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css">
     <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
@@ -14,6 +14,7 @@
 <h2 id="table-of-contents"><a class="header-link" href="#table-of-contents"></a>Table of contents</h2>
 <ol class="list">
 <li><a href="#installation">Installation</a></li>
+<li><a href="#building">Building</a></li>
 <li><a href="#basic-usage">Basic usage</a></li>
 <li><a href="#examples">Examples</a></li>
 <li><a href="#license">License</a></li>
@@ -21,12 +22,26 @@
 <li><a href="#other-wrappers">Other wrappers</a></li>
 </ol>
 <h2 id="installation"><a class="header-link" href="#installation"></a>Installation</h2>
-<p>You can install the component using npm:</p>
-<pre class="hljs"><code>npm <span class="hljs-keyword">install</span> react-handsontable</code></pre><p>If you don&#39;t want to use npm, you can download the latest version as a <code>.zip</code> file. The file you need is located in the <code>/dist/</code> directory.</p>
-<p><a href="https://github.com/handsontable/react-handsontable/archive/master.zip">Download ZIP</a></p>
+<p>To install the component, use npm:</p>
+<pre class="hljs"><code>npm install react-handsontable</code></pre><p>Note, that to use Handsontable within React, you&#39;ll have to install the <code>handsontable</code> package as well:</p>
+<pre class="hljs"><code>npm install handsontable</code></pre><h2 id="building"><a class="header-link" href="#building"></a>Building</h2>
+<p>If you used npm to download the library, you should be good to go, but if you want to make a build yourself, go to the directory where <code>react-handsontable</code> source is located and run:</p>
+<pre class="hljs"><code>npm run build</code></pre><p>This will create a <code>/dist/</code> directory with <code>react-handsontable.js</code> and <code>react-handsontable.min.js</code> for you to use. </p>
 <h2 id="basic-usage"><a class="header-link" href="#basic-usage"></a>Basic usage</h2>
-<p>Assuming you have downloaded or otherwise acquired the code, you can use use the <code>&lt;HotTable&gt;</code> component just like a normal React component. For example:</p>
-<pre class="hljs"><code><span class="hljs-keyword">import</span> HotTable <span class="hljs-keyword">from</span> <span class="hljs-string">'react-handsontable'</span>;
+<p><code>react-handsontable</code> creates a <code>&lt;HotTable&gt;</code> component. You can use it just like any other React component. For example:</p>
+<pre class="hljs"><code><span class="hljs-comment">// import React...</span>
+<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> ReactDOM <span class="hljs-keyword">from</span> <span class="hljs-string">'react-dom'</span>;
+
+<span class="hljs-comment">// ... Handsontable with its main dependencies...</span>
+<span class="hljs-keyword">import</span> moment <span class="hljs-keyword">from</span> <span class="hljs-string">'moment'</span>;
+<span class="hljs-keyword">import</span> numbro <span class="hljs-keyword">from</span> <span class="hljs-string">'numbro'</span>;
+<span class="hljs-keyword">import</span> pikaday <span class="hljs-keyword">from</span> <span class="hljs-string">'pikaday'</span>;
+<span class="hljs-keyword">import</span> Zeroclipboard <span class="hljs-keyword">from</span> <span class="hljs-string">'zeroclipboard'</span>;
+<span class="hljs-keyword">import</span> Handsontable <span class="hljs-keyword">from</span> <span class="hljs-string">'handsontable'</span>;
+
+<span class="hljs-comment">// ... and HotTable</span>
+<span class="hljs-keyword">import</span> HotTable <span class="hljs-keyword">from</span> <span class="hljs-string">'react-handsontable'</span>;
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ExampleComponent</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
   <span class="hljs-keyword">constructor</span>(props) {
