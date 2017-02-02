@@ -54,6 +54,13 @@ export default class HotTable extends React.Component {
   }
 
   /**
+   * Destroy the Handsontable instance when the parent component unmounts.
+   */
+  componentWillUnmount() {
+    this.hotInstance.destroy();
+  }
+
+  /**
    * Render the table.
    *
    * @returns {XML}
