@@ -1,5 +1,5 @@
 import React from 'react';
-import HotSettingsMapper from './handsontableSettingsMapper';
+import SettingsMapper from './settingsMapper';
 
 /**
  * A Handsontable-ReactJS wrapper.
@@ -28,7 +28,7 @@ export default class HotTable extends React.Component {
     super();
 
     this.hotInstance = null;
-    this.hotSettingsMapper = new HotSettingsMapper();
+    this.settingsMapper = new SettingsMapper();
     this.root = null;
   }
 
@@ -36,7 +36,7 @@ export default class HotTable extends React.Component {
    * Initialize Handsontable after the component has mounted.
    */
   componentDidMount() {
-    const newSettings = this.hotSettingsMapper.getSettings(this.props);
+    const newSettings = this.settingsMapper.getSettings(this.props);
     this.hotInstance = new Handsontable(document.getElementById(this.root), newSettings);
   }
 
@@ -48,7 +48,7 @@ export default class HotTable extends React.Component {
    * @returns {Boolean}
    */
   shouldComponentUpdate(nextProps, nextState) {
-    this.updateHot(this.hotSettingsMapper.getSettings(nextProps));
+    this.updateHot(this.settingsMapper.getSettings(nextProps));
 
     return false;
   }

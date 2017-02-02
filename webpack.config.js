@@ -27,7 +27,13 @@ module.exports = [
         amd: 'react-dom',
         umd: 'react'
       },
-      'handsontable': 'umd handsontable'
+      'handsontable': {
+        root: 'Handsontable',
+        commonjs2: 'handsontable',
+        commonjs: 'handsontable',
+        amd: 'handsontable',
+        umd: 'handsontable'
+      }
     },
 
     module: {
