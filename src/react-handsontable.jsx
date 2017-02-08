@@ -1,4 +1,5 @@
 import React from 'react';
+import Handsontable from 'handsontable';
 import SettingsMapper from './settingsMapper';
 
 /**

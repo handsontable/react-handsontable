@@ -1,3 +1,5 @@
+import Handsontable from 'handsontable';
+
 export default class SettingsMapper {
   constructor() {
     this.registeredHooks = Handsontable.hooks.getRegistered();
