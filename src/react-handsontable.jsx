@@ -1,5 +1,6 @@
 import React from 'react';
 import HotSettingsMapper from './handsontableSettingsMapper';
+import Handsontable from 'handsontable';
 
 /**
  * A Handsontable-ReactJS wrapper.
