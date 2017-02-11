@@ -48,6 +48,9 @@
     "zeroclipboard": "^2.3.0"
   },
   "dependencies": {},
+  "peerDependencies": {
+    "handsontable": "^0.29.0"
+  },
   "scripts": {
     "test": "npm run _pre-testing && jest",
     "test:watch": "npm run _pre-testing && jest --watch",
