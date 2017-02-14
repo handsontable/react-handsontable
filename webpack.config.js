@@ -27,7 +27,13 @@ module.exports = [
         amd: 'react-dom',
         umd: 'react'
       },
-      'handsontable': 'umd handsontable'
+      'handsontable': {
+        root: 'Handsontable',
+        commonjs2: 'handsontable',
+        commonjs: 'handsontable',
+        amd: 'handsontable',
+        umd: 'handsontable'
+      }
     },
 
     module: {
@@ -35,7 +41,7 @@ module.exports = [
         {
           test: /(\.js)|(\.jsx)$/,
           exclude: /(node_modules|bower_components)/,
-          loader: 'babel',
+          loader: 'babel-loader',
           query: {
             presets: ['react', 'es2015']
           }

@@ -11,17 +11,8 @@ A React wrapper for the the [Handsontable](https://github.com/handsontable/hands
 7. [Other wrappers](#other-wrappers)
 
 ## Installation
-To install the component, use npm:
 
-```sh
-npm install react-handsontable
-```
-
-Note, that to use Handsontable within React, you'll have to install the `handsontable` package as well:
-
-```sh
-npm install handsontable
-```
+For detailed installation instructions, please take a look at our wiki under ["Installation guide"](https://github.com/handsontable/react-handsontable/wiki/Installation-guide).
 
 ## Building
 If you used npm to download the library, you should be good to go, but if you want to make a build yourself, go to the directory where `react-handsontable` source is located and run:

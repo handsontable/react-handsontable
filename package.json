@@ -1,6 +1,6 @@
 {
   "name": "react-handsontable",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A Handsontable component for ReactJS.",
   "author": "Handsoncode <hello@handsontable.com>",
   "license": "MIT",
@@ -32,22 +32,24 @@
     "enzyme": "^2.6.0",
     "enzyme-to-json": "^1.4.4",
     "expose-loader": "^0.7.1",
-    "handsontable": "^0.29.0",
+    "generate-release": "^0.10.2",
     "jest": "^17.0.3",
     "markdown-styles": "^3.1.9",
-    "moment": "^2.17.1",
-    "numbro": "^1.9.3",
-    "pikaday": "^1.5.1",
     "react": "^15.4.1",
     "react-addons-test-utils": "^15.4.1",
     "react-dom": "^15.4.1",
     "rimraf": "^2.5.4",
     "style-loader": "^0.13.1",
     "uglify-js": "^2.7.5",
-    "webpack": "~1.11.0",
-    "zeroclipboard": "^2.3.0"
+    "webpack": "^2.2.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "zeroclipboard": "^2.3.0",
+    "moment": "^2.17.1",
+    "numbro": "^1.9.3",
+    "pikaday": "^1.5.1",
+    "handsontable": "^0.31.0"
+  },
   "scripts": {
     "test": "npm run _pre-testing && jest",
     "test:watch": "npm run _pre-testing && jest --watch",
@@ -58,6 +60,7 @@
     "full-build": "npm run build && npm run make-docs",
     "make-docs": "npm run _clone-readme && npm run _add-md-tags && npm run _generate-docs && npm run _clean-readme-clone",
     "uglify": "uglifyjs ./dist/react-handsontable.js -m -c -o ./dist/react-handsontable.min.js",
+    "release": "generate-release",
     "_pre-testing": "node ./node_modules/cssstyle/scripts/generate_properties.js",
     "_clone-readme": "cp README.md index.md",
     "_clean-readme-clone": "rm index.md",

@@ -4,4 +4,9 @@ docs
 test
 .DS_Store
 .idea
+.babelrc
+.editorconfig
+.gitignore
+.travis.yml
+webpack.config.js
 *.log
