@@ -115,7 +115,9 @@ describe('Settings mapper unit tests', () => {
       expect(settingsMapper.trimHookPrefix('onAfterRender')).toEqual('afterRender');
       expect(settingsMapper.trimHookPrefix('onAfterChange')).toEqual('afterChange');
       expect(settingsMapper.trimHookPrefix('onBeforePaste')).toEqual('beforePaste');
-      expect(settingsMapper.trimHookPrefix('onRandomString')).toEqual('randomString');
+
+      // should not work for non-hook names
+      expect(settingsMapper.trimHookPrefix('onRandomString')).toEqual('onRandomString');
     });
   });
 });

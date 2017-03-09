@@ -41,7 +41,7 @@ export default class SettingsMapper {
   trimHookPrefix(prop) {
     if (prop.indexOf('on') === 0) {
       let hookName = prop.charAt(2).toLowerCase() + prop.slice(3, prop.length);
-      if (this.registeredHooks.indexOf(hookName)) {
+      if (this.registeredHooks.indexOf(hookName) > -1) {
         return hookName;
       }
     }
