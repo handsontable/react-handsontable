@@ -98,3 +98,4 @@ Handsontable comes with more wrappers and directives for popular frameworks:
 
 - [hot-table](https://github.com/handsontable/hot-table) (Polymer - WebComponents)
 - [ngHandsontable](https://github.com/handsontable/ngHandsontable) (Angular 1)
+- [vue-handsontable-official](https://github.com/handsontable/vue-handsontable-official) (Vue.js)

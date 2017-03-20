@@ -1,6 +1,6 @@
 {
   "name": "react-handsontable",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A Handsontable component for ReactJS.",
   "author": "Handsoncode <hello@handsontable.com>",
   "license": "MIT",
@@ -48,7 +48,7 @@
     "moment": "^2.17.1",
     "numbro": "^1.9.3",
     "pikaday": "^1.5.1",
-    "handsontable": "^0.31.0"
+    "handsontable": "^0.31.1"
   },
   "scripts": {
     "test": "npm run _pre-testing && jest",
@@ -56,7 +56,7 @@
     "test:coverage": "npm run _pre-testing && jest --coverage",
     "clean": "rimraf dist",
     "prepublish": "npm run clean && npm run build",
-    "build": "webpack -d && npm run uglify",
+    "build": "webpack && npm run uglify",
     "full-build": "npm run build && npm run make-docs",
     "make-docs": "npm run _clone-readme && npm run _add-md-tags && npm run _generate-docs && npm run _clean-readme-clone",
     "uglify": "uglifyjs ./dist/react-handsontable.js -m -c -o ./dist/react-handsontable.min.js",
