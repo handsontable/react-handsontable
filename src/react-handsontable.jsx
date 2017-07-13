@@ -1,6 +1,7 @@
 import React from 'react';
 import Handsontable from 'handsontable';
 import SettingsMapper from './settingsMapper';
+import 'handsontable/dist/handsontable.full.css';
 
 /**
  * A Handsontable-ReactJS wrapper.

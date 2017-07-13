@@ -1,6 +1,6 @@
 {
   "name": "react-handsontable",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A Handsontable component for ReactJS.",
   "author": "Handsoncode <hello@handsontable.com>",
   "license": "MIT",
@@ -21,34 +21,34 @@
   },
   "main": "./dist/react-handsontable.js",
   "devDependencies": {
-    "babel-core": "^6.18.2",
-    "babel-jest": "^17.0.2",
-    "babel-loader": "^6.2.8",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-preset-react": "^6.16.0",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "css-loader": "^0.28.4",
+    "expose-loader": "^0.7.3",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "style-loader": "^0.18.2",
+    "webpack": "^3.2.0",
+    "babel-jest": "^20.0.3",
     "babel-runtime": "~5.8.20",
-    "css-loader": "^0.26.0",
     "cssstyle": "git://github.com/jansiegel/CSSStyleDeclaration.git",
-    "enzyme": "^2.6.0",
-    "enzyme-to-json": "^1.4.4",
-    "expose-loader": "^0.7.1",
+    "enzyme": "^2.9.1",
+    "enzyme-to-json": "^1.5.1",
     "generate-release": "^0.10.2",
-    "jest": "^17.0.3",
+    "jest": "^20.0.4",
     "markdown-styles": "^3.1.9",
-    "react": "^15.4.1",
-    "react-addons-test-utils": "^15.4.1",
-    "react-dom": "^15.4.1",
     "rimraf": "^2.5.4",
-    "style-loader": "^0.13.1",
     "uglify-js": "^2.7.5",
-    "webpack": "^2.2.1"
+    "react-test-renderer": "^15.6.1"
   },
   "dependencies": {
     "zeroclipboard": "^2.3.0",
     "moment": "^2.17.1",
     "numbro": "^1.9.3",
     "pikaday": "^1.5.1",
-    "handsontable": "^0.31.1"
+    "handsontable": "^0.33.0"
   },
   "scripts": {
     "test": "npm run _pre-testing && jest",
@@ -73,6 +73,12 @@
     ],
     "snapshotSerializers": [
       "<rootDir>/node_modules/enzyme-to-json/serializer"
-    ]
+    ],
+    "globals": {
+      "__HOT_BUILD_DATE__": "",
+      "__HOT_PACKAGE_NAME__": "",
+      "__HOT_VERSION__": "",
+      "__HOT_BASE_VERSION__": ""
+    }
   }
 }
