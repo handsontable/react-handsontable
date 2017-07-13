@@ -85,6 +85,7 @@ The `root` property declares the `id` of the root element for the table. It is o
 - [Simple react-handsontable implementation](http://codepen.io/handsoncode/pen/ygvaxv?editors=0010)
 - [Simple react-handsontable implementation with a single-property configuration](http://codepen.io/handsoncode/pen/pRamwZ?editors=0010)
 - [Interactive HotTable demo](http://codepen.io/handsoncode/pen/zNRoxb?editors=0010)
+- [Simple Redux implementation demo](http://codepen.io/handsoncode/pen/LWmvPX?editors=0010)
 
 ## License
 `react-handsontable` is released under the [MIT license](https://github.com/handsontable/react-handsontable/blob/master/LICENSE).

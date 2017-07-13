@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = [
   {
     devtool: 'source-map',
@@ -6,7 +8,7 @@ module.exports = [
     },
 
     output: {
-      path: './',
+      path: path.resolve(__dirname, './'),
       filename: '[name].js',
       library: 'HotTable',
       libraryTarget: 'umd',
@@ -45,6 +47,10 @@ module.exports = [
           query: {
             presets: ['react', 'es2015']
           }
+        },
+        {
+          test: (/\.css$/),
+          loader: "style-loader!css-loader"
         }
       ]
     },
