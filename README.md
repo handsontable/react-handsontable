@@ -31,13 +31,6 @@ This will create a `/dist/` directory with `react-handsontable.js` and `react-ha
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-// ... Handsontable with its main dependencies...
-import moment from 'moment';
-import numbro from 'numbro';
-import pikaday from 'pikaday';
-import Zeroclipboard from 'zeroclipboard';
-import Handsontable from 'handsontable';
-
 // ... and HotTable
 import HotTable from 'react-handsontable';
 
