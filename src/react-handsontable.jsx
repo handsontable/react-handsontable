@@ -39,7 +39,7 @@ export default class HotTable extends React.Component {
    */
   componentDidMount() {
     const newSettings = this.settingsMapper.getSettings(this.props);
-    this.hotInstance = new Handsontable(document.getElementById(this.root), newSettings);
+    this.hotInstance = new Handsontable(this.rootEl, newSettings);
   }
 
   /**
@@ -69,7 +69,7 @@ export default class HotTable extends React.Component {
    */
   render() {
     this.root = this.props.root || 'hot' + new Date().getTime();
-    return <div id={this.root}></div>
+    return <div id={this.root} ref={el => this.rootEl = el}></div>
   }
 
   /**
