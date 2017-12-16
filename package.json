@@ -1,6 +1,6 @@
 {
   "name": "react-handsontable",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A Handsontable component for ReactJS.",
   "author": "Handsoncode <hello@handsontable.com>",
   "license": "MIT",
@@ -48,7 +48,7 @@
     "moment": "^2.17.1",
     "numbro": "^1.9.3",
     "pikaday": "^1.5.1",
-    "handsontable": "^0.33.0"
+    "handsontable": "^0.35.0"
   },
   "scripts": {
     "test": "npm run _pre-testing && jest",
