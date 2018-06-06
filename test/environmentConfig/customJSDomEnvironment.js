@@ -5,8 +5,8 @@ module.exports = class CustomJSDomEnvironment extends JSDOMEnvironment {
     const _config = Object.assign(config, {
       testEnvironmentOptions: {
         beforeParse (window) {
-          Number.prototype.toLowerCase = function(v) { return v + ''; };
-          Number.prototype.split = function(v) { return v + ''; };
+          Number.prototype.toLowerCase = function() { return this + ''; };
+          Number.prototype.split = function() { return this + ''; };
         }
       }});
     super(_config);
