@@ -5,9 +5,6 @@
   "skip_git_push": true,
   "release_message": true,
   "remote": "origin",
-  "pre_commit_commands": [
-    "npm run full-build"
-  ],
   "post_commit_commands": [],
   "post_complete_commands": [],
   "files_to_commit": [
