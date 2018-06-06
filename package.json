@@ -85,7 +85,7 @@
     "publish-scopes": "npm publish ./build/ce/ && npm publish ./build/pro/",
     "publish-default": "del-cli ./build/ce/package.json && cpy './package.json' ./build/ce/ && npm publish ./build/ce/",
     "publish-all": "npm run build && npm run copy-scopes && npm run publish-scopes && npm run publish-default && npm run delete-scopes",
-    "test": "npm run build && jest",
+    "test": "npm run build-ce:commonjs && npm run build:tests && jest",
     "release": "generate-release"
   },
   "jest": {
