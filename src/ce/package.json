@@ -1,0 +1,32 @@
+{
+  "name": "@handsontable/react",
+  "version": "1.0.0-beta1",
+  "description": "A React Handsontable wrapper component.",
+  "license": "MIT",
+  "browser": "./dist/react-handsontable.js",
+  "main": "./commonjs/react-handsontable.js",
+  "module": "./es/react-handsontable.js",
+  "keywords": [
+    "data",
+    "grid",
+    "table",
+    "editor",
+    "grid-editor",
+    "data-grid",
+    "data-table",
+    "spreadsheet",
+    "excel",
+    "tabular-data",
+    "edit-cell",
+    "editable-table",
+    "data-spreadsheet",
+    "react",
+    "react.js",
+    "wrapper",
+    "handsontable"
+  ],
+  "peerDependencies": {
+    "handsontable": "^3.0.0"
+  },
+  "author": "Handsoncode"
+}

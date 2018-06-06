@@ -1,4 +1,5 @@
 # react-handsontable  [![Build Status](https://travis-ci.org/handsontable/react-handsontable.png?branch=master)](https://travis-ci.org/handsontable/react-handsontable)
+### Available as `@handsontable/react` and `@handsontable-pro/react`
 A React wrapper for the the [Handsontable](https://github.com/handsontable/handsontable) spreadsheet component.
 
 ## Table of contents
@@ -11,20 +12,42 @@ A React wrapper for the the [Handsontable](https://github.com/handsontable/hands
 7. [Other wrappers](#other-wrappers)
 
 ## Installation
-
-For detailed installation instructions, please take a look at our wiki under ["Installation guide"](https://github.com/handsontable/react-handsontable/wiki/Installation-guide).
-
-## Building
-If you used npm to download the library, you should be good to go, but if you want to make a build yourself, go to the directory where `react-handsontable` source is located and run:
+Depending on whether you're using [Handsontable](https://github.com/handsontable/handsontable) or [Handsontable Pro](https://github.com/handsontable/handsontable-pro), you'll need to install:
 
 ```sh
-npm run build
+npm install @handsontable/react handsontable
 ```
 
-This will create a `/dist/` directory with `react-handsontable.js` and `react-handsontable.min.js` for you to use. 
+or
+
+```sh
+npm install @handsontable-pro/react handsontable-pro
+```
+
+Installing the `react-handsontable` package will have the same effect as installing `@handsontable/react`, which is the wrapper for the CE version.
+
+**Important:** The wrapper does NOT contain `Handsontable`/`Handsontable Pro`, that's why it needs to be installed separately.
+
+For more detailed installation instructions, please take a look at our wiki under ["Installation guide"](https://github.com/handsontable/react-handsontable/wiki/Installation-guide).
+
+## Building
+If you used npm to download the library, you should be good to go, but if you want to make a build yourself, go to the directory where `react-handsontable` source is located and run either:
+
+
+* `npm run build-ce`
+
+Creates a `/dist/ce/` directory with `react-handsontable-ce.js` and `react-handsontable-ce.min.js` files inside.
+
+* `npm run build-pro`
+
+Creates a `/dist/pro/` directory with `react-handsontable-pro.js` and `react-handsontable-pro.min.js` files inside.
+
+* `npm run build`
+
+Equivalent for running both of the commands above.</sup>
 
 ## Basic usage
-`react-handsontable` creates a `<HotTable>` component. You can use it just like any other React component. For example:
+`@handsontable/react` contains a `<HotTable>` component. You can use it just like any other React component. For example:
 
 ```jsx
 // import React...
@@ -32,7 +55,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 // ... and HotTable
-import HotTable from 'react-handsontable';
+import {HotTable} from '@handsontable/react';
 
 class ExampleComponent extends React.Component {
   constructor(props) {
@@ -54,6 +77,8 @@ class ExampleComponent extends React.Component {
   }
 }
 ```
+
+(You'll need to include the Handsontable styles separately, they're located under `handsontable/dist/handsontable.full.css`)
 
 Note, that you can provide the Handsontable options either as:
 * individual component properties
@@ -81,7 +106,7 @@ The `root` property declares the `id` of the root element for the table. It is o
 - [Simple Redux implementation demo](http://codepen.io/handsoncode/pen/LWmvPX?editors=0010)
 
 ## License
-`react-handsontable` is released under the [MIT license](https://github.com/handsontable/react-handsontable/blob/master/LICENSE).
+`react-handsontable`, `@handsontable/react` and `@handsontable-pro/react` are released under the [MIT license](https://github.com/handsontable/react-handsontable/blob/master/LICENSE).
 Copyrights belong to Handsoncode sp. z o.o.
 
 ## Contact
@@ -92,4 +117,5 @@ Handsontable comes with more wrappers and directives for popular frameworks:
 
 - [hot-table](https://github.com/handsontable/hot-table) (Polymer - WebComponents)
 - [ngHandsontable](https://github.com/handsontable/ngHandsontable) (Angular 1)
-- [vue-handsontable-official](https://github.com/handsontable/vue-handsontable-official) (Vue.js)
+- [@handsontable/angular](https://github.com/handsontable/angular-handsontable)
+- [@handsontable/vue](https://github.com/handsontable/vue-handsontable-official) (Vue.js)

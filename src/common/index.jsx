@@ -1,7 +1,6 @@
 import React from 'react';
-import Handsontable from 'handsontable';
-import SettingsMapper from './settingsMapper';
-import 'handsontable/dist/handsontable.full.css';
+import Handsontable from 'hot-alias';
+import {SettingsMapper} from './settingsMapper';
 
 /**
  * A Handsontable-ReactJS wrapper.
@@ -25,7 +24,7 @@ import 'handsontable/dist/handsontable.full.css';
  *
  * @class HotTable
  */
-export default class HotTable extends React.Component {
+export class HotTable extends React.Component {
   constructor() {
     super();
 

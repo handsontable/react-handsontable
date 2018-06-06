@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import HotTable from '../dist/react-handsontable';
+import {HotTable} from '../commonjs/ce/react-handsontable';
 import {IndividualPropsWrapper, SingleObjectWrapper, wait} from './_helpers';
 
 beforeEach(() => {
