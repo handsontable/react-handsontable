@@ -46,7 +46,7 @@
     "enzyme": "^2.9.1",
     "enzyme-to-json": "^1.5.1",
     "generate-release": "^0.10.2",
-    "handsontable": "^3.0.0",
+    "handsontable": "^4.0.0",
     "jest": "^23.1.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
@@ -60,7 +60,7 @@
     "uglify-js": "^3.4.0"
   },
   "peerDependencies": {
-    "handsontable": "^3.0.0"
+    "handsontable": "^4.0.0"
   },
   "scripts": {
     "build": "npm run delete-builds && npm run build-ce && npm run build-pro && npm run build:tests",

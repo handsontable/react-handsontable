@@ -10,7 +10,7 @@ export class IndividualPropsWrapper extends React.Component {
   render() {
     return (
       <div>
-        <HotTable ref="hotTable" root="hot" {...this.state.hotSettings} />
+        <HotTable ref="hotTable" id="hot" {...this.state.hotSettings} />
       </div>
     );
   }
@@ -25,7 +25,7 @@ export class SingleObjectWrapper extends React.Component {
   render() {
     return (
       <div>
-        <HotTable ref="hotTable" root="hot" settings={this.state.hotSettings} />
+        <HotTable ref="hotTable" id="hot" settings={this.state.hotSettings} />
       </div>
     );
   }
