@@ -1,34 +1,53 @@
-# react-handsontable  [![Build Status](https://travis-ci.org/handsontable/react-handsontable.png?branch=master)](https://travis-ci.org/handsontable/react-handsontable)
-### Available as `@handsontable/react` and `@handsontable-pro/react`
-A React wrapper for the the [Handsontable](https://github.com/handsontable/handsontable) spreadsheet component.
+<img src="https://raw.githubusercontent.com/handsontable/static-files/master/Images/Logo/Handsontable/handsontable-react.png" alt="Handsontable for React" />
+
+<br/>
+
+**Handsontable for React** is the official wrapper for [**Handsontable**](//github.com/handsontable/handsontable), a JavaScript data grid component with a spreadsheet look & feel. It easily integrates with any data source and comes with lots of useful features like data binding, validation, sorting or powerful context menu.
+
+[![Build status](https://travis-ci.org/handsontable/react-handsontable.png?branch=master)](//travis-ci.org/handsontable/react-handsontable)
+
+<br/>
 
 ## Table of contents
-1. [Installation](#installation)
-2. [Basic usage](#basic-usage)
-3. [Examples](#examples)
-4. [License](#license)
-5. [Contact](#contact)
-6. [Other wrappers](#other-wrappers)
+
+
+ 1. [Installation](#installation)
+ 2. [Getting Started](#getting-started)
+ 3. [Documentation](#documentation)
+ 4. [What to use it for?](#what-to-use-it-for)
+ 5. [Features](#features)
+ 6. [Screenshot](#screenshot)
+ 7. [Resources](#resources)
+ 8. [Support](#support)
+ 9. [Contributing](#contributing)
+10. [Licensing](#licensing)
+
+<br/>
 
 ## Installation
-Depending on whether you're using [Handsontable](https://github.com/handsontable/handsontable) or [Handsontable Pro](https://github.com/handsontable/handsontable-pro), you'll need to install:
-
-```sh
-npm install @handsontable/react handsontable
+Use npm to download the project.
+```bash
+npm install handsontable @handsontable/react
+```
+A package scope for Handsontable Pro users:
+```bash
+npm install handsontable-pro @handsontable-pro/react
 ```
 
-or
+<br/>
 
-```sh
-npm install @handsontable-pro/react handsontable-pro
+## Getting Started
+Assuming that you have installed the wrapper with npm, now you just need to include Handsontable styles into your build system and use `<HotTable>` just like any other React component.
+
+### Handsontable Community Edition:
+
+**Styles**
+```css
+@import 'handsontable/dist/handsontable.full.css';
 ```
 
-Running either one of these commands will install both the wrapper and the Handsontable/Handsontable Pro library itself.
-
-## Basic usage
-`@handsontable/react` contains a `<HotTable>` component. You can use it just like any other React component. For example:
-
-```jsx
+**React Component**
+```js
 // import React...
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -36,10 +55,10 @@ import ReactDOM from 'react-dom';
 // ... and HotTable
 import {HotTable} from '@handsontable/react';
 
-class ExampleComponent extends React.Component {
+class HotApp extends React.Component {
   constructor(props) {
     super(props);
-    this.handsontableData = [
+    this.data = [
       ["", "Ford", "Volvo", "Toyota", "Honda"],
       ["2016", 10, 11, 12, 13],
       ["2017", 20, 11, 14, 13],
@@ -49,53 +68,121 @@ class ExampleComponent extends React.Component {
 
   render() {
     return (
-      <div id="example-component">
-        <HotTable id="hot" data={this.handsontableData} colHeaders={true} rowHeaders={true} width="600" height="300" stretchH="all" />
+      <div id="hot-app">
+        <HotTable data={this.data} colHeaders={true} rowHeaders={true} width="600" height="300" stretchH="all" />
+      </div>
+    );
+  }
+}
+```
+### Handsontable Pro:
+**Styles**
+```css
+@import 'handsontable-pro/dist/handsontable.full.css';
+```
+
+**React Component**
+```js
+// import React...
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+// ... and HotTable
+import {HotTable} from '@handsontable-pro/react';
+
+class HotApp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.data = [
+      ["", "Ford", "Volvo", "Toyota", "Honda"],
+      ["2016", 10, 11, 12, 13],
+      ["2017", 20, 11, 14, 13],
+      ["2018", 30, 15, 12, 13]
+    ];
+  }
+
+  render() {
+    return (
+      <div id="hot-app">
+        <HotTable data={this.data} colHeaders={true} rowHeaders={true} width="600" height="300" stretchH="all" />
       </div>
     );
   }
 }
 ```
 
-(You'll need to include the Handsontable styles separately, they're located under `handsontable/dist/handsontable.full.css`)
+<br/>
 
-Note, that you can provide the Handsontable options either as:
-* individual component properties
-```jsx
-<HotTable id="hot" data={this.handsontableData} colHeaders={true} rowHeaders={true} width="600" height="300" stretchH="all" />
-```
-* an object passed to a single `settings` property
-```jsx
-<HotTable id="hot" settings={{
-    data: this.handsontableData,
-    colHeaders: true,
-    rowHeaders: true,
-    width: 600,
-    height: 300,
-    stretchH: 'all'
-}} />
-```
+## Documentation
+Visit [docs.handsontable.com](https://docs.handsontable.com/react-overview.html) to get more Handsontable for React examples and guides.
 
-The `id` property declares the `id` of the root element for the table. It is optional - if it isn't provided, the table will get a random generated `id`. You can
-also declare the `className` and `style` properties in a similar fashion.
+<br/>
 
-## Examples
-- [Simple react-handsontable implementation](https://jsfiddle.net/js_ziggle/qu0p48hj/)
-- [Simple react-handsontable implementation with a single-property configuration](https://jsfiddle.net/js_ziggle/5xkua8ec/)
-- [Interactive HotTable demo](https://jsfiddle.net/js_ziggle/6gdx2rb0/)
-- [Simple Redux implementation demo](https://jsfiddle.net/js_ziggle/5chpod7q/)
+## What to use it for?
+The list below gives a rough idea on what you can do with Handsontable, but it shouldn't limit you in any way:
 
-## License
-`react-handsontable`, `@handsontable/react` and `@handsontable-pro/react` are released under the [MIT license](https://github.com/handsontable/react-handsontable/blob/master/LICENSE).
+- Database editing
+- Configuration controlling
+- Data merging
+- Team scheduling
+- Sales reporting
+- Financial analysis
+
+<br/>
+
+## Features
+
+Some of the most popular features include:
+
+- Sorting data
+- Data validation
+- Conditional formatting
+- Freezing rows/columns
+- Merging cells
+- Defining custom cell types
+- Moving rows/columns
+- Resizing rows/columns
+- Context menu
+- Adding comments to cells
+- Dragging fill handle to populate data
+- Internationalization
+- Non-contiguous selection
+
+<br/>
+
+## Screenshot
+<div align="center">
+<a href="//handsontable.com/examples">
+<img src="https://raw.githubusercontent.com/handsontable/static-files/master/Images/Screenshots/handsontable-ce-showcase.png" align="center" alt="Handsontable for React" />
+</a>
+</div>
+
+<br/>
+
+## Resources
+- [Guides](//docs.handsontable.com/react-overview.html)
+- [API Reference](//docs.handsontable.com/Core.html)
+- [Release notes](//github.com/handsontable/react-handsontable/releases)
+- [Roadmap](//trello.com/b/PztR4hpj)
+- [Twitter](//twitter.com/handsontable)
+
+<br/>
+
+## Support
+You can report your issues here on [GitHub](//github.com/handsontable/react-handsontable/issues).
+
+An open source version of Handsontable doesn't include technical support. You need to purchase the [Handsontable Pro](//handsontable.com/pricing) license or [contact us](//handsontable.com/contact) directly in order to obtain a technical support from the Handsontable team.
+
+<br/>
+
+## Contributing
+If you would like to help us to develop this wrapper for React, please first read the [guide for contributors](//github.com/handsontable/react-handsontable/blob/master/CONTRIBUTING.md).
+
+<br/>
+
+## Licensing
+This wrapper is released under [the MIT license](//github.com/handsontable/react-handsontable/blob/master/LICENSE).
+
+<br/>
+
 Copyrights belong to Handsoncode sp. z o.o.
-
-## Contact
-Feel free to give us feedback on this wrapper using this [contact form](https://handsontable.com/contact.html) or write directly at hello@handsontable.com.
-
-## Other Wrappers
-Handsontable comes with more wrappers and directives for popular frameworks:
-
-- [hot-table](https://github.com/handsontable/hot-table) (Polymer - WebComponents)
-- [ngHandsontable](https://github.com/handsontable/ngHandsontable) (Angular 1)
-- [@handsontable/angular](https://github.com/handsontable/angular-handsontable)
-- [@handsontable/vue](https://github.com/handsontable/vue-handsontable-official) (Vue.js)
