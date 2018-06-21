@@ -19,7 +19,7 @@
  7. [Resources](#resources)
  8. [Support](#support)
  9. [Contributing](#contributing)
-10. [Licensing](#licensing)
+ 10. [Licensing](#licensing)
 
 <br/>
 

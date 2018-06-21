@@ -19,8 +19,8 @@
  7. [Resources](#resources)
  8. [License Key](#license-key)
  9. [Support](#support)
-10. [Contributing](#contributing)
-11. [License and Pricing](#license-and-pricing)
+ 10. [Contributing](#contributing)
+ 11. [License and Pricing](#license-and-pricing)
 
 <br/>
 
