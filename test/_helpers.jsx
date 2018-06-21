@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import HotTable from '../dist/react-handsontable';
+import {HotTable} from '../commonjs/ce/react-handsontable';
 
 export class IndividualPropsWrapper extends React.Component {
   constructor(props) {
@@ -11,7 +10,7 @@ export class IndividualPropsWrapper extends React.Component {
   render() {
     return (
       <div>
-        <HotTable ref="hotTable" root="hot" {...this.state.hotSettings} />
+        <HotTable ref="hotTable" id="hot" {...this.state.hotSettings} />
       </div>
     );
   }
@@ -26,7 +25,7 @@ export class SingleObjectWrapper extends React.Component {
   render() {
     return (
       <div>
-        <HotTable ref="hotTable" root="hot" settings={this.state.hotSettings} />
+        <HotTable ref="hotTable" id="hot" settings={this.state.hotSettings} />
       </div>
     );
   }

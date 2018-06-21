@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import HotTable from '../dist/react-handsontable';
+import {HotTable} from '../commonjs/ce/react-handsontable';
 import {IndividualPropsWrapper, SingleObjectWrapper, wait} from './_helpers';
 
 beforeEach(() => {
@@ -11,7 +10,7 @@ beforeEach(() => {
 
 describe('Handsontable initialization', () => {
   it('should render Handsontable when using the HotTable component', () => {
-    const wrapper = mount(<HotTable root="test-hot" data={[[2]]}/>, { attachTo: document.body.querySelector('#hotContainer') });
+    const wrapper = mount(<HotTable id="test-hot" data={[[2]]}/>, { attachTo: document.body.querySelector('#hotContainer') });
 
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -28,7 +27,7 @@ describe('Handsontable initialization', () => {
   });
 
   it('should pass the provided properties to the Handsontable instance', () => {
-    const wrapper = mount(<HotTable root="test-hot" contextMenu={true} rowHeaders={true} colHeaders={true} data={[[2]]}/>, { attachTo: document.body.querySelector('#hotContainer') });
+    const wrapper = mount(<HotTable id="test-hot" contextMenu={true} rowHeaders={true} colHeaders={true} data={[[2]]}/>, { attachTo: document.body.querySelector('#hotContainer') });
 
     return new Promise((resolve, reject) => {
       setTimeout(() => {

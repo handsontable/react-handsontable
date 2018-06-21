@@ -1,15 +1,14 @@
-<img src="https://raw.githubusercontent.com/handsontable/static-files/master/Images/Logo/Handsontable/handsontable-react.png" alt="Handsontable for React" />
+<img src="https://raw.githubusercontent.com/handsontable/static-files/master/Images/Logo/Handsontable/handsontable-react.png" alt="Handsontable Community Edition for React" />
 
 <br/>
 
-**Handsontable for React** is the official wrapper for [**Handsontable**](//github.com/handsontable/handsontable), a JavaScript data grid component with a spreadsheet look & feel. It easily integrates with any data source and comes with lots of useful features like data binding, validation, sorting or powerful context menu.
+**Handsontable Community Edition for React** is the official wrapper for [**Handsontable Community Edition**](//github.com/handsontable/handsontable), an open source data grid component with a spreadsheet look & feel. It easily integrates with any data source and comes with lots of useful features like data binding, validation, sorting or powerful context menu.
 
 [![Build status](https://travis-ci.org/handsontable/react-handsontable.png?branch=master)](//travis-ci.org/handsontable/react-handsontable)
 
 <br/>
 
 ## Table of contents
-
 
  1. [Installation](#installation)
  2. [Getting Started](#getting-started)
@@ -25,21 +24,15 @@
 <br/>
 
 ## Installation
-Use npm to download the project.
+Use npm to download the wrapper and Handsontable.
 ```bash
 npm install handsontable @handsontable/react
-```
-A package scope for Handsontable Pro users:
-```bash
-npm install handsontable-pro @handsontable-pro/react
 ```
 
 <br/>
 
 ## Getting Started
 Assuming that you have installed the wrapper with npm, now you just need to include Handsontable styles into your build system and use `<HotTable>` just like any other React component.
-
-### Handsontable Community Edition:
 
 **Styles**
 ```css
@@ -51,38 +44,6 @@ Assuming that you have installed the wrapper with npm, now you just need to incl
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {HotTable} from '@handsontable/react';
-
-class HotApp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.data = [
-      ["", "Ford", "Volvo", "Toyota", "Honda"],
-      ["2016", 10, 11, 12, 13],
-      ["2017", 20, 11, 14, 13],
-      ["2018", 30, 15, 12, 13]
-    ];
-  }
-
-  render() {
-    return (
-      <div id="hot-app">
-        <HotTable data={this.data} colHeaders={true} rowHeaders={true} width="600" height="300" stretchH="all" />
-      </div>
-    );
-  }
-}
-```
-### Handsontable Pro:
-**Styles**
-```css
-@import 'handsontable-pro/dist/handsontable.full.css';
-```
-
-**React Component**
-```js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {HotTable} from '@handsontable-pro/react';
 
 class HotApp extends React.Component {
   constructor(props) {
@@ -147,7 +108,7 @@ Some of the most popular features include:
 ## Screenshot
 <div align="center">
 <a href="//handsontable.com/examples">
-<img src="https://raw.githubusercontent.com/handsontable/static-files/master/Images/Screenshots/handsontable-ce-showcase.png" align="center" alt="Handsontable for React" />
+<img src="https://raw.githubusercontent.com/handsontable/static-files/master/Images/Screenshots/handsontable-ce-showcase.png" align="center" alt="Handsontable Community Edition for React" />
 </a>
 </div>
 
@@ -170,7 +131,7 @@ An open source version of Handsontable doesn't include technical support. You ne
 <br/>
 
 ## Contributing
-If you would like to help us to develop this wrapper for React, please first read the [guide for contributors](//github.com/handsontable/react-handsontable/blob/master/CONTRIBUTING.md).
+If you would like to help us to develop this wrapper for React, please read the [guide for contributors](//github.com/handsontable/react-handsontable/blob/master/CONTRIBUTING.md) first.
 
 <br/>
 
