@@ -1,7 +1,6 @@
 import React from 'react';
-import Handsontable from 'handsontable';
-import SettingsMapper from './settingsMapper';
-import 'handsontable/dist/handsontable.full.css';
+import Handsontable from 'hot-alias';
+import {SettingsMapper} from './settingsMapper';
 
 /**
  * A Handsontable-ReactJS wrapper.
@@ -10,7 +9,7 @@ import 'handsontable/dist/handsontable.full.css';
  * For example:
  *
  * ```js
- * <HotTable root="hot" data={dataObject} contextMenu={true} colHeaders={true} width={600} height={300} stretchH="all" />
+ * <HotTable id="hot" data={dataObject} contextMenu={true} colHeaders={true} width={600} height={300} stretchH="all" />
  *
  * // is analogous to
  * let hot = new Handsontable(document.getElementById('hot'), {
@@ -25,13 +24,13 @@ import 'handsontable/dist/handsontable.full.css';
  *
  * @class HotTable
  */
-export default class HotTable extends React.Component {
+export class HotTable extends React.Component {
   constructor() {
     super();
 
     this.hotInstance = null;
     this.settingsMapper = new SettingsMapper();
-    this.root = null;
+    this.id = null;
   }
 
   /**
@@ -39,7 +38,7 @@ export default class HotTable extends React.Component {
    */
   componentDidMount() {
     const newSettings = this.settingsMapper.getSettings(this.props);
-    this.hotInstance = new Handsontable(document.getElementById(this.root), newSettings);
+    this.hotInstance = new Handsontable(document.getElementById(this.id), newSettings);
   }
 
   /**
@@ -68,8 +67,11 @@ export default class HotTable extends React.Component {
    * @returns {XML}
    */
   render() {
-    this.root = this.props.root || 'hot' + new Date().getTime();
-    return <div id={this.root}></div>
+    this.id = this.props.id || 'hot' + new Date().getTime();
+    this.className = this.props.className || '';
+    this.style = this.props.style || {};
+
+    return <div id={this.id} className={this.className} style={this.style}></div>
   }
 
   /**

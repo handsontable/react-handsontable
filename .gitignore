@@ -1,6 +1,9 @@
 node_modules
 bower_components
+build
 dist
+commonjs
+es
 .DS_Store
 .idea
 *.log

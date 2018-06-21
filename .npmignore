@@ -1,6 +1,5 @@
 node_modules
 bower_components
-docs
 test
 .DS_Store
 .idea
@@ -8,5 +7,4 @@ test
 .editorconfig
 .gitignore
 .travis.yml
-webpack.config.js
 *.log

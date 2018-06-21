@@ -1,6 +1,6 @@
-import Handsontable from 'handsontable';
+import Handsontable from 'hot-alias';
 
-export default class SettingsMapper {
+export class SettingsMapper {
   constructor() {
     this.registeredHooks = Handsontable.hooks.getRegistered();
   }
@@ -24,7 +24,7 @@ export default class SettingsMapper {
     }
 
     for (const key in properties) {
-      if (key != 'settings' && properties.hasOwnProperty(key)) {
+      if (key !== 'settings' && properties.hasOwnProperty(key)) {
         newSettings[this.trimHookPrefix(key)] = properties[key];
       }
     }
