@@ -41,11 +41,8 @@ Assuming that you have installed the wrapper with npm, now you just need to incl
 
 **React Component**
 ```js
-// import React...
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-// ... and HotTable
 import {HotTable} from '@handsontable/react';
 
 class HotApp extends React.Component {
