@@ -1,6 +1,7 @@
 {
   "name": "react-handsontable",
-  "version": "1.0.0-beta1",
+  "version": "1.0.0",
+  "private": true,
   "description": "Best Data Grid for React with Spreadsheet Look and Feel.",
   "author": "Handsoncode <hello@handsoncode.net> (https://handsoncode.net)",
   "license": "MIT",
@@ -37,7 +38,6 @@
   "bugs": {
     "url": "https://github.com/handsontable/react-handsontable/issues"
   },
-  "main": "./dist/ce/react-handsontable-ce.js",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.25.0",

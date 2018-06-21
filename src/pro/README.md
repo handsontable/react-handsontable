@@ -73,7 +73,7 @@ class HotApp extends React.Component {
 <br/>
 
 ## Documentation
-Visit [docs.handsontable.com](https://docs.handsontable.com/react-overview.html) to get more Handsontable for React examples and guides.
+Visit [docs.handsontable.com](https://docs.handsontable.com/react) to get more Handsontable for React examples and guides.
 
 <br/>
 
