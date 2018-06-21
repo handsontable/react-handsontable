@@ -27,6 +27,6 @@
     "wrapper"
   ],
   "peerDependencies": {
-    "handsontable": "^3.0.0"
+    "handsontable": "^4.0.0"
   }
 }

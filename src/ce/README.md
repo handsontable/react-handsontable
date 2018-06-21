@@ -118,7 +118,7 @@ Some of the most popular features include:
 <br/>
 
 ## Resources
-- [Guides](//docs.handsontable.com/react-overview.html)
+- [Guides](//docs.handsontable.com/react)
 - [API Reference](//docs.handsontable.com/Core.html)
 - [Release notes](//github.com/handsontable/react-handsontable/releases)
 - [Roadmap](//trello.com/b/PztR4hpj)
