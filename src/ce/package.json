@@ -25,6 +25,13 @@
     "react grid",
     "wrapper"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/handsontable/react-handsontable.git"
+  },
+  "bugs": {
+    "url": "https://github.com/handsontable/react-handsontable/issues"
+  },
   "peerDependencies": {
     "handsontable": "^4.0.0"
   }
