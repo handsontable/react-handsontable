@@ -67,7 +67,7 @@ export class HotTable extends React.Component {
    * @returns {XML}
    */
   render() {
-    this.id = this.props.id || 'hot' + new Date().getTime();
+    this.id = this.props.id || 'hot' + Math.random().toString(36).substring(7);
     this.className = this.props.className || '';
     this.style = this.props.style || {};
 
