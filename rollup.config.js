@@ -39,7 +39,7 @@ if (env === 'es' || env === 'cjs') {
 } else if (env === 'umd') {
   config.output = {
     format: 'umd',
-    name: 'Handsontable.react.HotTable',
+    name: 'Handsontable.react',
     indent: false,
     file: './dist/' + envHotType + '/react-handsontable.js'
   };
@@ -47,7 +47,7 @@ if (env === 'es' || env === 'cjs') {
 } else if (env === 'min') {
   config.output = {
     format: 'umd',
-    name: 'Handsontable.react.HotTable',
+    name: 'Handsontable.react',
     indent: false,
     file: './dist/' + envHotType + '/react-handsontable.min.js'
   };
