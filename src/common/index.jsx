@@ -28,9 +28,10 @@ export class HotTable extends React.Component {
   constructor() {
     super();
 
-    this.hotInstance = null;
     this.settingsMapper = new SettingsMapper();
     this.id = null;
+    this.hotInstance = null;
+    this.hotElementRef = React.createRef();
   }
 
   /**
@@ -38,7 +39,7 @@ export class HotTable extends React.Component {
    */
   componentDidMount() {
     const newSettings = this.settingsMapper.getSettings(this.props);
-    this.hotInstance = new Handsontable(document.getElementById(this.id), newSettings);
+    this.hotInstance = new Handsontable(this.hotElementRef.current, newSettings);
   }
 
   /**
@@ -71,7 +72,7 @@ export class HotTable extends React.Component {
     this.className = this.props.className || '';
     this.style = this.props.style || {};
 
-    return <div id={this.id} className={this.className} style={this.style}></div>
+    return <div ref={this.hotElementRef} id={this.id} className={this.className} style={this.style}></div>
   }
 
   /**
