@@ -28,9 +28,42 @@ export class HotTable extends React.Component {
   constructor() {
     super();
 
-    this.hotInstance = null;
+    /**
+     * Reference to the `SettingsMapper` instance.
+     *
+     * @type {SettingsMapper}
+     */
     this.settingsMapper = new SettingsMapper();
+
+    /**
+     * The `id` of the main Handsontable DOM element.
+     *
+     * @type {String}
+     */
     this.id = null;
+
+    /**
+     * Reference to the Handsontable instance.
+     *
+     * @type {Object}
+     */
+    this.hotInstance = null;
+
+    /**
+     * Reference to the main Handsontable DOM element.
+     *
+     * @type {HTMLElement}
+     */
+    this.hotElementRef = null;
+  }
+
+  /**
+   * Set the reference to the main Handsontable DOM element.
+   *
+   * @param {HTMLElement} element The main Handsontable DOM element.
+   */
+  setHotElementRef(element) {
+    this.hotElementRef = element;
   }
 
   /**
@@ -38,7 +71,7 @@ export class HotTable extends React.Component {
    */
   componentDidMount() {
     const newSettings = this.settingsMapper.getSettings(this.props);
-    this.hotInstance = new Handsontable(document.getElementById(this.id), newSettings);
+    this.hotInstance = new Handsontable(this.hotElementRef, newSettings);
   }
 
   /**
@@ -71,12 +104,13 @@ export class HotTable extends React.Component {
     this.className = this.props.className || '';
     this.style = this.props.style || {};
 
-    return <div id={this.id} className={this.className} style={this.style}></div>
+    return <div ref={this.setHotElementRef.bind(this)} id={this.id} className={this.className} style={this.style}></div>
   }
 
   /**
    * Call the `updateSettings` method for the Handsontable instance.
-   * @param newSettings
+   *
+   * @param {Object} newSettings The settings object.
    */
   updateHot(newSettings) {
     this.hotInstance.updateSettings(newSettings);
