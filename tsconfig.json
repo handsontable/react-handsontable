@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "jsx": "react",
+    "module": "esnext"
+  },
+  "include": [
+    "src/common/*"
+  ],
+  "exclude": [
+    "**/node_modules/*"
+  ]
+}

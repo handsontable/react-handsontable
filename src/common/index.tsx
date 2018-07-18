@@ -1,6 +1,6 @@
-import React from 'react';
-import Handsontable from 'hot-alias';
-import {SettingsMapper} from './settingsMapper';
+import * as React from 'react';
+import * as Handsontable from 'hot-alias';
+import { SettingsMapper } from './settingsMapper';
 
 /**
  * A Handsontable-ReactJS wrapper.
@@ -25,8 +25,16 @@ import {SettingsMapper} from './settingsMapper';
  * @class HotTable
  */
 export class HotTable extends React.Component {
-  constructor() {
-    super();
+  private settingsMapper: SettingsMapper;
+  props: {id?: string, className?: string, style?: object, settings?: object};
+  id: string;
+  hotInstance: Handsontable;
+  hotElementRef: HTMLElement;
+  className: string;
+  style: object;
+
+  constructor(props: object) {
+    super(props);
 
     /**
      * Reference to the `SettingsMapper` instance.
@@ -62,7 +70,7 @@ export class HotTable extends React.Component {
    *
    * @param {HTMLElement} element The main Handsontable DOM element.
    */
-  setHotElementRef(element) {
+  private setHotElementRef(element: HTMLElement) {
     this.hotElementRef = element;
   }
 
@@ -81,7 +89,7 @@ export class HotTable extends React.Component {
    * @param {Object} nextState
    * @returns {Boolean}
    */
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: object, nextState: object): boolean {
     this.updateHot(this.settingsMapper.getSettings(nextProps));
 
     return false;
@@ -97,12 +105,12 @@ export class HotTable extends React.Component {
   /**
    * Render the table.
    *
-   * @returns {XML}
+   * @returns {ReactNode}
    */
-  render() {
-    this.id = this.props.id || 'hot-' + Math.random().toString(36).substring(5);
-    this.className = this.props.className || '';
-    this.style = this.props.style || {};
+  render(): object {
+    this.id = this.props['id'] || 'hot-' + Math.random().toString(36).substring(5);
+    this.className = this.props['className'] || '';
+    this.style = this.props['style'] || {};
 
     return <div ref={this.setHotElementRef.bind(this)} id={this.id} className={this.className} style={this.style}></div>
   }
@@ -112,7 +120,7 @@ export class HotTable extends React.Component {
    *
    * @param {Object} newSettings The settings object.
    */
-  updateHot(newSettings) {
-    this.hotInstance.updateSettings(newSettings);
+  private updateHot(newSettings: object) {
+    this.hotInstance.updateSettings(newSettings, false);
   }
 }

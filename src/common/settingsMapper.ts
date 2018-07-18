@@ -1,6 +1,8 @@
-import Handsontable from 'hot-alias';
+import * as Handsontable from 'hot-alias';
 
 export class SettingsMapper {
+  private registeredHooks: string[];
+
   constructor() {
     this.registeredHooks = Handsontable.hooks.getRegistered();
   }
@@ -11,8 +13,8 @@ export class SettingsMapper {
    * @param {Object} properties Object containing properties from the HotTable object.
    * @returns {Object} Handsontable-compatible settings object.
    */
-  getSettings(properties) {
-    let newSettings = {};
+  getSettings(properties: {settings?: object}): object {
+    let newSettings: object = {};
 
     if(properties.settings) {
       let settings = properties.settings;
@@ -38,7 +40,7 @@ export class SettingsMapper {
    * @param {String} prop Settings property.
    * @returns {String} Handsontable-compatible, prefix-less property name.
    */
-  trimHookPrefix(prop) {
+  trimHookPrefix(prop: string): string {
     if (prop.indexOf('on') === 0) {
       let hookName = prop.charAt(2).toLowerCase() + prop.slice(3, prop.length);
       if (this.registeredHooks.indexOf(hookName) > -1) {
