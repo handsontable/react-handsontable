@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as Handsontable from 'hot-alias';
+import React from 'react';
+import Handsontable from 'hot-alias';
 import { SettingsMapper } from './settingsMapper';
 
 /**

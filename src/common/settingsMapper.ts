@@ -1,4 +1,4 @@
-import * as Handsontable from 'hot-alias';
+import Handsontable from 'hot-alias';
 
 export class SettingsMapper {
   private registeredHooks: string[];

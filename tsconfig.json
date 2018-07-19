@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "esnext",
     "jsx": "react",
-    "module": "esnext"
+    "module": "esnext",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/common/*"
