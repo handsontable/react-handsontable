@@ -57,7 +57,6 @@
     "handsontable": "^5.0.0",
     "handsontable-pro": "^5.0.0",
     "jest": "^23.4.1",
-    "jsdom": "11.11.0",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-test-renderer": "^16.4.1",
@@ -102,6 +101,7 @@
     "test": "jest"
   },
   "jest": {
+    "testURL": "http://localhost/",
     "setupFiles": [
       "./test/jestsetup.ts"
     ],
