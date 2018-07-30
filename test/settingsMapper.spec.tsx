@@ -1,4 +1,4 @@
-import {SettingsMapper} from './dist/settingsMapper';
+import {SettingsMapper} from '../src/common/settingsMapper';
 
 describe('Settings mapper unit tests', () => {
   describe('getSettings', () => {

@@ -2,6 +2,14 @@ import React from 'react';
 import Handsontable from 'hot-alias';
 import { SettingsMapper } from './settingsMapper';
 
+export interface Props extends Handsontable.DefaultSettings {
+  data?: any;
+  id?: string,
+  className?: string,
+  style?: object,
+  settings?: Handsontable.DefaultSettings
+}
+
 /**
  * A Handsontable-ReactJS wrapper.
  *
@@ -24,9 +32,10 @@ import { SettingsMapper } from './settingsMapper';
  *
  * @class HotTable
  */
-export class HotTable extends React.Component {
+export class HotTable extends React.Component<Props, {}> {
   private settingsMapper: SettingsMapper;
-  props: {id?: string, className?: string, style?: object, settings?: object};
+  props:  Props;
+
   id: string;
   hotInstance: Handsontable;
   hotElementRef: HTMLElement;
@@ -89,7 +98,7 @@ export class HotTable extends React.Component {
    * @param {Object} nextState
    * @returns {Boolean}
    */
-  shouldComponentUpdate(nextProps: object, nextState: object): boolean {
+  shouldComponentUpdate(nextProps: Props, nextState: object): boolean {
     this.updateHot(this.settingsMapper.getSettings(nextProps));
 
     return false;
@@ -104,10 +113,8 @@ export class HotTable extends React.Component {
 
   /**
    * Render the table.
-   *
-   * @returns {ReactNode}
    */
-  render(): object {
+  render() {
     this.id = this.props['id'] || 'hot-' + Math.random().toString(36).substring(5);
     this.className = this.props['className'] || '';
     this.style = this.props['style'] || {};

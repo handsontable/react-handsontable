@@ -3,14 +3,7 @@
     "target": "esnext",
     "jsx": "react",
     "module": "esnext",
-    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true
-  },
-  "include": [
-    "src/common/*"
-  ],
-  "exclude": [
-    "**/node_modules/*"
-  ]
+  }
 }
