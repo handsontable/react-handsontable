@@ -5,7 +5,11 @@
     "module": "esnext",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "hot-alias": ["node_modules/handsontable"]
+    }
   },
   "include": [
     "src/common/*"

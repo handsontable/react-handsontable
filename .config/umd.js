@@ -1,4 +1,4 @@
-import {addLicenseBanner} from './helpers/licenseBanner';
+import { addLicenseBanner } from './helpers/licenseBanner';
 
 const env = process.env.NODE_ENV;
 const envHotType = process.env.HOT_TYPE;
