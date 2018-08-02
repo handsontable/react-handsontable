@@ -1,6 +1,18 @@
 import React from 'react';
 import Handsontable from 'hot-alias';
-import {SettingsMapper} from './settingsMapper';
+import { SettingsMapper } from './settingsMapper';
+
+/**
+ * Interface for the `prop` of the HotTable component - extending the default Handsontable settings with additional,
+ * component-related properties.
+ */
+export interface HotTableProps extends Handsontable.DefaultSettings {
+  data?: any[][] | object[];
+  id?: string,
+  className?: string,
+  style?: React.CSSProperties,
+  settings?: Handsontable.DefaultSettings
+}
 
 /**
  * A Handsontable-ReactJS wrapper.
@@ -24,45 +36,56 @@ import {SettingsMapper} from './settingsMapper';
  *
  * @class HotTable
  */
-export class HotTable extends React.Component {
-  constructor() {
-    super();
-
-    /**
-     * Reference to the `SettingsMapper` instance.
-     *
-     * @type {SettingsMapper}
-     */
-    this.settingsMapper = new SettingsMapper();
-
-    /**
-     * The `id` of the main Handsontable DOM element.
-     *
-     * @type {String}
-     */
-    this.id = null;
-
-    /**
-     * Reference to the Handsontable instance.
-     *
-     * @type {Object}
-     */
-    this.hotInstance = null;
-
-    /**
-     * Reference to the main Handsontable DOM element.
-     *
-     * @type {HTMLElement}
-     */
-    this.hotElementRef = null;
-  }
+export class HotTable extends React.Component<HotTableProps, {}> {
+  /**
+   * Reference to the `SettingsMapper` instance.
+   *
+   * @type {SettingsMapper}
+   */
+  private settingsMapper: SettingsMapper = new SettingsMapper();
+  /**
+   * Component props.
+   *
+   * @type {HotTableProps}
+   */
+  props:  HotTableProps;
+  /**
+   * The `id` of the main Handsontable DOM element.
+   *
+   * @type {String}
+   */
+  id: string = null;
+  /**
+   * Reference to the Handsontable instance.
+   *
+   * @type {Object}
+   */
+  hotInstance: Handsontable = null;
+  /**
+   * Reference to the main Handsontable DOM element.
+   *
+   * @type {HTMLElement}
+   */
+  hotElementRef: HTMLElement = null;
+  /**
+   * Class name added to the component DOM element.
+   *
+   * @type {String}
+   */
+  className: string;
+  /**
+   * Style object passed to the component.
+   *
+   * @type {React.CSSProperties}
+   */
+  style: React.CSSProperties;
 
   /**
    * Set the reference to the main Handsontable DOM element.
    *
    * @param {HTMLElement} element The main Handsontable DOM element.
    */
-  setHotElementRef(element) {
+  private setHotElementRef(element: HTMLElement): void {
     this.hotElementRef = element;
   }
 
@@ -81,7 +104,7 @@ export class HotTable extends React.Component {
    * @param {Object} nextState
    * @returns {Boolean}
    */
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps: HotTableProps, nextState: {}): boolean {
     this.updateHot(this.settingsMapper.getSettings(nextProps));
 
     return false;
@@ -96,8 +119,6 @@ export class HotTable extends React.Component {
 
   /**
    * Render the table.
-   *
-   * @returns {XML}
    */
   render() {
     this.id = this.props.id || 'hot-' + Math.random().toString(36).substring(5);
@@ -112,7 +133,7 @@ export class HotTable extends React.Component {
    *
    * @param {Object} newSettings The settings object.
    */
-  updateHot(newSettings) {
-    this.hotInstance.updateSettings(newSettings);
+  private updateHot(newSettings: Handsontable.DefaultSettings): void {
+    this.hotInstance.updateSettings(newSettings, false);
   }
 }

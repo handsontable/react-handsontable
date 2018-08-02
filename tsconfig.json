@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "hot-alias": ["node_modules/handsontable"]
+    }
+  },
+  "include": [
+    "src/common/*"
+  ],
+  "exclude": [
+    "**/node_modules/*"
+  ]
+}

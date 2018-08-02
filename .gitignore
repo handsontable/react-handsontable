@@ -6,4 +6,5 @@ commonjs
 es
 .DS_Store
 .idea
+.rpt2_cache
 *.log

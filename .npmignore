@@ -7,4 +7,5 @@ test
 .editorconfig
 .gitignore
 .travis.yml
+.rpt2_cache
 *.log

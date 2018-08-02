@@ -8,6 +8,7 @@
   "browser": "./dist/react-handsontable.js",
   "main": "./commonjs/react-handsontable.js",
   "module": "./es/react-handsontable.js",
+  "types": "./index.d.ts",
   "keywords": [
     "handsontable",
     "component",
@@ -33,7 +34,7 @@
     "react component",
     "react grid",
     "wrapper"
-  ],  
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/handsontable/react-handsontable.git"
@@ -42,6 +43,6 @@
     "url": "https://github.com/handsontable/react-handsontable/issues"
   },
   "peerDependencies": {
-    "handsontable-pro": "^4.0.0"
+    "handsontable-pro": "^5.0.0"
   }
 }

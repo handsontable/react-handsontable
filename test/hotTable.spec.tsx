@@ -1,6 +1,10 @@
 import React from 'react';
-import {HotTable} from '../commonjs/ce/react-handsontable';
-import {IndividualPropsWrapper, SingleObjectWrapper, wait} from './_helpers';
+import { HotTable } from '../src/common/index';
+import {
+  IndividualPropsWrapper,
+  SingleObjectWrapper,
+  wait
+} from './_helpers';
 
 beforeEach(() => {
   let container = document.createElement('DIV');
