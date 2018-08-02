@@ -11,7 +11,7 @@ const minConfig = {
     format: 'umd',
     name: 'Handsontable.react',
     indent: false,
-    file: './dist/' + envHotType + '/' + minFilename
+    file: `./dist/${envHotType}/${minFilename}`
   },
   plugins: baseConfig.plugins.concat([
     uglify({
