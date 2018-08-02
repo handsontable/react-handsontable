@@ -2,7 +2,11 @@ import React from 'react';
 import Handsontable from 'hot-alias';
 import { SettingsMapper } from './settingsMapper';
 
-export interface Props extends Handsontable.DefaultSettings {
+/**
+ * Interface for the `prop` of the HotTable component - extending the default Handsontable settings with additional,
+ * component-related properties.
+ */
+export interface HotTableProps extends Handsontable.DefaultSettings {
   data?: any[][] | object[];
   id?: string,
   className?: string,
@@ -32,7 +36,7 @@ export interface Props extends Handsontable.DefaultSettings {
  *
  * @class HotTable
  */
-export class HotTable extends React.Component<Props, {}> {
+export class HotTable extends React.Component<HotTableProps, {}> {
   /**
    * Reference to the `SettingsMapper` instance.
    *
@@ -42,9 +46,9 @@ export class HotTable extends React.Component<Props, {}> {
   /**
    * Component props.
    *
-   * @type {Props}
+   * @type {HotTableProps}
    */
-  props:  Props;
+  props:  HotTableProps;
   /**
    * The `id` of the main Handsontable DOM element.
    *
@@ -81,7 +85,7 @@ export class HotTable extends React.Component<Props, {}> {
    *
    * @param {HTMLElement} element The main Handsontable DOM element.
    */
-  private setHotElementRef(element: HTMLElement) {
+  private setHotElementRef(element: HTMLElement): void {
     this.hotElementRef = element;
   }
 
@@ -100,7 +104,7 @@ export class HotTable extends React.Component<Props, {}> {
    * @param {Object} nextState
    * @returns {Boolean}
    */
-  shouldComponentUpdate(nextProps: Props, nextState: {}): boolean {
+  shouldComponentUpdate(nextProps: HotTableProps, nextState: {}): boolean {
     this.updateHot(this.settingsMapper.getSettings(nextProps));
 
     return false;
