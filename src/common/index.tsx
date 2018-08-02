@@ -133,7 +133,7 @@ export class HotTable extends React.Component<HotTableProps, {}> {
    *
    * @param {Object} newSettings The settings object.
    */
-  private updateHot(newSettings: Handsontable.DefaultSettings) {
+  private updateHot(newSettings: Handsontable.DefaultSettings): void {
     this.hotInstance.updateSettings(newSettings, false);
   }
 }
