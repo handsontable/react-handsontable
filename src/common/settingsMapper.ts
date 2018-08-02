@@ -1,5 +1,5 @@
 import Handsontable from 'hot-alias';
-import { Props } from './index';
+import { HotTableProps } from './index';
 
 export class SettingsMapper {
 
@@ -19,7 +19,7 @@ export class SettingsMapper {
    * @param {Object} properties Object containing properties from the HotTable object.
    * @returns {Object} Handsontable-compatible settings object.
    */
-  getSettings(properties: Props): Handsontable.DefaultSettings {
+  getSettings(properties: HotTableProps): Handsontable.DefaultSettings {
     let newSettings: Handsontable.DefaultSettings = {};
 
     if(properties.settings) {
