@@ -11,7 +11,7 @@ export const esConfig = {
   output: {
     format: env,
     indent: false,
-    file: './es/' + envHotType + '/' + filename
+    file: `./es/${envHotType}/${filename}`
   },
   plugins: [
     replace({

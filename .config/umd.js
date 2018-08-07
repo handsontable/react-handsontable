@@ -9,7 +9,8 @@ const umdConfig = {
     format: env,
     name: 'Handsontable.react',
     indent: false,
-    file: './dist/' + envHotType + '/' + filename
+    sourcemap: true,
+    file: `./dist/${envHotType}/${filename}`
   }
 };
 
