@@ -2,15 +2,10 @@ import Handsontable from 'hot-alias';
 import { HotTableProps } from './index';
 
 export class SettingsMapper {
-
-  // TODO: this should be removed after the release of Handsontable 5.0.0+. It's a workaround for a faulty Handsontable definition file.
-  private hooks: any;
-
   private registeredHooks: string[];
 
   constructor() {
-    this.hooks = Handsontable.hooks;
-    this.registeredHooks = this.hooks.getRegistered();
+    this.registeredHooks = Handsontable.hooks.getRegistered();
   }
 
   /**

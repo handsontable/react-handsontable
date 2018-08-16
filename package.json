@@ -54,8 +54,8 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "enzyme-to-json": "^3.3.4",
-    "handsontable": "^5.0.0",
-    "handsontable-pro": "^5.0.0",
+    "handsontable": "^5.0.1",
+    "handsontable-pro": "^5.0.1",
     "jest": "^23.4.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
@@ -72,7 +72,7 @@
     "uglify-js": "^3.4.4"
   },
   "peerDependencies": {
-    "handsontable": "^5.0.0"
+    "handsontable": "^5.0.1"
   },
   "scripts": {
     "build": "npm run delete-builds && npm run build-ce && npm run build-pro",

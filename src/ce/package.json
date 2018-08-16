@@ -34,6 +34,6 @@
     "url": "https://github.com/handsontable/react-handsontable/issues"
   },
   "peerDependencies": {
-    "handsontable": "^5.0.0"
+    "handsontable": "^5.0.1"
   }
 }
