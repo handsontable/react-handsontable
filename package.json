@@ -1,6 +1,6 @@
 {
   "name": "react-handsontable",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Best Data Grid for React with Spreadsheet Look and Feel.",
   "author": "Handsoncode <hello@handsoncode.net> (https://handsoncode.net)",
@@ -39,36 +39,43 @@
     "url": "https://github.com/handsontable/react-handsontable/issues"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.1",
+    "@types/react": "^16.4.6",
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.25.0",
+    "babel-core": "^6.26.3",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015-rollup": "^3.0.0",
     "babel-preset-react": "^6.24.1",
     "cpy-cli": "^2.0.0",
-    "cross-env": "^5.1.6",
+    "cross-env": "^5.2.0",
     "del-cli": "^1.1.0",
-    "enzyme": "^2.9.1",
-    "enzyme-to-json": "^1.5.1",
-    "generate-release": "^0.10.2",
-    "handsontable": "^4.0.0",
-    "jest": "^23.1.0",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-test-renderer": "^15.6.1",
-    "rollup": "^0.59.4",
-    "rollup-plugin-babel": "^3.0.4",
+    "dts-bundle": "^0.7.3",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.4",
+    "handsontable": "^5.0.1",
+    "handsontable-pro": "^5.0.1",
+    "jest": "^23.4.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-test-renderer": "^16.4.1",
+    "rollup": "^0.63.2",
+    "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.1.3",
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-typescript2": "^0.16.1",
     "rollup-plugin-uglify": "^4.0.0",
-    "uglify-js": "^3.4.0"
+    "ts-jest": "^23.0.1",
+    "typescript": "^2.9.2",
+    "uglify-js": "^3.4.4"
   },
   "peerDependencies": {
-    "handsontable": "^4.0.0"
+    "handsontable": "^5.0.1"
   },
   "scripts": {
-    "build": "npm run delete-builds && npm run build-ce && npm run build-pro && npm run build:tests",
+    "build": "npm run delete-builds && npm run build-ce && npm run build-pro",
     "build-ce": "npm run build-ce:commonjs && npm run build-ce:es && npm run build-ce:umd && npm run build-ce:min",
     "build-pro": "npm run build-pro:commonjs && npm run build-pro:es && npm run build-pro:umd && npm run build-pro:min",
     "build-ce:commonjs": "cross-env NODE_ENV=cjs HOT_TYPE=ce rollup -c",
@@ -79,32 +86,50 @@
     "build-pro:umd": "cross-env NODE_ENV=umd HOT_TYPE=pro rollup -c",
     "build-pro:es": "cross-env NODE_ENV=es HOT_TYPE=pro rollup -c",
     "build-pro:min": "cross-env NODE_ENV=min HOT_TYPE=pro rollup -c",
-    "build:tests": "cross-env NODE_ENV=cjs HOT_TYPE=ce rollup -c -i src/common/settingsMapper.js -o test/dist/settingsMapper.js",
-    "delete-builds": "del-cli ./commonjs/ && del-cli ./dist/ && del-cli ./es/ && del-cli ./test/dist/",
-    "copy-builds-ce": "cpy './commonjs/ce/' ./build/ce/commonjs && cpy './es/ce/' ./build/ce/es && cpy './dist/ce/' ./build/ce/dist",
-    "copy-builds-pro": "cpy './commonjs/pro/' ./build/pro/commonjs && cpy './es/pro/' ./build/pro/es && cpy './dist/pro/' ./build/pro/dist",
+    "bundle-dts:ce": "dts-bundle --name @handsontable/react --main ./es/ce/index.d.ts --out ./../../build/ce/index.d.ts --outputAsModuleFolder --headerPath 'none' --removeSource",
+    "bundle-dts:pro": "dts-bundle --name @handsontable-pro/react --main ./es/pro/index.d.ts --out ./../../build/pro/index.d.ts --outputAsModuleFolder --headerPath 'none' --removeSource",
+    "bundle-dts": "npm run bundle-dts:ce && npm run bundle-dts:pro",
+    "delete-builds": "del-cli ./commonjs/ && del-cli ./dist/ && del-cli ./es/",
+    "copy-builds-ce": "cpy './commonjs/ce/' ./build/ce/commonjs && cpy './es/ce/*.js' ./build/ce/es && cpy './dist/ce/' ./build/ce/dist",
+    "copy-builds-pro": "cpy './commonjs/pro/' ./build/pro/commonjs && cpy './es/pro/*.js' ./build/pro/es && cpy './dist/pro/' ./build/pro/dist",
     "copy-builds": "npm run copy-builds-ce && npm run copy-builds-pro",
     "copy-scope-info": "cpy './src/ce/*' ./build/ce && cpy './src/pro/*' ./build/pro",
-    "copy-scopes": "npm run copy-builds && npm run copy-scope-info",
+    "copy-scopes": "npm run delete-scopes && npm run copy-builds && npm run copy-scope-info && npm run bundle-dts",
     "delete-scopes": "del-cli ./build/",
     "publish-scopes": "npm publish ./build/ce/ && npm publish ./build/pro/",
     "publish-all": "npm run build && npm run copy-scopes && npm run publish-scopes && npm run delete-scopes",
-    "test": "npm run build-ce:commonjs && npm run build:tests && jest",
-    "release": "generate-release"
+    "test": "jest"
   },
   "jest": {
+    "testURL": "http://localhost/",
     "setupFiles": [
-      "./test/jestsetup.js"
+      "./test/jestsetup.ts"
     ],
     "snapshotSerializers": [
       "<rootDir>/node_modules/enzyme-to-json/serializer"
     ],
-    "globals": {
-      "__HOT_BUILD_DATE__": "",
-      "__HOT_PACKAGE_NAME__": "",
-      "__HOT_VERSION__": "",
-      "__HOT_BASE_VERSION__": ""
+    "testEnvironment": "./test/environmentConfig/customJSDomEnvironment.js",
+    "transform": {
+      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js",
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
     },
-    "testEnvironment": "./test/environmentConfig/customJSDomEnvironment.js"
+    "testRegex": "(/test/(.*).(test|spec)).(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "moduleNameMapper": {
+      "hot-alias": "<rootDir>/node_modules/handsontable"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "test-tsconfig.json",
+        "useBabelrc": true
+      }
+    }
   }
 }

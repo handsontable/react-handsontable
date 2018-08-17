@@ -1,5 +1,5 @@
 import React from 'react';
-import {HotTable} from '../commonjs/ce/react-handsontable';
+import { HotTable } from '../src/common/index';
 
 export class IndividualPropsWrapper extends React.Component {
   constructor(props) {

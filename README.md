@@ -50,7 +50,7 @@ Assuming that you have installed the wrapper with npm, now you just need to incl
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {HotTable} from '@handsontable/react';
+import { HotTable } from '@handsontable/react';
 
 class HotApp extends React.Component {
   constructor(props) {
@@ -82,7 +82,7 @@ class HotApp extends React.Component {
 ```js
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {HotTable} from '@handsontable-pro/react';
+import { HotTable } from '@handsontable-pro/react';
 
 class HotApp extends React.Component {
   constructor(props) {
