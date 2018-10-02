@@ -2,25 +2,29 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 import replace from 'rollup-plugin-replace';
 import typescript from 'rollup-plugin-typescript2';
-import { version as componentVersion } from './../package.json';
+import json from 'rollup-plugin-json';
 
 const envHotType = process.env.HOT_TYPE;
 
 export const plugins = {
   replace: replace({
-    'hot-alias': envHotType === 'pro' ? 'handsontable-pro' : 'handsontable',
-    '_HOT_COMPONENT_VERSION_': componentVersion
+    'hot-alias': envHotType === 'pro' ? 'handsontable-pro' : 'handsontable'
   }),
   typescript: typescript(),
   babel: babel({
-    exclude: 'node_modules/**',
+    exclude: ['node_modules/**', '**.json'],
   }),
-  nodeResolve: nodeResolve()
+  nodeResolve: nodeResolve(),
+  json: json({
+    include: 'package.json',
+    compact: true
+  })
 };
 
 export const baseConfig = {
   input: 'src/common/index.tsx',
   plugins: [
+    plugins.json,
     plugins.replace,
     plugins.typescript,
     plugins.babel,

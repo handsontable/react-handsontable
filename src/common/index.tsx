@@ -1,6 +1,7 @@
 import React from 'react';
 import Handsontable from 'hot-alias';
 import { SettingsMapper } from './settingsMapper';
+import * as packageJson from './../../package.json';
 
 /**
  * Interface for the `prop` of the HotTable component - extending the default Handsontable settings with additional,
@@ -80,8 +81,8 @@ export class HotTable extends React.Component<HotTableProps, {}> {
    */
   style: React.CSSProperties;
 
-  static get version() {
-    return '_HOT_COMPONENT_VERSION_';
+  static get version(): string {
+    return (packageJson as any).version;
   }
 
   /**

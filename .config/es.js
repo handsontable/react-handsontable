@@ -1,6 +1,3 @@
-import nodeResolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
-import replace from 'rollup-plugin-replace';
 import typescript from 'rollup-plugin-typescript2';
 import { plugins } from './base';
 
@@ -15,6 +12,7 @@ export const esConfig = {
     file: `./es/${envHotType}/${filename}`
   },
   plugins: [
+    plugins.json,
     plugins.replace,
     typescript({
       tsconfigOverride: {
