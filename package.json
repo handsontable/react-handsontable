@@ -108,9 +108,8 @@
     "snapshotSerializers": [
       "<rootDir>/node_modules/enzyme-to-json/serializer"
     ],
-    "testEnvironment": "./test/environmentConfig/customJSDomEnvironment.js",
     "transform": {
-      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js",
+      "^.+\\.tsx?$": "ts-jest",
       "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
     },
     "testRegex": "(/test/(.*).(test|spec)).(jsx?|tsx?)$",
@@ -127,8 +126,9 @@
     },
     "globals": {
       "ts-jest": {
-        "tsConfigFile": "test-tsconfig.json",
-        "useBabelrc": true
+        "tsConfig": "test-tsconfig.json",
+        "babelConfig": true,
+        "diagnostics": false
       }
     }
   }

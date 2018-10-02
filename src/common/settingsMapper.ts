@@ -17,7 +17,7 @@ export class SettingsMapper {
   getSettings(properties: HotTableProps): Handsontable.DefaultSettings {
     let newSettings: Handsontable.DefaultSettings = {};
 
-    if(properties.settings) {
+    if (properties.settings) {
       let settings = properties.settings;
       for (const key in settings) {
         if (settings.hasOwnProperty(key)) {

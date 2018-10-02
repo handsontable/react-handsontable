@@ -25,7 +25,7 @@ export class SingleObjectWrapper extends React.Component {
   render() {
     return (
       <div>
-        <HotTable ref="hotTable" id="hot" settings={this.state.hotSettings} />
+        <HotTable ref="hotTable" id="hot" settings={this.state.hotSettings}/>
       </div>
     );
   }
@@ -34,7 +34,8 @@ export class SingleObjectWrapper extends React.Component {
 export function wait(amount, body, resolveFunc) {
   if (!resolveFunc) {
     resolveFunc = body;
-    body = ()=>{};
+    body = () => {
+    };
   }
   return new Promise((resolve, reject) => {
     body();

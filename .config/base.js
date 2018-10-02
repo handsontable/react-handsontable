@@ -9,7 +9,7 @@ const envHotType = process.env.HOT_TYPE;
 export const plugins = {
   replace: replace({
     'hot-alias': envHotType === 'pro' ? 'handsontable-pro' : 'handsontable',
-    'COMPONENT_VERSION': componentVersion
+    '_HOT_COMPONENT_VERSION_': componentVersion
   }),
   typescript: typescript(),
   babel: babel({

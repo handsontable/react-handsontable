@@ -81,7 +81,7 @@ export class HotTable extends React.Component<HotTableProps, {}> {
   style: React.CSSProperties;
 
   static get version() {
-    return 'COMPONENT_VERSION';
+    return '_HOT_COMPONENT_VERSION_';
   }
 
   /**
