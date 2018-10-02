@@ -48,7 +48,7 @@ export class HotTable extends React.Component<HotTableProps, {}> {
    *
    * @type {HotTableProps}
    */
-  props:  HotTableProps;
+  props: HotTableProps;
   /**
    * The `id` of the main Handsontable DOM element.
    *
@@ -79,6 +79,10 @@ export class HotTable extends React.Component<HotTableProps, {}> {
    * @type {React.CSSProperties}
    */
   style: React.CSSProperties;
+
+  static get version() {
+    return 'COMPONENT_VERSION';
+  }
 
   /**
    * Set the reference to the main Handsontable DOM element.
