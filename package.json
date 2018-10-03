@@ -107,11 +107,11 @@
       "./test/jestsetup.ts"
     ],
     "snapshotSerializers": [
-      "<rootDir>/node_modules/enzyme-to-json/serializer"
+      "enzyme-to-json/serializer"
     ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest",
-      "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
+      "^.+\\.js$": "babel-jest"
     },
     "testRegex": "(/test/(.*).(test|spec)).(jsx?|tsx?)$",
     "moduleFileExtensions": [
@@ -123,7 +123,7 @@
       "node"
     ],
     "moduleNameMapper": {
-      "hot-alias": "<rootDir>/node_modules/handsontable"
+      "hot-alias": "handsontable"
     },
     "globals": {
       "ts-jest": {
