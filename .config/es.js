@@ -1,7 +1,5 @@
-import nodeResolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
-import replace from 'rollup-plugin-replace';
 import typescript from 'rollup-plugin-typescript2';
+import { plugins } from './base';
 
 const env = process.env.NODE_ENV;
 const envHotType = process.env.HOT_TYPE;
@@ -14,9 +12,8 @@ export const esConfig = {
     file: `./es/${envHotType}/${filename}`
   },
   plugins: [
-    replace({
-      'hot-alias': envHotType === 'pro' ? 'handsontable-pro' : 'handsontable',
-    }),
+    plugins.json,
+    plugins.replace,
     typescript({
       tsconfigOverride: {
         compilerOptions: {
@@ -24,9 +21,7 @@ export const esConfig = {
         }
       }
     }),
-    babel({
-      exclude: 'node_modules/**',
-    }),
-    nodeResolve(),
+    plugins.babel,
+    plugins.nodeResolve,
   ],
 };

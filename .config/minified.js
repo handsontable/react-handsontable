@@ -31,4 +31,4 @@ const minConfig = {
 
 addLicenseBanner(minConfig);
 
-export {minConfig};
+export { minConfig };
