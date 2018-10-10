@@ -14,7 +14,8 @@ beforeEach(() => {
 
 describe('Handsontable initialization', () => {
   it('should render Handsontable when using the HotTable component', () => {
-    const wrapper = mount(<HotTable id="test-hot" data={[[2]]}/>, { attachTo: document.body.querySelector('#hotContainer') });
+    const wrapper = mount(<HotTable id="test-hot"
+                                    data={[[2]]}/>, {attachTo: document.body.querySelector('#hotContainer')});
 
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -31,7 +32,8 @@ describe('Handsontable initialization', () => {
   });
 
   it('should pass the provided properties to the Handsontable instance', () => {
-    const wrapper = mount(<HotTable id="test-hot" contextMenu={true} rowHeaders={true} colHeaders={true} data={[[2]]}/>, { attachTo: document.body.querySelector('#hotContainer') });
+    const wrapper = mount(<HotTable id="test-hot" contextMenu={true} rowHeaders={true} colHeaders={true}
+                                    data={[[2]]}/>, {attachTo: document.body.querySelector('#hotContainer')});
 
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -51,7 +53,7 @@ describe('Handsontable initialization', () => {
 
 describe('Updating the Handsontable settings', () => {
   it('should call the updateSettings method of Handsontable, when the component properties get updated (when providing properties individually)', () => {
-    const wrapper = mount(<IndividualPropsWrapper/>, { attachTo: document.body.querySelector('#hotContainer') });
+    const wrapper = mount(<IndividualPropsWrapper/>, {attachTo: document.body.querySelector('#hotContainer')});
 
     return wait(300, () => {
       const hotInstance = wrapper.instance().refs.hotTable.hotInstance;
@@ -72,7 +74,7 @@ describe('Updating the Handsontable settings', () => {
   });
 
   it('should call the updateSettings method of Handsontable, when the component properties get updated (when providing properties as a single settings object)', () => {
-    const wrapper = mount(<SingleObjectWrapper/>, { attachTo: document.body.querySelector('#hotContainer') });
+    const wrapper = mount(<SingleObjectWrapper/>, {attachTo: document.body.querySelector('#hotContainer')});
 
     return wait(300, () => {
       const hotInstance = wrapper.instance().refs.hotTable.hotInstance;
@@ -93,7 +95,7 @@ describe('Updating the Handsontable settings', () => {
   });
 
   it('should update the Handsontable options, when the component properties get updated (when providing properties individually)', () => {
-    const wrapper = mount(<IndividualPropsWrapper/>, { attachTo: document.body.querySelector('#hotContainer') });
+    const wrapper = mount(<IndividualPropsWrapper/>, {attachTo: document.body.querySelector('#hotContainer')});
 
     return wait(300, () => {
       const hotInstance = wrapper.instance().refs.hotTable.hotInstance;
@@ -115,7 +117,7 @@ describe('Updating the Handsontable settings', () => {
   });
 
   it('should update the Handsontable options, when the component properties get updated (when providing properties as a single settings object)', () => {
-    const wrapper = mount(<SingleObjectWrapper/>, { attachTo: document.body.querySelector('#hotContainer') });
+    const wrapper = mount(<SingleObjectWrapper/>, {attachTo: document.body.querySelector('#hotContainer')});
 
     return wait(300, () => {
       const hotInstance = wrapper.instance().refs.hotTable.hotInstance;

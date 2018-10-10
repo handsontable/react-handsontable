@@ -9,7 +9,9 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "hot-alias": ["node_modules/handsontable"]
+      "hot-alias": [
+        "node_modules/handsontable"
+      ]
     }
   },
   "include": [
