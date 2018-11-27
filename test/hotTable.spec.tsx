@@ -33,7 +33,11 @@ describe('Handsontable initialization', () => {
 
       expect(hotInstance).not.toBe(null);
       expect(hotInstance).not.toBe(void 0);
+
+      // TODO: Remove the ts-ignore below after the Handsontable's definition file is updated.
+      // @ts-ignore
       expect(hotInstance.rootElement.id).toEqual('test-hot');
+
       wrapper.detach();
     });
   });
