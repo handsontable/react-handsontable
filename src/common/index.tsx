@@ -97,7 +97,7 @@ export class HotTable extends React.Component<HotTableProps, {}> {
   /**
    * Initialize Handsontable after the component has mounted.
    */
-  componentDidMount() {
+  componentDidMount(): void {
     const newSettings = this.settingsMapper.getSettings(this.props);
     this.hotInstance = new Handsontable(this.hotElementRef, newSettings);
   }
@@ -118,14 +118,14 @@ export class HotTable extends React.Component<HotTableProps, {}> {
   /**
    * Destroy the Handsontable instance when the parent component unmounts.
    */
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     this.hotInstance.destroy();
   }
 
   /**
    * Render the table.
    */
-  render() {
+  render(): React.ReactNode {
     this.id = this.props.id || 'hot-' + Math.random().toString(36).substring(5);
     this.className = this.props.className || '';
     this.style = this.props.style || {};

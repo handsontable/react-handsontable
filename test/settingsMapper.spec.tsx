@@ -1,10 +1,12 @@
 import { SettingsMapper } from '../src/common/settingsMapper';
+import { HotTableProps } from '../src/common/index';
 
 describe('Settings mapper unit tests', () => {
   describe('getSettings', () => {
     it('should return a valid settings object, when provided an object with settings (including the hooks prefixed with "on")', () => {
       const settingsMapper = new SettingsMapper();
-      const initial = {
+
+      const initial: HotTableProps = {
         width: 300,
         height: 300,
         contextMenu: true,
@@ -19,7 +21,7 @@ describe('Settings mapper unit tests', () => {
           return 'also works!';
         }
       };
-      const result = settingsMapper.getSettings(initial);
+      const result: {[key: string]: any} = settingsMapper.getSettings(initial);
 
       expect(!!result.width && !!result.height && !!result.contextMenu && !!result.columns && !!result.afterChange && !!result.afterRender).toEqual(true);
       expect(Object.keys(initial).length).toEqual(Object.keys(result).length);
@@ -52,7 +54,7 @@ describe('Settings mapper unit tests', () => {
           }
         }
       };
-      const result = settingsMapper.getSettings(initial);
+      const result: {[key: string]: any} = settingsMapper.getSettings(initial);
 
       expect(!!result.width && !!result.height && !!result.contextMenu && !!result.columns && !!result.afterChange && !!result.afterRender).toEqual(true);
       expect(Object.keys(initial.settings).length).toEqual(Object.keys(result).length);
@@ -86,7 +88,7 @@ describe('Settings mapper unit tests', () => {
           }
         }
       };
-      const result = settingsMapper.getSettings(initial);
+      const result: {[key: string]: any} = settingsMapper.getSettings(initial);
 
       expect(!!result.width && !!result.height && !!result.contextMenu && !!result.columns && !!result.afterChange && !!result.afterRender).toEqual(true);
       expect(Object.keys(initial.settings).length + Object.keys(initial).length - 1).toEqual(Object.keys(result).length);
