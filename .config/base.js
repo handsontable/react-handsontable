@@ -12,7 +12,12 @@ export const plugins = {
   }),
   typescript: typescript(),
   babel: babel({
+    babelrc: false,
     exclude: ['node_modules/**', '**.json'],
+    extensions: ['.js', '.ts', '.tsx', '.jsx'],
+    presets: [
+      '@babel/env'
+    ],
   }),
   nodeResolve: nodeResolve(),
   json: json({
