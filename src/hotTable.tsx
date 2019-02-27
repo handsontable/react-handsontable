@@ -1,18 +1,18 @@
 import React from 'react';
-import Handsontable from 'hot-alias';
+import Handsontable from 'handsontable';
 import { SettingsMapper } from './settingsMapper';
-import * as packageJson from './../../package.json';
+import * as packageJson from '../package.json';
 
 /**
  * Interface for the `prop` of the HotTable component - extending the default Handsontable settings with additional,
  * component-related properties.
  */
-export interface HotTableProps extends Handsontable.DefaultSettings {
+export interface HotTableProps extends Handsontable.GridSettings {
   data?: any[][] | object[];
   id?: string,
   className?: string,
   style?: React.CSSProperties,
-  settings?: Handsontable.DefaultSettings
+  settings?: Handsontable.GridSettings
 }
 
 /**
@@ -138,7 +138,7 @@ export class HotTable extends React.Component<HotTableProps, {}> {
    *
    * @param {Object} newSettings The settings object.
    */
-  private updateHot(newSettings: Handsontable.DefaultSettings): void {
+  private updateHot(newSettings: Handsontable.GridSettings): void {
     this.hotInstance.updateSettings(newSettings, false);
   }
 }

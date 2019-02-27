@@ -1,49 +1,49 @@
-<img src="https://raw.githubusercontent.com/handsontable/static-files/master/Images/Logo/Handsontable/handsontable-react.png" alt="Handsontable for React" />
+<div align="center">
+  
+![Handsontable for React](https://raw.githubusercontent.com/handsontable/static-files/master/Images/Logo/Handsontable/handsontable-react.png)
 
-<br/>
+This is the official wrapper of [**Handsontable**](//github.com/handsontable/handsontable) data grid for React.<br>
+It provides data binding, data validation, filtering, sorting and more.<br>
 
-**Handsontable for React** is the official wrapper for [**Handsontable**](//github.com/handsontable/handsontable), a JavaScript data grid component with a spreadsheet look & feel. It easily integrates with any data source and comes with lots of useful features like data binding, validation, sorting or powerful context menu.
-
+[![npm](https://img.shields.io/npm/dt/@handsontable/react.svg)](//npmjs.com/package/@handsontable/react)
+[![npm](https://img.shields.io/npm/dm/@handsontable/react.svg)](//npmjs.com/package/@handsontable/react)
 [![Build status](https://travis-ci.org/handsontable/react-handsontable.png?branch=master)](//travis-ci.org/handsontable/react-handsontable)
+</div>
 
-<br/>
+<br>
 
-## Table of contents
+<div align="center">
+<a href="//handsontable.com/docs/frameworks-wrapper-for-react-simple-examples.html">
+<img src="https://raw.githubusercontent.com/handsontable/static-files/master/Images/Screenshots/handsontable-screenshot-new.png" align="center" alt="A screenshot of a data grid for React"/>
+</a>
+</div>
 
-
- 1. [Installation](#installation)
- 2. [Getting Started](#getting-started)
- 3. [Documentation](#documentation)
- 4. [What to use it for?](#what-to-use-it-for)
- 5. [Features](#features)
- 6. [Screenshot](#screenshot)
- 7. [Resources](#resources)
- 8. [Support](#support)
- 9. [Contributing](#contributing)
- 10. [Licensing](#licensing)
-
-<br/>
+<br>
 
 ## Installation
-Use npm to download the project.
-```bash
+
+Use npm to install this wrapper together with Handsontable.
+```
 npm install handsontable @handsontable/react
 ```
-A package scope for Handsontable Pro users:
-```bash
-npm install handsontable-pro @handsontable-pro/react
+
+You can load it directly from [jsDelivr](//jsdelivr.com/package/npm/@handsontable/react) as well.
+```html
+<script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@handsontable/react/dist/react-handsontable.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" rel="stylesheet">
 ```
 
-<br/>
+The component will be available as `Handsontable.react.HotTable`.
 
-## Getting Started
-Assuming that you have installed the wrapper with npm, now you just need to include Handsontable styles into your build system and use `<HotTable>` just like any other React component.
+## Usage
 
-### Handsontable Community Edition:
+Use this data grid as you would any other component in your application. [Options](//handsontable.com/docs/Options.html) can be set as `HotTable` props.
 
 **Styles**
 ```css
-@import 'handsontable/dist/handsontable.full.css';
+@import '~handsontable/dist/handsontable.full.css';
 ```
 
 **React Component**
@@ -56,127 +56,117 @@ class HotApp extends React.Component {
   constructor(props) {
     super(props);
     this.data = [
-      ["", "Ford", "Volvo", "Toyota", "Honda"],
-      ["2016", 10, 11, 12, 13],
-      ["2017", 20, 11, 14, 13],
-      ["2018", 30, 15, 12, 13]
+      ['', 'Tesla', 'Mercedes', 'Toyota', 'Volvo'],
+      ['2019', 10, 11, 12, 13],
+      ['2020', 20, 11, 14, 13],
+      ['2021', 30, 15, 12, 13]
     ];
   }
 
   render() {
-    return (
-      <div id="hot-app">
-        <HotTable data={this.data} colHeaders={true} rowHeaders={true} width="600" height="300" stretchH="all" />
-      </div>
-    );
-  }
-}
-```
-### Handsontable Pro:
-**Styles**
-```css
-@import 'handsontable-pro/dist/handsontable.full.css';
-```
-
-**React Component**
-```js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { HotTable } from '@handsontable-pro/react';
-
-class HotApp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.data = [
-      ["", "Ford", "Volvo", "Toyota", "Honda"],
-      ["2016", 10, 11, 12, 13],
-      ["2017", 20, 11, 14, 13],
-      ["2018", 30, 15, 12, 13]
-    ];
-  }
-
-  render() {
-    return (
-      <div id="hot-app">
-        <HotTable data={this.data} colHeaders={true} rowHeaders={true} width="600" height="300" stretchH="all" />
-      </div>
-    );
+    return (<HotTable data={this.data} colHeaders={true} rowHeaders={true} width="600" height="300" />);
   }
 }
 ```
 
-<br/>
-
-## Documentation
-Visit [handsontable.com/docs](https://handsontable.com/docs/react) to get more Handsontable for React examples and guides.
-
-<br/>
-
-## What to use it for?
-The list below gives a rough idea on what you can do with Handsontable, but it shouldn't limit you in any way:
-
-- Database editing
-- Configuration controlling
-- Data merging
-- Team scheduling
-- Sales reporting
-- Financial analysis
-
-<br/>
+##### [See the live demo](//handsontable.com/docs/frameworks-wrapper-for-react-simple-examples.html)
 
 ## Features
 
-Some of the most popular features include:
+A list of some of the most popular features:
 
-- Sorting data
-- Data validation
+- Multiple column sorting
+- Non-contiguous selection
+- Filtering data
+- Export to file
+- Validating data
 - Conditional formatting
-- Freezing rows/columns
 - Merging cells
-- Defining custom cell types
+- Custom cell types
+- Freezing rows/columns
 - Moving rows/columns
 - Resizing rows/columns
+- Hiding rows/columns
 - Context menu
-- Adding comments to cells
-- Dragging fill handle to populate data
-- Internationalization
-- Non-contiguous selection
+- Comments
+- Auto-fill option
 
-<br/>
+## Documentation
 
-## Screenshot
-<div align="center">
-<a href="//handsontable.com/examples">
-<img src="https://raw.githubusercontent.com/handsontable/static-files/master/Images/Screenshots/handsontable-ce-showcase.png" align="center" alt="Handsontable for React" />
-</a>
-</div>
-
-<br/>
-
-## Resources
-- [Guides](//handsontable.com/docs/react)
+- [Developer guides](//handsontable.com/docs/react)
 - [API Reference](//handsontable.com/docs/Core.html)
-- [Release notes](//github.com/handsontable/react-handsontable/releases)
-- [Roadmap](//trello.com/b/PztR4hpj)
-- [Twitter](//twitter.com/handsontable)
+- [Release notes](//handsontable.com/docs/tutorial-release-notes.html)
+- [Twitter](//twitter.com/handsontable) (News and updates)
 
-<br/>
+## Support and contribution
 
-## Support
-You can report your issues here on [GitHub](//github.com/handsontable/react-handsontable/issues).
+We provide support for all users through [GitHub issues](//github.com/handsontable/react-handsontable/issues). If you have a commercial license then you can add a new ticket through the [contact form](//handsontable.com/contact?category=technical_support).
 
-An open source version of Handsontable doesn't include technical support. You need to purchase the [Handsontable Pro](//handsontable.com/pricing) license or [contact us](//handsontable.com/contact) directly in order to obtain a technical support from the Handsontable team.
+If you would like to contribute to this project, make sure you first read the [guide for contributors](//github.com/handsontable/react-handsontable/blob/master/CONTRIBUTING.md).
 
-<br/>
+## Browser compatibility
 
-## Contributing
-If you would like to help us to develop this wrapper for React, please first read the [guide for contributors](//github.com/handsontable/react-handsontable/blob/master/CONTRIBUTING.md).
+Handsontable is compatible with modern browsers such as Chrome, Firefox, Safari, Opera, and Edge. It also supports Internet Explorer 9 to 11 but with limited performance.
 
-<br/>
+## License
 
-## Licensing
-This wrapper is released under [the MIT license](//github.com/handsontable/react-handsontable/blob/master/LICENSE).
+This wrapper is released under [the MIT license](//github.com/handsontable/react-handsontable/blob/master/LICENSE) but under the hood it uses [Handsontable](//github.com/handsontable/handsontable), which is dual-licensed. You can either use it for free in all your non-commercial projects or purchase a commercial license.
 
-<br/>
+<table>
+  <thead align="center">
+    <tr>
+      <th width="50%">Free license</th>
+      <th width="50%">Paid license</th>
+    </tr>    
+  </thead>
+  <tbody align="center">
+    <tr>
+      <td>For non-commercial purposes such as teaching, academic research, personal experimentation, and evaluating  on development and testing servers.</td>
+      <td>For all commercial purposes</td>
+    </tr>
+    <tr>
+      <td>All features are available</td>
+      <td>All features are available</td>
+    </tr>
+    <tr>
+      <td>Community support</td>
+      <td>Dedicated support</td>
+    </tr>    
+    <tr>
+      <td><a href="//github.com/handsontable/handsontable/blob/master/handsontable-non-commercial-license.pdf">Read the license</a></td>
+      <td><a href="//handsontable.com/pricing">See plans</a></td>
+    </tr>
+  </tbody>
+</table>
 
-Copyrights belong to Handsoncode sp. z o.o.
+## License key
+
+**The license key is obligatory since [Handsontable 7.0.0](//github.com/handsontable/handsontable/releases/tag/7.0.0) (released in March 2019).**
+
+If you use Handsontable for purposes not intended toward monetary compensation such as, but not limited to, teaching, academic research, evaluation, testing and experimentation, pass a phrase `'non-commercial-and-evaluation'`, as presented below. 
+
+You can pass it in the `settings` object: 
+
+```js
+settings: {
+  data: data,
+  rowHeaders: true,
+  colHeaders: true,
+  licenseKey: 'non-commercial-and-evaluation'
+}
+```
+
+Alternatively, you can pass it to a `licenseKey` prop:
+
+```jsx
+<HotTable settings={settings} licenseKey="00000-00000-00000-00000-00000" />
+```
+
+If, on the other hand, you use Handsontable in a project that supports your commercial activity, then you must purchase the license key at [handsontable.com](//handsontable.com/pricing).
+
+The license key is validated in an offline mode.  No connection is made to any server. [Learn more](//handsontable.com/docs/tutorial-license-key.html) about how it works.
+
+<br>
+<br>
+
+Created by [Handsoncode](//handsoncode.net) with ❤ and ☕ in [Tricity](//en.wikipedia.org/wiki/Tricity,_Poland).

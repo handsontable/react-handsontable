@@ -1,15 +1,9 @@
 import nodeResolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
-import replace from 'rollup-plugin-replace';
 import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
 
-const envHotType = process.env.HOT_TYPE;
-
 export const plugins = {
-  replace: replace({
-    'hot-alias': envHotType === 'pro' ? 'handsontable-pro' : 'handsontable'
-  }),
   typescript: typescript(),
   babel: babel({
     babelrc: false,
@@ -27,7 +21,7 @@ export const plugins = {
 };
 
 export const baseConfig = {
-  input: 'src/common/index.tsx',
+  input: 'src/index.tsx',
   plugins: [
     plugins.json,
     plugins.replace,
@@ -38,6 +32,6 @@ export const baseConfig = {
   external: [
     'react',
     'react-dom',
-    (envHotType === 'ce' ? 'handsontable' : 'handsontable-pro')
+    'handsontable'
   ],
 };
