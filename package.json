@@ -78,7 +78,7 @@
     "uglify-js": "^3.4.9"
   },
   "peerDependencies": {
-    "handsontable": "^7.0.0"
+    "handsontable": ">=7.0.0"
   },
   "scripts": {
     "build": "npm run delete-build && npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:min",
