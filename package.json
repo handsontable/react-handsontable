@@ -5,9 +5,10 @@
   "author": "Handsoncode <hello@handsoncode.net> (https://handsoncode.net)",
   "homepage": "https://handsontable.com",
   "license": "MIT",
-  "browser": "./dist/react-handsontable.js",
   "main": "./commonjs/react-handsontable.js",
   "module": "./es/react-handsontable.js",
+  "jsdelivr": "./dist/vue-handsontable.js",
+  "unpkg": "./dist/vue-handsontable.js",
   "types": "./index.d.ts",
   "keywords": [
     "handsontable",
