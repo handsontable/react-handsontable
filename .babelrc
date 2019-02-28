@@ -1,15 +1,16 @@
 {
   "presets": [
-    "es2015-rollup",
-    "react"
+    "@babel/preset-react"
   ],
   "env": {
     "test": {
       "presets": [
-        "env"
+        "@babel/env",
+        "@babel/preset-typescript"
       ],
       "plugins": [
-        "transform-runtime"
+        "@babel/transform-runtime",
+        "@babel/plugin-proposal-class-properties"
       ]
     }
   }

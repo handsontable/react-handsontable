@@ -6,11 +6,6 @@
     "module": "esnext",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "baseUrl": ".",
-    "paths": {
-      "hot-alias": [
-        "node_modules/handsontable"
-      ]
-    }
+    "baseUrl": "."
   }
 }
