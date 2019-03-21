@@ -1,4 +1,5 @@
-import { baseConfig } from './base';
+import typescript from 'rollup-plugin-typescript2';
+import { baseConfig, plugins } from './base';
 import commonjs from 'rollup-plugin-commonjs';
 
 const env = process.env.NODE_ENV;
@@ -11,5 +12,21 @@ export const cjsConfig = {
     indent: false,
     file: `./commonjs/${envHotType}/${filename}`
   },
-  plugins: baseConfig.plugins.concat([commonjs()])
+  plugins: [
+    plugins.json,
+    plugins.replace,
+    typescript({
+      tsconfigOverride: {
+        compilerOptions: {
+          declaration: true
+        }
+      }
+    }),
+    plugins.babel,
+    plugins.nodeResolve,
+    commonjs()
+  ],
+  // plugins: baseConfig.plugins.concat([
+  //   commonjs(),
+  // ])
 };

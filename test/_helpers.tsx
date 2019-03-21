@@ -1,5 +1,5 @@
 import React from 'react';
-import { HotTable } from '../src/common/index';
+import { HotTable } from '../src/common/HotTable';
 import Handsontable from 'hot-alias';
 
 export class IndividualPropsWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings: object}> {

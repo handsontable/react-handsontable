@@ -43,8 +43,10 @@
     "@types/enzyme-adapter-react-16": "^1.0.3",
     "@types/jest": "^23.3.1",
     "@types/react": "^16.7.7",
+    "@types/react-dom": "^16.0.11",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015-rollup": "^3.0.0",
@@ -57,10 +59,9 @@
     "enzyme-adapter-react-16": "^1.1.1",
     "enzyme-to-json": "^3.3.4",
     "handsontable": "^6.0.0",
-    "handsontable-pro": "^6.0.0",
     "jest": "^23.6.0",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
     "react-test-renderer": "^16.4.1",
     "rollup": "^0.63.2",
     "rollup-plugin-babel": "^3.0.7",
@@ -89,19 +90,18 @@
     "build-pro:umd": "cross-env NODE_ENV=umd HOT_TYPE=pro rollup -c",
     "build-pro:es": "cross-env NODE_ENV=es HOT_TYPE=pro rollup -c",
     "build-pro:min": "cross-env NODE_ENV=min HOT_TYPE=pro rollup -c",
-    "bundle-dts:ce": "dts-bundle --name @handsontable/react --main ./es/ce/index.d.ts --out ./../../build/ce/index.d.ts --outputAsModuleFolder --headerPath 'none' --removeSource",
-    "bundle-dts:pro": "dts-bundle --name @handsontable-pro/react --main ./es/pro/index.d.ts --out ./../../build/pro/index.d.ts --outputAsModuleFolder --headerPath 'none' --removeSource",
-    "bundle-dts": "npm run bundle-dts:ce && npm run bundle-dts:pro",
     "delete-builds": "del-cli ./commonjs/ && del-cli ./dist/ && del-cli ./es/",
     "copy-builds-ce": "cpy './commonjs/ce/' ./build/ce/commonjs && cpy './es/ce/*.js' ./build/ce/es && cpy './dist/ce/' ./build/ce/dist",
     "copy-builds-pro": "cpy './commonjs/pro/' ./build/pro/commonjs && cpy './es/pro/*.js' ./build/pro/es && cpy './dist/pro/' ./build/pro/dist",
     "copy-builds": "npm run copy-builds-ce && npm run copy-builds-pro",
     "copy-scope-info": "cpy './src/ce/*' ./build/ce && cpy './src/pro/*' ./build/pro",
-    "copy-scopes": "npm run delete-scopes && npm run copy-builds && npm run copy-scope-info && npm run bundle-dts",
+    "copy-dts": "cpy './commonjs/ce/*.d.ts' ./build/ce && cpy './commonjs/pro/*.d.ts' ./build/pro && del-cli './commonjs/ce/*.d.ts' && del-cli './commonjs/pro/*.d.ts'",
+    "copy-scopes": "npm run delete-scopes && npm run copy-builds && npm run copy-scope-info && npm run copy-dts",
     "delete-scopes": "del-cli ./build/",
     "publish-scopes": "npm publish ./build/ce/ && npm publish ./build/pro/",
     "publish-all": "npm run build && npm run copy-scopes && npm run publish-scopes && npm run delete-scopes",
-    "test": "jest"
+    "test": "jest",
+    "watch": "cross-env NODE_ENV=cjs HOT_TYPE=ce rollup -c --watch"
   },
   "jest": {
     "testURL": "http://localhost/",
@@ -133,5 +133,8 @@
         "babelConfig": true
       }
     }
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5"
   }
 }

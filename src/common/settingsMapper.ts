@@ -1,5 +1,5 @@
-import Handsontable from 'hot-alias';
-import { HotTableProps } from './index';
+import Handsontable from 'handsontable';
+import { HotTableProps } from './types';
 
 export class SettingsMapper {
   private registeredHooks: string[];
