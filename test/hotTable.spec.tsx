@@ -5,7 +5,7 @@ import {
 } from 'enzyme';
 import {
   HotTable
-} from '../src/common/HotTable';
+} from '../src/hotTable';
 import {
   IndividualPropsWrapper,
   SingleObjectWrapper,

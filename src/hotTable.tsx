@@ -1,7 +1,7 @@
 import React from 'react';
 import Handsontable from 'handsontable';
 import { SettingsMapper } from './settingsMapper';
-import * as packageJson from './../../package.json';
+import * as packageJson from '../package.json';
 import { HotTableProps } from './types';
 
 /**
@@ -170,7 +170,7 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
    *
    * @param {Object} newSettings The settings object.
    */
-  private updateHot(newSettings: Handsontable.DefaultSettings): void {
+  private updateHot(newSettings: Handsontable.GridSettings): void {
     this.hotInstance.updateSettings(newSettings, false);
   }
 }

@@ -3,14 +3,13 @@ import { baseConfig } from './base';
 import { plugins } from './base';
 
 const env = process.env.NODE_ENV;
-const envHotType = process.env.HOT_TYPE;
 const filename = 'react-handsontable.js';
 
 export const esConfig = {
   output: {
     format: env,
     indent: false,
-    file: `./es/${envHotType}/${filename}`
+    file: `./es/${filename}`
   },
   plugins: baseConfig.plugins
   // plugins: [

@@ -4,7 +4,7 @@ import Handsontable from 'handsontable';
  * Interface for the `prop` of the HotTable component - extending the default Handsontable settings with additional,
  * component-related properties.
  */
-export interface HotTableProps extends Handsontable.DefaultSettings {
+export interface HotTableProps extends Handsontable.GridSettings {
   data?: any[][] | object[];
   id?: string,
   className?: string,
@@ -16,7 +16,7 @@ export interface HotTableProps extends Handsontable.DefaultSettings {
 /**
  * TODO: docs
  */
-export interface HotColumnProps extends Handsontable.DefaultSettings {
+export interface HotColumnProps extends Handsontable.GridSettings {
   _emitColumnSettings?: Function,
   _columnIndex?: number,
   _getRendererCache?: Function

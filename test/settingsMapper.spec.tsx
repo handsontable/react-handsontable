@@ -1,5 +1,5 @@
-import { SettingsMapper } from '../src/common/settingsMapper';
-import { HotTableProps } from '../src/common/types';
+import { SettingsMapper } from '../src/settingsMapper';
+import { HotTableProps } from '../src/hotTable';
 
 describe('Settings mapper unit tests', () => {
   describe('getSettings', () => {

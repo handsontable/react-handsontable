@@ -2,8 +2,6 @@ import { baseConfig } from './base';
 import { addLicenseBanner } from './helpers/licenseBanner';
 import { uglify } from 'rollup-plugin-uglify';
 
-const env = process.env.NODE_ENV;
-const envHotType = process.env.HOT_TYPE;
 const minFilename = 'react-handsontable.min.js';
 
 const minConfig = {
@@ -12,7 +10,7 @@ const minConfig = {
     name: 'Handsontable.react',
     indent: false,
     sourcemap: true,
-    file: `./dist/${envHotType}/${minFilename}`
+    file: `./dist/${minFilename}`
   },
   plugins: baseConfig.plugins.concat([
     uglify({
