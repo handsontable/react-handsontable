@@ -2,6 +2,7 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
 import typescript from 'rollup-plugin-typescript2';
 import json from 'rollup-plugin-json';
+import commonjs from 'rollup-plugin-commonjs';
 
 export const plugins = {
   typescript: typescript(),
@@ -17,7 +18,18 @@ export const plugins = {
   json: json({
     include: 'package.json',
     compact: true
-  })
+  }),
+  commonjs: commonjs({
+    include: [
+      'node_modules/**',
+      'src/lib/**'
+    ],
+    namedExports: {
+      'src/lib/lru/lru.js': [
+        'LRUMap'
+      ]
+    }
+  }),
 };
 
 export const baseConfig = {
@@ -25,6 +37,7 @@ export const baseConfig = {
   plugins: [
     plugins.json,
     plugins.replace,
+    plugins.commonjs,
     plugins.typescript,
     plugins.babel,
     plugins.nodeResolve,

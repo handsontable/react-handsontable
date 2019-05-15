@@ -3,6 +3,7 @@ import Handsontable from 'handsontable';
 import { SettingsMapper } from './settingsMapper';
 import * as packageJson from '../package.json';
 import { HotTableProps } from './types';
+import { LRUMap } from './lib/lru/lru';
 
 /**
  * A Handsontable-ReactJS wrapper.
@@ -27,20 +28,12 @@ import { HotTableProps } from './types';
  * @class HotTable
  */
 export default class HotTable extends React.Component<HotTableProps, {}> {
-
-  // TODO: check why the @type is messing this up
-  // /**
-  //  * Reference to the `SettingsMapper` instance.
-  //  *
-  //  * @type {SettingsMapper}
-  //  */
-  private settingsMapper: SettingsMapper = new SettingsMapper();
   /**
-   * Component props.
+   * Reference to the `SettingsMapper` instance.
    *
-   * @type {HotTableProps}
+   * @type {SettingsMapper}
    */
-  props: HotTableProps;
+  private settingsMapper: SettingsMapper = new SettingsMapper();
   /**
    * The `id` of the main Handsontable DOM element.
    *
@@ -73,15 +66,25 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
   style: React.CSSProperties;
 
   /**
-   * TODO:docs
+   * Array of object containing the column settings.
+   *
+   * @type {Array}
    */
   columnSettings: object[] = [];
 
   /**
-   * TODO: docs
+   * LRU renderer cache.
+   *
+   * @type {LRUMap}
    */
-  // rendererCache: WeakMap<HTMLElement, React.ReactElement<object>> = new WeakMap(); //TODO: check why it's wrong
-  rendererCache: WeakMap<HTMLElement, any> = new WeakMap();
+  private rendererCache: LRUMap<string, React.ReactElement> = new LRUMap(5000);
+
+  /**
+   * Editor cache.
+   *
+   * @type {Map}
+   */
+  private editorCache: Map<string, React.ReactElement> = new Map();
 
   static get version(): string {
     return (packageJson as any).version;
@@ -97,10 +100,21 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
   }
 
   /**
-   * TODO: docs
+   * Get the renderer cache and return it.
+   *
+   * @returns {LRUMap}
    */
-  getRendererCache() {
+  getRendererCache(): LRUMap<string, React.ReactElement> {
     return this.rendererCache;
+  }
+
+  /**
+   * Get the editor cache and return it.
+   *
+   * @returns {Map}
+   */
+  getEditorCache(): Map<string, React.ReactElement> {
+    return this.editorCache;
   }
 
   /**
@@ -135,9 +149,12 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
   }
 
   /**
-   * TODO: docs
+   * Sets the column settings based on information received from HotColumn.
+   *
+   * @param {HotTableProps} columnSettings Column settings object.
+   * @param {Number} columnIndex Column index.
    */
-  getHotColumnSettings(columnSettings, columnIndex) {
+  setHotColumnSettings(columnSettings: HotTableProps, columnIndex: number) {
     this.columnSettings[columnIndex] = columnSettings;
   }
 
@@ -145,11 +162,12 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
    * Render the table.
    */
   render(): React.ReactNode {
-    const childClones = React.Children.map(this.props.children, (hotColumn, columnIndex) => {
+    const childClones = React.Children.map(this.props.children, (hotColumn: React.ReactElement, columnIndex: number) => {
       return React.cloneElement(hotColumn, {
-        _emitColumnSettings: this.getHotColumnSettings.bind(this),
+        _emitColumnSettings: this.setHotColumnSettings.bind(this),
         _columnIndex: columnIndex,
         _getRendererCache: this.getRendererCache.bind(this),
+        _getEditorCache: this.getEditorCache.bind(this),
         children: hotColumn.props.children
       })
     });
