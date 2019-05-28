@@ -21,7 +21,7 @@ beforeEach(() => {
 describe('Handsontable initialization', () => {
   it('should render Handsontable when using the HotTable component', () => {
     const wrapper: ReactWrapper<{}, {}, HotTable> = mount(
-      <HotTable id="test-hot" data={[[2]]}/>, {attachTo: document.body.querySelector('#hotContainer')}
+      <HotTable id="test-hot" data={[[2]]} licenseKey="non-commercial-and-evaluation"/>, {attachTo: document.body.querySelector('#hotContainer')}
     );
 
     return new Promise((resolve, reject) => {
@@ -45,7 +45,7 @@ describe('Handsontable initialization', () => {
   it('should pass the provided properties to the Handsontable instance', () => {
     const wrapper: ReactWrapper<{}, {}, HotTable> = mount(
       <HotTable id="test-hot" contextMenu={true} rowHeaders={true} colHeaders={true}
-                data={[[2]]}/>, {attachTo: document.body.querySelector('#hotContainer')}
+                data={[[2]]} licenseKey="non-commercial-and-evaluation"/>, {attachTo: document.body.querySelector('#hotContainer')}
     );
 
     return new Promise((resolve, reject) => {

@@ -20,7 +20,7 @@ export class IndividualPropsWrapper extends React.Component<{ref?: string, id?: 
   render(): React.ReactNode {
     return (
       <div>
-        <HotTable ref={this.setHotElementRef.bind(this)} id="hot" {...this.state.hotSettings} />
+        <HotTable licenseKey="non-commercial-and-evaluation" ref={this.setHotElementRef.bind(this)} id="hot" {...this.state.hotSettings} />
       </div>
     );
   }
@@ -44,7 +44,7 @@ export class SingleObjectWrapper extends React.Component<{ref?: string, id?: str
   render(): React.ReactNode {
     return (
       <div>
-        <HotTable ref={this.setHotElementRef.bind(this)} id="hot" settings={this.state.hotSettings}/>
+        <HotTable licenseKey="non-commercial-and-evaluation" ref={this.setHotElementRef.bind(this)} id="hot" settings={this.state.hotSettings}/>
       </div>
     );
   }

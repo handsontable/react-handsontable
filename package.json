@@ -73,7 +73,7 @@
     "rollup-plugin-commonjs": "^9.2.1",
     "rollup-plugin-json": "^3.1.0",
     "rollup-plugin-node-resolve": "^4.0.1",
-    "rollup-plugin-typescript2": "^0.19.3",
+    "rollup-plugin-typescript2": "^0.21.0",
     "rollup-plugin-uglify": "^6.0.2",
     "typescript": "^3.3.3333",
     "uglify-js": "^3.4.9"
@@ -90,7 +90,9 @@
     "delete-build": "del-cli ./es/ && del-cli ./commonjs/ && del-cli ./dist/ && del-cli ./*.d.ts",
     "publish-build": "npm publish",
     "publish-all": "npm run build && npm run publish-build && npm run delete-build",
-    "test": "jest"
+    "test": "jest",
+    "watch:commonjs": "cross-env NODE_ENV=cjs rollup -c --watch",
+    "watch:es": "cross-env NODE_ENV=es rollup -c --watch"
   },
   "jest": {
     "testURL": "http://localhost/",
