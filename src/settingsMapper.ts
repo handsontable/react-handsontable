@@ -27,7 +27,7 @@ export class SettingsMapper {
     }
 
     for (const key in properties) {
-      if (key !== 'settings' && properties.hasOwnProperty(key)) {
+      if (key !== 'settings' && key !== 'children' && properties.hasOwnProperty(key)) {
         newSettings[key] = properties[key];
       }
     }

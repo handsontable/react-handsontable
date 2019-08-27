@@ -170,7 +170,136 @@
 // ----------------------------------------------------------------------------
 // Following code is optional and can be removed without breaking the core
 // functionality.
+
+  LRUMap.prototype.find = function(key) {
+    let e = this._keymap.get(key);
+    return e ? e.value : undefined;
+  };
+
   LRUMap.prototype.has = function(key) {
     return this._keymap.has(key);
   };
+
+  LRUMap.prototype['delete'] = function(key) {
+    var entry = this._keymap.get(key);
+    if (!entry) return;
+    this._keymap.delete(entry.key);
+    if (entry[NEWER] && entry[OLDER]) {
+      // relink the older entry with the newer entry
+      entry[OLDER][NEWER] = entry[NEWER];
+      entry[NEWER][OLDER] = entry[OLDER];
+    } else if (entry[NEWER]) {
+      // remove the link to us
+      entry[NEWER][OLDER] = undefined;
+      // link the newer entry to head
+      this.oldest = entry[NEWER];
+    } else if (entry[OLDER]) {
+      // remove the link to us
+      entry[OLDER][NEWER] = undefined;
+      // link the newer entry to head
+      this.newest = entry[OLDER];
+    } else {// if(entry[OLDER] === undefined && entry.newer === undefined) {
+      this.oldest = this.newest = undefined;
+    }
+
+    this.size--;
+    return entry.value;
+  };
+
+  LRUMap.prototype.clear = function() {
+    // Not clearing links should be safe, as we don't expose live links to user
+    this.oldest = this.newest = undefined;
+    this.size = 0;
+    this._keymap.clear();
+  };
+
+
+  function EntryIterator(oldestEntry) { this.entry = oldestEntry; }
+  EntryIterator.prototype[Symbol.iterator] = function() { return this; }
+  EntryIterator.prototype.next = function() {
+    let ent = this.entry;
+    if (ent) {
+      this.entry = ent[NEWER];
+      return { done: false, value: [ent.key, ent.value] };
+    } else {
+      return { done: true, value: undefined };
+    }
+  };
+
+
+  function KeyIterator(oldestEntry) { this.entry = oldestEntry; }
+  KeyIterator.prototype[Symbol.iterator] = function() { return this; }
+  KeyIterator.prototype.next = function() {
+    let ent = this.entry;
+    if (ent) {
+      this.entry = ent[NEWER];
+      return { done: false, value: ent.key };
+    } else {
+      return { done: true, value: undefined };
+    }
+  };
+
+  function ValueIterator(oldestEntry) { this.entry = oldestEntry; }
+  ValueIterator.prototype[Symbol.iterator] = function() { return this; }
+  ValueIterator.prototype.next = function() {
+    let ent = this.entry;
+    if (ent) {
+      this.entry = ent[NEWER];
+      return { done: false, value: ent.value };
+    } else {
+      return { done: true, value: undefined };
+    }
+  };
+
+
+  LRUMap.prototype.keys = function() {
+    return new KeyIterator(this.oldest);
+  };
+
+  LRUMap.prototype.values = function() {
+    return new ValueIterator(this.oldest);
+  };
+
+  LRUMap.prototype.entries = function() {
+    return this;
+  };
+
+  LRUMap.prototype[Symbol.iterator] = function() {
+    return new EntryIterator(this.oldest);
+  };
+
+  LRUMap.prototype.forEach = function(fun, thisObj) {
+    if (typeof thisObj !== 'object') {
+      thisObj = this;
+    }
+    let entry = this.oldest;
+    while (entry) {
+      fun.call(thisObj, entry.value, entry.key, this);
+      entry = entry[NEWER];
+    }
+  };
+
+  /** Returns a JSON (array) representation */
+  LRUMap.prototype.toJSON = function() {
+    var s = new Array(this.size), i = 0, entry = this.oldest;
+    while (entry) {
+      s[i++] = { key: entry.key, value: entry.value };
+      entry = entry[NEWER];
+    }
+    return s;
+  };
+
+  /** Returns a String representation */
+  LRUMap.prototype.toString = function() {
+    var s = '', entry = this.oldest;
+    while (entry) {
+      s += String(entry.key)+':'+entry.value;
+      entry = entry[NEWER];
+      if (entry) {
+        s += ' < ';
+      }
+    }
+    return s;
+  };
+
 });

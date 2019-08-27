@@ -17,7 +17,7 @@ export class IndividualPropsWrapper extends React.Component<{ref?: string, id?: 
     this.hotTable = component;
   }
 
-  render(): React.ReactNode {
+  render(): React.ReactElement {
     return (
       <div>
         <HotTable licenseKey="non-commercial-and-evaluation" ref={this.setHotElementRef.bind(this)} id="hot" {...this.state.hotSettings} />
@@ -41,7 +41,7 @@ export class SingleObjectWrapper extends React.Component<{ref?: string, id?: str
     this.setState({});
   }
 
-  render(): React.ReactNode {
+  render(): React.ReactElement {
     return (
       <div>
         <HotTable licenseKey="non-commercial-and-evaluation" ref={this.setHotElementRef.bind(this)} id="hot" settings={this.state.hotSettings}/>
