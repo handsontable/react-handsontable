@@ -10,7 +10,8 @@ import {
   createEditorPortal, createReactComponent,
   getChildElementByType,
   getComponentNodeName,
-  getExtendedEditorElement
+  getExtendedEditorElement,
+  addUnsafePrefixes
 } from './helpers';
 
 /**
@@ -35,7 +36,7 @@ import {
  *
  * @class HotTable
  */
-export default class HotTable extends React.Component<HotTableProps, {}> {
+class HotTable extends React.Component<HotTableProps, {}> {
   /**
    * Reference to the `SettingsMapper` instance.
    *
@@ -503,4 +504,6 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
   }
 }
 
-export { HotTable };
+const PrefixedHotTable = addUnsafePrefixes(HotTable);
+export default PrefixedHotTable;
+export { PrefixedHotTable as HotTable };

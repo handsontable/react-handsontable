@@ -8,7 +8,7 @@ export const plugins = {
   typescript: typescript(),
   babel: babel({
     babelrc: false,
-    exclude: ['node_modules/**', '**.json'],
+    exclude: ['/node_modules(?!\\/lru_map)/', '**.json'],
     extensions: ['.js', '.ts', '.tsx', '.jsx'],
     presets: [
       '@babel/env'

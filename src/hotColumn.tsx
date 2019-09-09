@@ -1,8 +1,8 @@
 import React, { ReactPortal } from 'react';
 import { HotTableProps, HotColumnProps } from './types';
-import { createEditorPortal, getExtendedEditorElement } from './helpers';
+import { addUnsafePrefixes, createEditorPortal, getExtendedEditorElement } from './helpers';
 
-export class HotColumn extends React.Component<HotColumnProps, {}> {
+class HotColumn extends React.Component<HotColumnProps, {}> {
   internalProps: string[];
   columnSettings: HotTableProps;
 
@@ -170,3 +170,6 @@ export class HotColumn extends React.Component<HotColumnProps, {}> {
     )
   }
 }
+
+const PrefixedHotColumn = addUnsafePrefixes(HotColumn);
+export { PrefixedHotColumn as HotColumn };

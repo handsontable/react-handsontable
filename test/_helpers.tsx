@@ -1,8 +1,9 @@
 import React from 'react';
 import { HotTable } from '../src/hotTable';
+import { addUnsafePrefixes } from '../src/helpers';
 import Handsontable from 'handsontable';
 
-export class IndividualPropsWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings: object}> {
+class IndividualPropsWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings: object}> {
   hotTable: HotTable;
 
   constructor(props) {
@@ -25,8 +26,10 @@ export class IndividualPropsWrapper extends React.Component<{ref?: string, id?: 
     );
   }
 }
+const PrefixedIPW = addUnsafePrefixes(IndividualPropsWrapper);
+export { PrefixedIPW as IndividualPropsWrapper };
 
-export class SingleObjectWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings: object}> {
+class SingleObjectWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings: object}> {
   hotTable: HotTable;
 
   constructor(props) {
@@ -49,6 +52,9 @@ export class SingleObjectWrapper extends React.Component<{ref?: string, id?: str
     );
   }
 }
+
+const PrefixedSOW = addUnsafePrefixes(SingleObjectWrapper);
+export { PrefixedSOW as SingleObjectWrapper };
 
 export function wait(amount: number, body: () => any, resolveFunc?: () => any) {
   if (!resolveFunc) {

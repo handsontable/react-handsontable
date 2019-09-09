@@ -10,7 +10,13 @@ const umdConfig = {
     name: 'Handsontable.react',
     indent: false,
     sourcemap: true,
-    file: `./dist/${filename}`
+    exports: 'named',
+    file: `./dist/${filename}`,
+    globals: {
+      react: 'React',
+      'react-dom': 'ReactDOM',
+      handsontable: 'Handsontable'
+    }
   },
   plugins: baseConfig.plugins
 };

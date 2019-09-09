@@ -50,6 +50,13 @@ export function areChildrenEqual(childrenA: React.ReactNode, childrenB: React.Re
   const childrenAArray: React.ReactNode[] = React.Children.toArray(childrenA);
   const childrenBArray: React.ReactNode[] = React.Children.toArray(childrenB);
 
+  if (childrenAArray.length === 0 && childrenBArray.length === 0) {
+    return true;
+
+  } else if (childrenAArray.length === 0 || childrenBArray.length === 0) {
+    return false;
+  }
+
   const isHotColumn = (childNode: any) => childNode.type.name === 'HotColumn'
 
   const editorA = getChildElementByType(childrenAArray, 'hot-editor');
@@ -149,4 +156,22 @@ export function createReactComponent(rElement: React.ReactElement, callback: Fun
       callback.call(this);
     });
   });
+}
+
+/**
+ * Add the `UNSAFE_` prefixes to the deprecated lifecycle methods for React >= 16.3.
+ *
+ * @param {Function} Klass Class to have the methods renamed.
+ * @returns {Function} Class with the renamed methods.
+ */
+export function addUnsafePrefixes(Klass) {
+  const shouldPrefix = parseFloat(React.version) >= 16.3;
+
+  Klass.prototype.UNSAFE_componentWillUpdate = Klass.prototype.componentWillUpdate;
+  delete Klass.prototype.componentWillUpdate;
+
+  Klass.prototype.UNSAFE_componentWillMount = Klass.prototype.componentWillMount;
+  delete Klass.prototype.componentWillMount;
+
+  return Klass;
 }
