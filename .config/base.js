@@ -25,11 +25,11 @@ export const plugins = {
       'src/lib/**'
     ],
     namedExports: {
-      'src/lib/lru/lru.js': [
+      'lru_map': [
         'LRUMap'
       ]
     }
-  }),
+  })
 };
 
 export const baseConfig = {

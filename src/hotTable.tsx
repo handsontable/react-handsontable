@@ -4,10 +4,10 @@ import Handsontable from 'handsontable';
 import { SettingsMapper } from './settingsMapper';
 import * as packageJson from '../package.json';
 import { HotTableProps } from './types';
-import { LRUMap } from './lib/lru/lru';
+import { LRUMap } from 'lru_map';
 import {
   areChildrenEqual,
-  createEditorPortal,
+  createEditorPortal, createReactComponent,
   getChildElementByType,
   getComponentNodeName,
   getExtendedEditorElement
@@ -94,7 +94,12 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
    * @private
    * @type {LRUMap}
    */
-  private rendererCache: LRUMap<string, React.ReactElement> = new LRUMap(5000);
+  private rendererCache: LRUMap<string, {
+    element: React.ReactElement
+    component: React.Component<{}, {
+      lastUsedTD: HTMLTableCellElement
+    }, {}>
+  }> = new LRUMap(5000);
 
   /**
    * Editor cache.
@@ -118,9 +123,12 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
    *
    * @returns {LRUMap}
    */
-  //TODO: fix this typing problem with the definition file
-  getRendererCache(): any {
-    //getRendererCache(): LRUMap<string, React.ReactElement> {
+  getRendererCache(): LRUMap<string, {
+    element: React.ReactElement
+    component: React.Component<{}, {
+      lastUsedTD: HTMLTableCellElement
+    }, {}>
+  }> {
     return this.rendererCache;
   }
 
@@ -155,9 +163,16 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
    * Clear both the editor and the renderer cache.
    */
   clearCache(): void {
+    const rendererCache = this.getRendererCache();
+
     this.setGlobalEditorPortal(null);
     this.getEditorCache().clear();
-    this.getRendererCache().clear();
+
+    rendererCache.forEach((elem) => {
+      ReactDOM.unmountComponentAtNode(elem.component.state.lastUsedTD);
+    });
+
+    rendererCache.clear();
   }
 
   /**
@@ -175,31 +190,65 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
    * @param {React.ReactElement} rendererElement React renderer component.
    * @returns {Handsontable.renderers.Base} The Handsontable rendering function.
    */
-  getRendererWrapper(rendererElement: React.ReactElement): Handsontable.renderers.Base {
+  getRendererWrapper(rendererElement: React.ReactElement): Handsontable.renderers.Base | any {
     const hotTableComponent = this;
 
     return function (instance, TD, row, col, prop, value, cellProperties) {
+
+      if (!TD) {
+        return rendererElement.key;
+      }
+
       if (TD && !TD.getAttribute('ghost-table')) {
         const rendererCache = hotTableComponent.getRendererCache();
+        let cachedRenderer = rendererCache.get(`${row}-${col}`);
+        let updateCachedComponent = function (cachedComponent) {
+          if (!cachedComponent.state.domElement.parentElement || cachedComponent.state.lastUsedTD !== TD) {
+            // Clear the previous contents of a TD
+            while (TD.firstChild) {
+              TD.removeChild(TD.firstChild);
+            }
 
-        if (rendererCache && !rendererCache.has(`${row}-${col}`)) {
-          rendererCache.set(`${row}-${col}`, rendererElement);
-        }
+            TD.appendChild(cachedComponent.state.domElement);
+          }
 
-        const cachedReactElement: React.ReactElement = rendererCache.get(`${row}-${col}`);
-
-        ReactDOM.render(cachedReactElement, TD, function () {
-          this.setState({
-            hotRole: 'renderer',
-            hotInstance: instance,
+          cachedComponent.setState({
             TD,
             row,
             col,
             prop,
             value,
             cellProperties,
+            lastUsedTD: TD
           });
-        });
+        };
+
+        if (rendererCache && !rendererCache.has(`${row}-${col}`)) {
+          createReactComponent(rendererElement,
+            function () {
+              rendererCache.set(`${row}-${col}`, {
+                element: rendererElement,
+                component: this
+              });
+
+              this.setState({
+                hotRole: 'renderer',
+                hotInstance: instance,
+                TD,
+                row,
+                col,
+                prop,
+                value,
+                cellProperties,
+                lastUsedTD: null
+              });
+
+              updateCachedComponent(this);
+            }, TD.ownerDocument);
+
+        } else {
+          updateCachedComponent(cachedRenderer.component);
+        }
       }
 
       return TD;
@@ -276,17 +325,20 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
 
   /**
    * Get the editor element for the entire HotTable instance.
-   *TODO: docs
+   *
+   * @param {React.ReactNode} [children] Children of the HotTable instance. Defaults to `this.props.children`.
    * @returns {React.ReactElement} React editor component element.
    */
-  getGlobalEditorElement(children = this.props.children): React.ReactElement | null {
+  getGlobalEditorElement(children: React.ReactNode = this.props.children): React.ReactElement | null {
     return getExtendedEditorElement(children, this.getEditorCache());
   }
 
   /**
-   * Create the global editor portal and its destination HTML element if needed. TODO: docs
+   * Create the global editor portal and its destination HTML element if needed.
+   *
+   * @param {React.ReactNode} [children] Children of the HotTable instance. Defaults to `this.props.children`.
    */
-  createGlobalEditorPortal(children = this.props.children): void {
+  createGlobalEditorPortal(children: React.ReactNode = this.props.children): void {
     const globalEditorElement: React.ReactElement = this.getGlobalEditorElement(children);
 
     if (globalEditorElement) {
@@ -297,7 +349,7 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
   /**
    * Create a new settings object containing the column settings and global editors and renderers.
    *
-   * @return {Handsontable.GridSettings} New global set of settings for Handsontable.
+   * @returns {Handsontable.GridSettings} New global set of settings for Handsontable.
    */
   createNewGlobalSettings(): Handsontable.GridSettings {
     const newSettings = this.settingsMapper.getSettings(this.props);
@@ -352,6 +404,15 @@ export default class HotTable extends React.Component<HotTableProps, {}> {
    * Logic performed before the mounting of the component.
    */
   componentWillMount(): void {
+    // Make the LRU cache destroy each removed component
+    this.getRendererCache().shift = function () {
+      let entry = LRUMap.prototype.shift.call(this);
+
+      ReactDOM.unmountComponentAtNode(entry[1].component.state.lastUsedTD);
+
+      return entry;
+    };
+
     this.clearCache();
     this.createGlobalEditorPortal();
   }

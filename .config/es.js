@@ -11,18 +11,19 @@ export const esConfig = {
     indent: false,
     file: `./es/${filename}`
   },
-  plugins: baseConfig.plugins
-  // plugins: [
-  //   plugins.json,
-  //   plugins.replace,
-  //   // typescript({
-  //   //   tsconfigOverride: {
-  //   //     compilerOptions: {
-  //   //       declaration: true
-  //   //     }
-  //   //   }
-  //   // }),
-  //   plugins.babel,
-  //   plugins.nodeResolve,
-  // ],
+  plugins: [
+    plugins.json,
+    plugins.replace,
+    plugins.commonjs,
+    typescript({
+      tsconfigOverride: {
+        compilerOptions: {
+          declaration: true
+        }
+      },
+      useTsconfigDeclarationDir: true,
+    }),
+    plugins.babel,
+    plugins.nodeResolve,
+  ]
 };

@@ -103,7 +103,8 @@ export class HotColumn extends React.Component<HotColumnProps, {}> {
 
   /**
    * Create the local editor portal and its destination HTML element if needed.
-   * TODO: docs
+   *
+   * @param {React.ReactNode} [children] Children of the HotTable instance. Defaults to `this.props.children`.
    */
   createLocalEditorPortal(children = this.props.children): void {
     const localEditorElement: React.ReactElement = getExtendedEditorElement(children, this.props._getEditorCache());
