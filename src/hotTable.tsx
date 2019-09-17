@@ -1,13 +1,13 @@
-import React, { ReactPortal } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import Handsontable from 'handsontable';
 import { SettingsMapper } from './settingsMapper';
+import { PortalManager } from './portalManager';
 import * as packageJson from '../package.json';
 import { HotTableProps } from './types';
-import { LRUMap } from 'lru_map';
 import {
   areChildrenEqual,
-  createEditorPortal, createReactComponent,
+  createEditorPortal,
+  createPortal,
   getChildElementByType,
   getComponentNodeName,
   getExtendedEditorElement,
@@ -82,25 +82,33 @@ class HotTable extends React.Component<HotTableProps, {}> {
   columnSettings: object[] = [];
 
   /**
+   * Component used to manage the renderer portals.
+   *
+   * @type {React.Component}
+   */
+  portalManager: React.Component = null;
+
+  /**
+   * Array containing the portals cashed to be rendered in bulk after Handsontable's render cycle.
+   */
+  portalCacheArray: React.ReactPortal[] = [];
+
+
+  /**
    * Global editor portal cache.
    *
    * @private
-   * @type {ReactPortal}
+   * @type {React.ReactPortal}
    */
-  private globalEditorPortal: ReactPortal = null;
+  private globalEditorPortal: React.ReactPortal = null;
 
   /**
-   * LRU renderer cache.
+   * The rendered cells cache.
    *
    * @private
-   * @type {LRUMap}
+   * @type {Map}
    */
-  private rendererCache: LRUMap<string, {
-    element: React.ReactElement
-    component: React.Component<{}, {
-      lastUsedTD: HTMLTableCellElement
-    }, {}>
-  }> = new LRUMap(5000);
+  private renderedCellCache: Map<string, HTMLTableCellElement> = new Map();
 
   /**
    * Editor cache.
@@ -120,17 +128,12 @@ class HotTable extends React.Component<HotTableProps, {}> {
   }
 
   /**
-   * Get the renderer cache and return it.
+   * Get the rendered table cell cache.
    *
-   * @returns {LRUMap}
+   * @returns {Map}
    */
-  getRendererCache(): LRUMap<string, {
-    element: React.ReactElement
-    component: React.Component<{}, {
-      lastUsedTD: HTMLTableCellElement
-    }, {}>
-  }> {
-    return this.rendererCache;
+  getRenderedCellCache(): Map<string, HTMLTableCellElement> {
+    return this.renderedCellCache;
   }
 
   /**
@@ -145,18 +148,18 @@ class HotTable extends React.Component<HotTableProps, {}> {
   /**
    * Get the global editor portal property.
    *
-   * @return {ReactPortal} The global editor portal.
+   * @return {React.ReactPortal} The global editor portal.
    */
-  getGlobalEditorPortal(): ReactPortal {
+  getGlobalEditorPortal(): React.ReactPortal {
     return this.globalEditorPortal;
   }
 
   /**
    * Set the private editor portal cache property.
    *
-   * @param {ReactPortal} portal Global editor portal.
+   * @param {React.ReactPortal} portal Global editor portal.
    */
-  setGlobalEditorPortal(portal: ReactPortal): void {
+  setGlobalEditorPortal(portal: React.ReactPortal): void {
     this.globalEditorPortal = portal;
   }
 
@@ -164,16 +167,12 @@ class HotTable extends React.Component<HotTableProps, {}> {
    * Clear both the editor and the renderer cache.
    */
   clearCache(): void {
-    const rendererCache = this.getRendererCache();
+    const renderedCellCache = this.getRenderedCellCache();
 
     this.setGlobalEditorPortal(null);
     this.getEditorCache().clear();
 
-    rendererCache.forEach((elem) => {
-      ReactDOM.unmountComponentAtNode(elem.component.state.lastUsedTD);
-    });
-
-    rendererCache.clear();
+    renderedCellCache.clear();
   }
 
   /**
@@ -195,62 +194,34 @@ class HotTable extends React.Component<HotTableProps, {}> {
     const hotTableComponent = this;
 
     return function (instance, TD, row, col, prop, value, cellProperties) {
+      const renderedCellCache = hotTableComponent.getRenderedCellCache();
 
-      if (!TD) {
-        return rendererElement.key;
+      if (renderedCellCache.has(`${row}-${col}`)) {
+        TD.innerHTML = renderedCellCache.get(`${row}-${col}`).innerHTML;
       }
 
       if (TD && !TD.getAttribute('ghost-table')) {
-        const rendererCache = hotTableComponent.getRendererCache();
-        let cachedRenderer = rendererCache.get(`${row}-${col}`);
-        let updateCachedComponent = function (cachedComponent) {
-          if (!cachedComponent.state.domElement.parentElement || cachedComponent.state.lastUsedTD !== TD) {
-            // Clear the previous contents of a TD
-            while (TD.firstChild) {
-              TD.removeChild(TD.firstChild);
-            }
 
-            TD.appendChild(cachedComponent.state.domElement);
-          }
+        const {portal, portalContainer} = createPortal(rendererElement, {
+          TD,
+          row,
+          col,
+          prop,
+          value,
+          cellProperties
+        }, () => {
+        }, TD.ownerDocument);
 
-          cachedComponent.setState({
-            TD,
-            row,
-            col,
-            prop,
-            value,
-            cellProperties,
-            lastUsedTD: TD
-          });
-        };
-
-        if (rendererCache && !rendererCache.has(`${row}-${col}`)) {
-          createReactComponent(rendererElement,
-            function () {
-              rendererCache.set(`${row}-${col}`, {
-                element: rendererElement,
-                component: this
-              });
-
-              this.setState({
-                hotRole: 'renderer',
-                hotInstance: instance,
-                TD,
-                row,
-                col,
-                prop,
-                value,
-                cellProperties,
-                lastUsedTD: null
-              });
-
-              updateCachedComponent(this);
-            }, TD.ownerDocument);
-
-        } else {
-          updateCachedComponent(cachedRenderer.component);
+        while (TD.firstChild) {
+          TD.removeChild(TD.firstChild);
         }
+
+        TD.appendChild(portalContainer);
+
+        hotTableComponent.portalCacheArray.push(portal);
       }
+
+      renderedCellCache.set(`${row}-${col}`, TD);
 
       return TD;
     };
@@ -319,8 +290,10 @@ class HotTable extends React.Component<HotTableProps, {}> {
    *
    * @returns {React.ReactElement} React renderer component element.
    */
-  getGlobalRendererElement(): React.ReactElement | null {
+  // TODO: type change
+  getGlobalRendererElement(): React.ReactElement | any | null {
     const hotTableSlots: React.ReactNode = this.props.children;
+
     return getChildElementByType(hotTableSlots, 'hot-renderer');
   }
 
@@ -387,12 +360,42 @@ class HotTable extends React.Component<HotTableProps, {}> {
   }
 
   /**
+   * Handsontable's `beforeRender` hook callback.
+   */
+  handsontableBeforeRender(): void {
+    this.getRenderedCellCache().clear();
+  }
+
+  /**
+   * Handsontable's `afterRender` hook callback.
+   */
+  handsontableAfterRender(): void {
+    this.portalManager.setState(() => {
+      return Object.assign({}, {
+        portals: this.portalCacheArray
+      });
+
+    }, () => {
+      this.portalCacheArray.length = 0;
+    });
+  }
+
+  /**
    * Call the `updateSettings` method for the Handsontable instance.
    *
    * @param {Object} newSettings The settings object.
    */
   private updateHot(newSettings: Handsontable.GridSettings): void {
     this.hotInstance.updateSettings(newSettings, false);
+  }
+
+  /**
+   * Set the portal manager ref.
+   *
+   * @param {React.ReactComponent} pmComponent The PortalManager component.
+   */
+  private setPortalManagerRef(pmComponent: React.Component): void {
+    this.portalManager = pmComponent;
   }
 
   /*
@@ -405,15 +408,6 @@ class HotTable extends React.Component<HotTableProps, {}> {
    * Logic performed before the mounting of the component.
    */
   componentWillMount(): void {
-    // Make the LRU cache destroy each removed component
-    this.getRendererCache().shift = function () {
-      let entry = LRUMap.prototype.shift.call(this);
-
-      ReactDOM.unmountComponentAtNode(entry[1].component.state.lastUsedTD);
-
-      return entry;
-    };
-
     this.clearCache();
     this.createGlobalEditorPortal();
   }
@@ -422,7 +416,20 @@ class HotTable extends React.Component<HotTableProps, {}> {
    * Initialize Handsontable after the component has mounted.
    */
   componentDidMount(): void {
-    this.hotInstance = new Handsontable(this.hotElementRef, this.createNewGlobalSettings());
+    const hotTableComponent = this;
+
+    this.hotInstance = new Handsontable.Core(this.hotElementRef, this.createNewGlobalSettings());
+
+    this.hotInstance.addHook('beforeRender', function (isForced) {
+      hotTableComponent.handsontableBeforeRender();
+    });
+
+    this.hotInstance.addHook('afterRender', function () {
+      hotTableComponent.handsontableAfterRender();
+    });
+
+    // `init` missing in Handsontable's type definitions.
+    (this.hotInstance as any).init();
   }
 
   /**
@@ -497,9 +504,12 @@ class HotTable extends React.Component<HotTableProps, {}> {
     this.style = this.props.style || {};
 
     return (
-      <div ref={this.setHotElementRef.bind(this)} id={this.id} className={this.className} style={this.style}>
-        {childClones}
-      </div>
+      <React.Fragment>
+        <div ref={this.setHotElementRef.bind(this)} id={this.id} className={this.className} style={this.style}>
+          {childClones}
+        </div>
+        <PortalManager ref={this.setPortalManagerRef.bind(this)}></PortalManager>
+      </React.Fragment>
     )
   }
 }

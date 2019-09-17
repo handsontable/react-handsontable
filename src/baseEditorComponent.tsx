@@ -1,8 +1,8 @@
 import React from 'react';
 import Handsontable from 'handsontable';
 
-class BaseReactHotEditor extends React.Component<any, any> implements Handsontable._editors.Base {
-  name = 'BaseVueHotEditor';
+class BaseEditorComponent extends React.Component<any, any> implements Handsontable._editors.Base {
+  name = 'BaseEditorComponent';
   instance = null;
   row = null;
   col = null;
@@ -120,5 +120,5 @@ class BaseReactHotEditor extends React.Component<any, any> implements Handsontab
   }
 }
 
-export default BaseReactHotEditor;
-export { BaseReactHotEditor };
+export default BaseEditorComponent;
+export { BaseEditorComponent };

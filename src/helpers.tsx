@@ -16,8 +16,8 @@ export function getChildElementByType(children: React.ReactNode, type: string): 
   let wantedChild: React.ReactNode | null = null;
 
   if (childrenCount !== 0) {
-    if (childrenCount === 1 && (children as React.ReactElement).props[type]) {
-      wantedChild = children;
+    if (childrenCount === 1 && (childrenArray[0] as React.ReactElement).props[type]) {
+      wantedChild = childrenArray[0];
 
     } else {
       wantedChild = childrenArray.find((child) => {
@@ -26,6 +26,7 @@ export function getChildElementByType(children: React.ReactNode, type: string): 
     }
   }
 
+  // TODO: types don't really match
   return (wantedChild as React.ReactElement) || null;
 }
 
@@ -132,30 +133,42 @@ export function getExtendedEditorElement(children: React.ReactNode, editorCache:
  * Create a react component and render it to an external DOM done.
  *
  * @param {React.ReactElement} rElement React element to be used as a base for the component.
+ * @param {Object} props Props to be passed to the cloned element.
  * @param {Function} callback Callback to be called after the component has been mounted.
+ * @param {Document} [ownerDocument] The owner document to set the portal up into.
+ * @returns {{portal: React.ReactPortal, portalContainer: HTMLElement}} An object containing the portal and its container.
  */
-export function createReactComponent(rElement: React.ReactElement, callback: Function, ownerDocument?: Document): void {
+export function createPortal(rElement: React.ReactElement, props, callback: Function, ownerDocument: Document = document): {
+  portal: React.ReactPortal,
+  portalContainer: HTMLElement
+} {
   if (!ownerDocument) {
     ownerDocument = document;
   }
 
   if (!bulkComponentContainer) {
-    bulkComponentContainer = ownerDocument.createElement('DIV');
-    bulkComponentContainer.id = 'reactHotComponents';
-
-    ownerDocument.body.appendChild(bulkComponentContainer);
+    bulkComponentContainer = ownerDocument.createDocumentFragment();
   }
 
-  const componentContainer = ownerDocument.createElement('DIV');
-  bulkComponentContainer.appendChild(componentContainer);
+  const portalContainer = ownerDocument.createElement('DIV');
+  bulkComponentContainer.appendChild(portalContainer);
 
-  ReactDOM.render(rElement, componentContainer, function() {
-    this.setState({
-      domElement: componentContainer
-    }, function() {
-      callback.call(this);
-    });
+  const extendedRendererElement = React.cloneElement(rElement, {
+    key: `${props.row}-${props.col}`,
+    ...props
   });
+
+  return {
+    portal: ReactDOM.createPortal(extendedRendererElement, portalContainer, `${props.row}-${props.col}-${Math.random()}`),
+    portalContainer
+  };
+}
+
+//TODO: docs
+export function asyncRun(func) {
+  // setTimeout(func, 0);
+
+  // func();
 }
 
 /**
