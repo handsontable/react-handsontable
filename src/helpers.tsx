@@ -42,9 +42,11 @@ export function getComponentNodeName(componentNode: React.ReactElement): string 
 
 /**
  * Remove editor containers from DOM.
+ *
+ * @param [doc] Document to be used.
  */
-export function removeEditorContainers(): void {
-  document.querySelectorAll('[id^="hot-wrapper-editor-container-"]').forEach((domNode) => {
+export function removeEditorContainers(doc = document): void {
+  doc.querySelectorAll('[id^="hot-wrapper-editor-container-"]').forEach((domNode) => {
     if (domNode.parentNode) {
       domNode.parentNode.removeChild(domNode);
     }

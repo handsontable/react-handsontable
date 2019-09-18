@@ -1,7 +1,7 @@
 import React from 'react';
 import { HotTable } from '../src/hotTable';
 import { addUnsafePrefixes } from '../src/helpers';
-import { BaseEditorComponent } from '../src/BaseEditorComponent';
+import { BaseEditorComponent } from '../src/baseEditorComponent';
 
 export function sleep(delay = 100) {
   return Promise.resolve({

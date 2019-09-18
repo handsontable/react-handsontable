@@ -15,7 +15,7 @@ import {
   RendererComponent,
   EditorComponent
 } from './_helpers';
-import { BaseEditorComponent } from '../src/BaseEditorComponent';
+import { BaseEditorComponent } from '../src/baseEditorComponent';
 import Handsontable from 'handsontable';
 
 beforeEach(() => {

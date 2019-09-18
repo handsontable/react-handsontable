@@ -172,7 +172,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
 
     this.setGlobalEditorPortal(null);
     this.getEditorCache().clear();
-    removeEditorContainers();
+    removeEditorContainers(this.hotElementRef ? this.hotElementRef.ownerDocument : document);
 
     renderedCellCache.clear();
   }
@@ -471,7 +471,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
    */
   componentWillUnmount(): void {
     this.hotInstance.destroy();
-    removeEditorContainers();
+    removeEditorContainers(this.hotElementRef.ownerDocument);
   }
 
   /**
