@@ -11,7 +11,8 @@ import {
   getChildElementByType,
   getComponentNodeName,
   getExtendedEditorElement,
-  addUnsafePrefixes
+  addUnsafePrefixes,
+  removeEditorContainers
 } from './helpers';
 
 /**
@@ -171,6 +172,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
 
     this.setGlobalEditorPortal(null);
     this.getEditorCache().clear();
+    removeEditorContainers();
 
     renderedCellCache.clear();
   }
@@ -469,6 +471,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
    */
   componentWillUnmount(): void {
     this.hotInstance.destroy();
+    removeEditorContainers();
   }
 
   /**

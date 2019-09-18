@@ -41,6 +41,17 @@ export function getComponentNodeName(componentNode: React.ReactElement): string 
 }
 
 /**
+ * Remove editor containers from DOM.
+ */
+export function removeEditorContainers(): void {
+  document.querySelectorAll('[id^="hot-wrapper-editor-container-"]').forEach((domNode) => {
+    if (domNode.parentNode) {
+      domNode.parentNode.removeChild(domNode);
+    }
+  });
+}
+
+/**
  * Check if the provided children arrays are equal considering their declared renderers and editors.
  *
  * @param {React.ReactNode[]} childrenA Array of children.

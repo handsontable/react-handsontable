@@ -256,4 +256,91 @@ describe('Component lifecyle', () => {
     wrapper.detach();
     done();
   });
+
+  it('editor components should trigger their lifecycle methods', async (done) => {
+    class EditorComponent2 extends BaseEditorComponent {
+      constructor(props) {
+        super(props);
+
+        editorCounters.set(`${this.props.row}-${this.props.col}`, {
+          willMount: 0,
+          didMount: 0,
+          willUnmount: 0
+        });
+      }
+
+      UNSAFE_componentWillMount(): void {
+        const counters = editorCounters.get(`${this.props.row}-${this.props.col}`);
+        counters.willMount++;
+      }
+
+      componentDidMount(): void {
+        const counters = editorCounters.get(`${this.props.row}-${this.props.col}`);
+        counters.didMount++;
+      }
+
+      componentWillUnmount(): void {
+        const counters = editorCounters.get(`${this.props.row}-${this.props.col}`);
+        counters.willUnmount++;
+      }
+
+      render(): React.ReactElement<string> {
+        return (
+          <>
+            test
+          </>
+        );
+      }
+    }
+
+    let secondGo = false;
+    const editorRefs = new Map();
+    const editorCounters = new Map();
+    const childrenArray = [
+      <EditorComponent2 ref={function (instance) {
+        if (!secondGo && instance) {
+          editorRefs.set(`EditorComponent2`, instance);
+        }
+      }} hot-editor key={Math.random()}></EditorComponent2>
+    ];
+    const wrapper: ReactWrapper<{}, {}, typeof HotTable> = mount(
+      <HotTable licenseKey="non-commercial-and-evaluation"
+                id="test-hot"
+                data={Handsontable.helper.createSpreadsheetData(3, 2)}
+                width={300}
+                height={300}
+                rowHeights={23}
+                colWidths={50}
+                init={function () {
+                  mockElementDimensions(this.rootElement, 300, 300);
+                }}>
+        {childrenArray}
+      </HotTable>, {attachTo: document.body.querySelector('#hotContainer')}
+    );
+
+    await sleep(100);
+
+    const hotTableInstance = wrapper.instance();
+
+    editorCounters.forEach((counters) => {
+      expect(counters.willMount).toEqual(1);
+      expect(counters.didMount).toEqual(1);
+      expect(counters.willUnmount).toEqual(0);
+    });
+
+    secondGo = true;
+
+    childrenArray.length = 0;
+    hotTableInstance.forceUpdate();
+    await sleep(100);
+
+    editorCounters.forEach((counters) => {
+      expect(counters.willMount).toEqual(1);
+      expect(counters.didMount).toEqual(1);
+      expect(counters.willUnmount).toEqual(1);
+    });
+
+    wrapper.detach();
+    done();
+  });
 });
