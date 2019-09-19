@@ -56,7 +56,7 @@ describe('Renderer configuration using React components', () => {
                 data={Handsontable.helper.createSpreadsheetData(100, 2)}
                 width={300}
                 height={300}
-                init={function() {
+                init={function () {
                   mockElementDimensions(this.rootElement, 300, 300);
                 }}>
         <HotColumn/>
@@ -113,25 +113,149 @@ describe('Editor configuration using React components', () => {
 
     expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('none');
 
-    hotInstance.selectCell(0,1);
+    hotInstance.selectCell(0, 1);
     simulateKeyboardEvent('keydown', 13);
 
     expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('block');
 
-    expect(hotInstance.getDataAtCell(0,1)).toEqual('B1');
+    expect(hotInstance.getDataAtCell(0, 1)).toEqual('B1');
 
     simulateMouseEvent(document.querySelector('#editorComponentContainer button'), 'click');
 
-    expect(hotInstance.getDataAtCell(0,1)).toEqual('new-value');
+    expect(hotInstance.getDataAtCell(0, 1)).toEqual('new-value');
 
     hotInstance.getActiveEditor().close();
 
     expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('none');
 
-    hotInstance.selectCell(0,0);
+    hotInstance.selectCell(0, 0);
     simulateKeyboardEvent('keydown', 13);
 
     expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('none');
+
+    wrapper.detach();
+
+    done();
+  });
+});
+
+describe('Dynamic HotColumn configuration changes', () => {
+  it('should be possible to rearrange and change the column + editor + renderer configuration dynamically', async (done) => {
+    function RendererComponent2(props) {
+      return (
+        <>r2: {props.value}</>
+      );
+    }
+
+    class WrapperComponent extends React.Component<any, any> {
+      constructor(props) {
+        super(props);
+
+        this.state = {
+          setup: [
+            <RendererComponent hot-renderer key={'1'}/>,
+            <HotColumn title="test title" className="first-column-class-name" key={'1'}>
+              <EditorComponent hot-editor/>
+            </HotColumn>,
+            <HotColumn readOnly={true} key={'3'}>
+              <RendererComponent2 hot-renderer></RendererComponent2>
+            </HotColumn>
+          ]
+        }
+      }
+
+      render() {
+        return (
+          <HotTable licenseKey="non-commercial-and-evaluation" id="test-hot"
+                    data={Handsontable.helper.createSpreadsheetData(3, 2)}
+                    width={300}
+                    height={300}
+                    rowHeights={23}
+                    colWidths={50}
+                    init={function () {
+                      mockElementDimensions(this.rootElement, 300, 300);
+                    }}
+                    ref={hotTableInstanceRef}>
+            {this.state.setup}
+          </HotTable>
+        );
+      };
+    }
+
+    let hotTableInstanceRef = React.createRef();
+
+    const wrapper: ReactWrapper<{}, {}, typeof HotTable> = mount(
+      <WrapperComponent/>
+      , {attachTo: document.body.querySelector('#hotContainer')}
+    );
+
+    await sleep(300);
+
+    let hotInstance = (hotTableInstanceRef.current as any).hotInstance;
+
+    expect(hotInstance.getSettings().columns[0].title).toEqual('test title');
+    expect(hotInstance.getSettings().columns[0].className).toEqual('first-column-class-name');
+    expect(hotInstance.getSettings().columns[0].readOnly).toEqual(void 0);
+    expect(hotInstance.getCell(0, 0).innerHTML).toEqual('<div>value: A1</div>');
+    expect(hotInstance.getCell(1, 0).innerHTML).toEqual('<div>value: A2</div>');
+    hotInstance.selectCell(0, 0);
+    hotInstance.getActiveEditor().open();
+    expect(hotInstance.getActiveEditor().constructor.name).toEqual('CustomEditor');
+    expect(hotInstance.getActiveEditor().editorComponent.__proto__.constructor.name).toEqual('EditorComponent');
+    expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('block');
+    hotInstance.getActiveEditor().close();
+
+    expect(hotInstance.getSettings().columns[1].title).toEqual(void 0);
+    expect(hotInstance.getSettings().columns[1].className).toEqual(void 0);
+    expect(hotInstance.getSettings().columns[1].readOnly).toEqual(true);
+    expect(hotInstance.getCell(0, 1).innerHTML).toEqual('<div>r2: B1</div>');
+    expect(hotInstance.getCell(1, 1).innerHTML).toEqual('<div>r2: B2</div>');
+    hotInstance.selectCell(0, 1);
+    expect(hotInstance.getActiveEditor().constructor.name).toEqual('TextEditor');
+    expect(hotInstance.getActiveEditor().editorComponent).toEqual(void 0);
+    expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('none');
+
+    wrapper.instance().setState({
+      setup: [
+        <EditorComponent hot-editor key={'1'}/>,
+        <HotColumn readOnly={true} key={'2'}>
+          <RendererComponent2 hot-renderer></RendererComponent2>
+        </HotColumn>,
+        <HotColumn title="test title" className="first-column-class-name" key={'3'}>
+          <RendererComponent hot-renderer/>
+        </HotColumn>
+      ]
+    });
+
+    await sleep(100);
+
+    expect(hotInstance.getSettings().columns[0].title).toEqual(void 0);
+    expect(hotInstance.getSettings().columns[0].className).toEqual(void 0);
+    expect(hotInstance.getSettings().columns[0].readOnly).toEqual(true);
+    expect(hotInstance.getCell(0, 0).innerHTML).toEqual('<div>r2: A1</div>');
+    expect(hotInstance.getCell(1, 0).innerHTML).toEqual('<div>r2: A2</div>');
+    hotInstance.selectCell(0, 0);
+    hotInstance.getActiveEditor().open();
+    expect(hotInstance.getActiveEditor().constructor.name).toEqual('CustomEditor');
+    expect(hotInstance.getActiveEditor().editorComponent.__proto__.constructor.name).toEqual('EditorComponent');
+    expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('block');
+    hotInstance.getActiveEditor().close();
+
+    expect(hotInstance.getSettings().columns[1].title).toEqual('test title');
+    expect(hotInstance.getSettings().columns[1].className).toEqual('first-column-class-name');
+    expect(hotInstance.getSettings().columns[1].readOnly).toEqual(void 0);
+    expect(hotInstance.getCell(0, 1).innerHTML).toEqual('<div>value: B1</div>');
+    expect(hotInstance.getCell(1, 1).innerHTML).toEqual('<div>value: B2</div>');
+    hotInstance.selectCell(0, 1);
+    hotInstance.getActiveEditor().open();
+    expect(hotInstance.getActiveEditor().constructor.name).toEqual('CustomEditor');
+    expect(hotInstance.getActiveEditor().editorComponent.__proto__.constructor.name).toEqual('EditorComponent');
+    expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('block');
+    hotInstance.getActiveEditor().close();
+
+    expect(hotInstance.getSettings().licenseKey).toEqual('non-commercial-and-evaluation');
+
+    wrapper.detach();
 
     done();
   });

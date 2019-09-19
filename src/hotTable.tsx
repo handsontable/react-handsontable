@@ -5,7 +5,6 @@ import { PortalManager } from './portalManager';
 import * as packageJson from '../package.json';
 import { HotTableProps } from './types';
 import {
-  areChildrenEqual,
   createEditorPortal,
   createPortal,
   getChildElementByType,
@@ -251,10 +250,14 @@ class HotTable extends React.Component<HotTableProps, {}> {
    */
   makeEditorClass(editorComponent: React.Component): typeof Handsontable.editors.BaseEditor {
     const customEditorClass = class CustomEditor extends Handsontable.editors.BaseEditor implements Handsontable._editors.Base {
+      editorComponent: React.Component;
+
       constructor(hotInstance, row, col, prop, TD, cellProperties) {
         super(hotInstance, row, col, prop, TD, cellProperties);
 
         (editorComponent as any).hotCustomEditorInstance = this;
+
+        this.editorComponent = editorComponent;
       }
 
       focus() {
@@ -292,8 +295,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
    *
    * @returns {React.ReactElement} React renderer component element.
    */
-  // TODO: type change
-  getGlobalRendererElement(): React.ReactElement | any | null {
+  getGlobalRendererElement(): React.ReactElement {
     const hotTableSlots: React.ReactNode = this.props.children;
 
     return getChildElementByType(hotTableSlots, 'hot-renderer');
@@ -432,23 +434,6 @@ class HotTable extends React.Component<HotTableProps, {}> {
 
     // `init` missing in Handsontable's type definitions.
     (this.hotInstance as any).init();
-  }
-
-  /**
-   * Call the `updateHot` method and prevent the component from re-rendering the instance if there's no need to do so.
-   *
-   * @param {HotTableProps} nextProps Props passed to the component.
-   * @param {Object} nextState Changed state of the component.
-   * @returns {Boolean}
-   */
-  shouldComponentUpdate(nextProps: HotTableProps, nextState: {}): boolean {
-    if (!areChildrenEqual(this.props.children, nextProps.children)) {
-      return true;
-    }
-
-    this.updateHot(this.settingsMapper.getSettings(nextProps));
-
-    return false;
   }
 
   /**
