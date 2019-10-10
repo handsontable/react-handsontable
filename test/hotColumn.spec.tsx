@@ -24,7 +24,7 @@ beforeEach(() => {
 describe('Passing column settings using HotColumn', () => {
   it('should apply the Handsontable settings passed as HotColumn arguments to the Handsontable instance', async (done) => {
     const wrapper: ReactWrapper<{}, {}, typeof HotTable> = mount(
-      <HotTable licenseKey="non-commercial-and-evaluation" id="test-hot" data={[[2]]}>
+      <HotTable licenseKey="non-commercial-and-evaluation" id="test-hot" data={[[2]]} readOnly={false}>
         <HotColumn title="test title"></HotColumn>
         <HotColumn readOnly={true}></HotColumn>
       </HotTable>, {attachTo: document.body.querySelector('#hotContainer')}
@@ -35,10 +35,10 @@ describe('Passing column settings using HotColumn', () => {
     let hotInstance = wrapper.instance().hotInstance;
 
     expect(hotInstance.getSettings().columns[0].title).toEqual('test title');
-    expect(hotInstance.getSettings().columns[0].readOnly).toEqual(void 0);
+    expect(hotInstance.getCellMeta(0, 0).readOnly).toEqual(false);
 
     expect(hotInstance.getSettings().columns[1].title).toEqual(void 0);
-    expect(hotInstance.getSettings().columns[1].readOnly).toEqual(true);
+    expect(hotInstance.getCellMeta(0, 1).readOnly).toEqual(true);
 
     expect(hotInstance.getSettings().licenseKey).toEqual('non-commercial-and-evaluation');
 
@@ -154,7 +154,7 @@ describe('Dynamic HotColumn configuration changes', () => {
         this.state = {
           setup: [
             <RendererComponent hot-renderer key={'1'}/>,
-            <HotColumn title="test title" className="first-column-class-name" key={'1'}>
+            <HotColumn title="test title" className="first-column-class-name" key={'2'}>
               <EditorComponent hot-editor/>
             </HotColumn>,
             <HotColumn readOnly={true} key={'3'}>
@@ -172,6 +172,7 @@ describe('Dynamic HotColumn configuration changes', () => {
                     height={300}
                     rowHeights={23}
                     colWidths={50}
+                    readOnly={false}
                     init={function () {
                       mockElementDimensions(this.rootElement, 300, 300);
                     }}
@@ -195,7 +196,7 @@ describe('Dynamic HotColumn configuration changes', () => {
 
     expect(hotInstance.getSettings().columns[0].title).toEqual('test title');
     expect(hotInstance.getSettings().columns[0].className).toEqual('first-column-class-name');
-    expect(hotInstance.getSettings().columns[0].readOnly).toEqual(void 0);
+    expect(hotInstance.getCellMeta(0, 0).readOnly).toEqual(false);
     expect(hotInstance.getCell(0, 0).innerHTML).toEqual('<div>value: A1</div>');
     expect(hotInstance.getCell(1, 0).innerHTML).toEqual('<div>value: A2</div>');
     hotInstance.selectCell(0, 0);
@@ -207,7 +208,7 @@ describe('Dynamic HotColumn configuration changes', () => {
 
     expect(hotInstance.getSettings().columns[1].title).toEqual(void 0);
     expect(hotInstance.getSettings().columns[1].className).toEqual(void 0);
-    expect(hotInstance.getSettings().columns[1].readOnly).toEqual(true);
+    expect(hotInstance.getCellMeta(0, 1).readOnly).toEqual(true);
     expect(hotInstance.getCell(0, 1).innerHTML).toEqual('<div>r2: B1</div>');
     expect(hotInstance.getCell(1, 1).innerHTML).toEqual('<div>r2: B2</div>');
     hotInstance.selectCell(0, 1);
@@ -243,7 +244,7 @@ describe('Dynamic HotColumn configuration changes', () => {
 
     expect(hotInstance.getSettings().columns[1].title).toEqual('test title');
     expect(hotInstance.getSettings().columns[1].className).toEqual('first-column-class-name');
-    expect(hotInstance.getSettings().columns[1].readOnly).toEqual(void 0);
+    expect(hotInstance.getCellMeta(0, 1).readOnly).toEqual(false);
     expect(hotInstance.getCell(0, 1).innerHTML).toEqual('<div>value: B1</div>');
     expect(hotInstance.getCell(1, 1).innerHTML).toEqual('<div>value: B2</div>');
     hotInstance.selectCell(0, 1);

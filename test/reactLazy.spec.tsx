@@ -1,4 +1,4 @@
-import React, {Suspense, lazy} from 'react';
+import React, { Suspense, lazy } from 'react';
 import {
   mount,
   ReactWrapper
@@ -20,7 +20,7 @@ beforeEach(() => {
 
 describe('React.lazy', () => {
   it('should be possible to lazy-load components and utilize Suspend', async (done) => {
-    function RendererComponent2 (props) {
+    function RendererComponent2(props) {
       return (
         <>
           lazy value: {props.value}
@@ -28,22 +28,13 @@ describe('React.lazy', () => {
       );
     }
 
-    let resolveImport = false;
+    let promiseResolve = null;
 
     function SuspendedRenderer(props) {
       const customImportPromise = new Promise(function (resolve, reject) {
-            const interval = setInterval(() => {
-              if (resolveImport) {
-                resolve({
-                  default: RendererComponent2,
-                  __esModule: true
-                });
-
-                clearInterval(interval);
-              }
-            }, 20);
-          }
-        ) as any;
+          promiseResolve = resolve;
+        }
+      ) as any;
 
       const LazierRenderer = lazy(() => customImportPromise);
 
@@ -76,7 +67,10 @@ describe('React.lazy', () => {
 
     expect(hotInstance.getCell(0, 0).innerHTML).toEqual('<div>loading-message</div>');
 
-    resolveImport = true;
+    promiseResolve({
+      default: RendererComponent2,
+      __esModule: true
+    });
 
     await sleep(40);
 

@@ -8,7 +8,7 @@ export const plugins = {
   typescript: typescript(),
   babel: babel({
     babelrc: false,
-    exclude: ['/node_modules(?!\\/lru_map)/', '**.json'],
+    exclude: ['/node_modules/', '**.json'],
     extensions: ['.js', '.ts', '.tsx', '.jsx'],
     presets: [
       '@babel/env'
@@ -23,12 +23,7 @@ export const plugins = {
     include: [
       'node_modules/**',
       'src/lib/**'
-    ],
-    namedExports: {
-      'lru_map': [
-        'LRUMap'
-      ]
-    }
+    ]
   })
 };
 

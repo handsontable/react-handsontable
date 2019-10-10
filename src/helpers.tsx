@@ -144,13 +144,16 @@ export function createPortal(rElement: React.ReactElement, props, callback: Func
  * @returns {Function} Class with the renamed methods.
  */
 export function addUnsafePrefixes(Klass) {
-  const shouldPrefix = parseFloat(React.version) >= 16.3;
+  const reactSemverArray = React.version.split('.').map((v) => parseInt(v));
+  const shouldPrefix = reactSemverArray[0] >= 16 && reactSemverArray[1] >= 3;
 
-  Klass.prototype.UNSAFE_componentWillUpdate = Klass.prototype.componentWillUpdate;
-  delete Klass.prototype.componentWillUpdate;
+  if (shouldPrefix) {
+    Klass.prototype.UNSAFE_componentWillUpdate = Klass.prototype.componentWillUpdate;
+    delete Klass.prototype.componentWillUpdate;
 
-  Klass.prototype.UNSAFE_componentWillMount = Klass.prototype.componentWillMount;
-  delete Klass.prototype.componentWillMount;
+    Klass.prototype.UNSAFE_componentWillMount = Klass.prototype.componentWillMount;
+    delete Klass.prototype.componentWillMount;
+  }
 
   return Klass;
 }

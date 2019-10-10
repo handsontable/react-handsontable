@@ -82,15 +82,15 @@ describe('Using Redux store within HotTable renderers and editors', () => {
 
             rendererInstances.set(`${instance.props.row}-${instance.props.col}`, instance);
           }
-          } hot-renderer></ReduxEnabledRenderer>
+          } hot-renderer />
         </HotTable>
       </Provider>, {attachTo: document.body.querySelector('#hotContainer')}
     );
 
     await sleep(100);
 
-    rendererInstances.forEach((value, key, map) => {
-      expect(value.props.bgColor).toEqual('#fff');
+    rendererInstances.forEach((component, key, map) => {
+      expect(component.props.bgColor).toEqual('#fff');
     });
 
     reduxStore.dispatch({
@@ -98,8 +98,8 @@ describe('Using Redux store within HotTable renderers and editors', () => {
       hexColor: '#B57267'
     });
 
-    rendererInstances.forEach((value, key, map) => {
-      expect(value.props.bgColor).toEqual('#B57267');
+    rendererInstances.forEach((component, key, map) => {
+      expect(component.props.bgColor).toEqual('#B57267');
     });
 
     wrapper.detach();
@@ -108,8 +108,6 @@ describe('Using Redux store within HotTable renderers and editors', () => {
   });
 
   it('should be possible to use redux-enabled components as editors', async (done) => {
-    // let reduxStore = mockStore(initialReduxStoreState);
-
     const ReduxEnabledEditor = connect(function (state: any) {
         return {
           bgColor: state.appReducer.hexColor
@@ -142,7 +140,7 @@ describe('Using Redux store within HotTable renderers and editors', () => {
 
             editorInstances.set(`${instance.props.row}-${instance.props.col}`, instance);
           }
-          } hot-editor></ReduxEnabledEditor>
+          } hot-editor />
         </HotTable>
       </Provider>, {attachTo: document.body.querySelector('#hotContainer')}
     );

@@ -7,6 +7,9 @@ import {
   HotTable
 } from '../src/hotTable';
 import {
+  HotColumn
+} from '../src/hotColumn';
+import {
   mockElementDimensions,
   sleep
 } from './_helpers';
@@ -21,6 +24,9 @@ beforeEach(() => {
 
 describe('React Context', () => {
   it('should be possible to declare a context and use it inside both renderers and editors', async (done) => {
+    let hotTableInstance = null;
+    const TestContext = React.createContext('def-test-val');
+
     function RendererComponent2() {
       return (
         <TestContext.Consumer>
@@ -32,17 +38,34 @@ describe('React Context', () => {
     class EditorComponent2 extends BaseEditorComponent {
       render(): React.ReactElement<string> {
         return (
-          <div>
             <TestContext.Consumer>
               {(context) => <>{context}</>}
             </TestContext.Consumer>
-          </div>
         );
       }
     }
 
-    let hotTableInstance = null;
-    const TestContext = React.createContext('def-test-val');
+    class RendererComponent3 extends React.Component {
+      render() {
+        return (
+          <>
+            {this.context}
+          </>
+        )
+      }
+    }
+    RendererComponent3.contextType = TestContext;
+
+    class EditorComponent3 extends React.Component {
+      render() {
+        return (
+          <>
+            {this.context}
+          </>
+        )
+      }
+    }
+    EditorComponent3.contextType = TestContext;
 
     const wrapper: ReactWrapper<{}, {}, typeof HotTable> = mount(
       <TestContext.Provider value={'testContextValue'}>
@@ -59,8 +82,14 @@ describe('React Context', () => {
                   ref={function (instance) {
                     hotTableInstance = instance;
                   }}>
-          <RendererComponent2 hot-renderer/>
-          <EditorComponent2 hot-editor/>
+          <HotColumn>
+            <RendererComponent2 hot-renderer/>
+            <EditorComponent2 hot-editor/>
+          </HotColumn>
+          <HotColumn>
+            <RendererComponent3 hot-renderer/>
+            <EditorComponent3 hot-editor/>
+          </HotColumn>
         </HotTable>
       </TestContext.Provider>, {attachTo: document.body.querySelector('#hotContainer')}
     );
@@ -70,9 +99,14 @@ describe('React Context', () => {
     const hotInstance = hotTableInstance.hotInstance;
 
     expect(hotInstance.getCell(0, 0).innerHTML).toEqual('<div>testContextValue</div>');
-    expect(hotInstance.getCell(0, 1).innerHTML).toEqual('<div>testContextValue</div>');
+    expect(hotInstance.getCell(1, 0).innerHTML).toEqual('<div>testContextValue</div>');
 
-    expect(document.querySelector('#hot-wrapper-editor-container-EditorComponent2').innerHTML).toEqual('<div>testContextValue</div>');
+    expect(document.querySelector('#hot-wrapper-editor-container-EditorComponent2').innerHTML).toEqual('testContextValue');
+
+    expect(hotInstance.getCell(0, 1).innerHTML).toEqual('<div>testContextValue</div>');
+    expect(hotInstance.getCell(1, 1).innerHTML).toEqual('<div>testContextValue</div>');
+
+    expect(document.querySelector('#hot-wrapper-editor-container-EditorComponent3').innerHTML).toEqual('testContextValue');
 
     wrapper.detach();
     done();
