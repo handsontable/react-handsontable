@@ -1,10 +1,12 @@
 import React, { ReactPortal } from 'react';
 import { HotTableProps, HotColumnProps } from './types';
 import { addUnsafePrefixes, createEditorPortal, getExtendedEditorElement } from './helpers';
+import { SettingsMapper } from './settingsMapper';
+import Handsontable from 'handsontable';
 
 class HotColumn extends React.Component<HotColumnProps, {}> {
   internalProps: string[];
-  columnSettings: HotTableProps;
+  columnSettings: Handsontable.GridSettings;
 
   /**
    * Local editor portal cache.
@@ -78,7 +80,7 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
     const rendererElement: React.ReactElement = this.props._getChildElementByType(this.props.children, 'hot-renderer');
     const editorElement: React.ReactElement = this.getLocalEditorElement();
 
-    this.columnSettings = this.getSettingsProps();
+    this.columnSettings = SettingsMapper.getSettings(this.getSettingsProps());
 
     if (rendererElement !== null) {
       this.columnSettings.renderer = this.props._getRendererWrapper(rendererElement);

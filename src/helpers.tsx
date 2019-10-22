@@ -98,7 +98,8 @@ export function getExtendedEditorElement(children: React.ReactNode, editorCache:
       if (!editorCache.has(editorName)) {
         editorCache.set(editorName, editorInstance);
       }
-    }
+    },
+    isEditor: true
   });
 }
 

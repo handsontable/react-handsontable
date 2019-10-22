@@ -2,6 +2,7 @@ import React from 'react';
 import Handsontable from 'handsontable';
 import { SettingsMapper } from './settingsMapper';
 import { PortalManager } from './portalManager';
+import { HotColumn } from './hotColumn';
 import * as packageJson from '../package.json';
 import { HotTableProps } from './types';
 import {
@@ -37,12 +38,6 @@ import {
  * @class HotTable
  */
 class HotTable extends React.Component<HotTableProps, {}> {
-  /**
-   * Reference to the `SettingsMapper` instance.
-   *
-   * @type {SettingsMapper}
-   */
-  private settingsMapper: SettingsMapper = new SettingsMapper();
   /**
    * The `id` of the main Handsontable DOM element.
    *
@@ -209,7 +204,8 @@ class HotTable extends React.Component<HotTableProps, {}> {
           col,
           prop,
           value,
-          cellProperties
+          cellProperties,
+          isRenderer: true
         }, () => {
         }, TD.ownerDocument);
 
@@ -330,7 +326,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
    * @returns {Handsontable.GridSettings} New global set of settings for Handsontable.
    */
   createNewGlobalSettings(): Handsontable.GridSettings {
-    const newSettings = this.settingsMapper.getSettings(this.props);
+    const newSettings = SettingsMapper.getSettings(this.props);
     const globalRendererNode = this.getGlobalRendererElement();
     const globalEditorNode = this.getGlobalEditorElement();
 
@@ -463,7 +459,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
    * Render the component.
    */
   render(): React.ReactElement {
-    const isHotColumn = (childNode: any) => childNode.type.name === 'HotColumn';
+    const isHotColumn = (childNode: any) => childNode.type === HotColumn;
     let children = React.Children.toArray(this.props.children);
 
     // filter out anything that's not a HotColumn

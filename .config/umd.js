@@ -1,5 +1,5 @@
 import { addLicenseBanner } from './helpers/licenseBanner';
-import { baseConfig } from "./base";
+import { baseConfig } from './base';
 
 const env = process.env.NODE_ENV;
 const filename = 'react-handsontable.js';
