@@ -21,7 +21,7 @@ describe('Settings mapper unit tests', () => {
           return 'also works!';
         }
       };
-      const result: {[key: string]: any} = settingsMapper.getSettings(initial);
+      const result: {[key: string]: any} = SettingsMapper.getSettings(initial);
 
       expect(!!result.width && !!result.height && !!result.contextMenu && !!result.columns && !!result.afterChange && !!result.afterRender).toEqual(true);
       expect(Object.keys(initial).length).toEqual(Object.keys(result).length);
@@ -54,7 +54,7 @@ describe('Settings mapper unit tests', () => {
           }
         }
       };
-      const result: {[key: string]: any} = settingsMapper.getSettings(initial);
+      const result: {[key: string]: any} = SettingsMapper.getSettings(initial);
 
       expect(!!result.width && !!result.height && !!result.contextMenu && !!result.columns && !!result.afterChange && !!result.afterRender).toEqual(true);
       expect(Object.keys(initial.settings).length).toEqual(Object.keys(result).length);
@@ -88,7 +88,7 @@ describe('Settings mapper unit tests', () => {
           }
         }
       };
-      const result: {[key: string]: any} = settingsMapper.getSettings(initial);
+      const result: {[key: string]: any} = SettingsMapper.getSettings(initial);
 
       expect(!!result.width && !!result.height && !!result.contextMenu && !!result.columns && !!result.afterChange && !!result.afterRender).toEqual(true);
       expect(Object.keys(initial.settings).length + Object.keys(initial).length - 1).toEqual(Object.keys(result).length);
