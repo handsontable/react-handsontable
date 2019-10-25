@@ -1,7 +1,7 @@
 import React from 'react';
 import Handsontable from 'handsontable';
 
-class BaseEditorComponent extends React.Component<any, any> implements Handsontable._editors.Base {
+class BaseEditorComponent<P = {}, S = {}, SS = any> extends React.Component<P, S, SS> implements Handsontable._editors.Base {
   name = 'BaseEditorComponent';
   instance = null;
   row = null;
