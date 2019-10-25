@@ -157,7 +157,7 @@ describe('Dynamic HotColumn configuration changes', () => {
             <HotColumn title="test title" className="first-column-class-name" key={'2'}>
               <EditorComponent hot-editor/>
             </HotColumn>,
-            <HotColumn readOnly={true} key={'3'}>
+            <HotColumn title="test title 2" key={'3'}>
               <RendererComponent2 hot-renderer></RendererComponent2>
             </HotColumn>
           ]
@@ -196,7 +196,6 @@ describe('Dynamic HotColumn configuration changes', () => {
 
     expect(hotInstance.getSettings().columns[0].title).toEqual('test title');
     expect(hotInstance.getSettings().columns[0].className).toEqual('first-column-class-name');
-    expect(hotInstance.getCellMeta(0, 0).readOnly).toEqual(false);
     expect(hotInstance.getCell(0, 0).innerHTML).toEqual('<div>value: A1</div>');
     expect(hotInstance.getCell(1, 0).innerHTML).toEqual('<div>value: A2</div>');
     hotInstance.selectCell(0, 0);
@@ -206,9 +205,8 @@ describe('Dynamic HotColumn configuration changes', () => {
     expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('block');
     hotInstance.getActiveEditor().close();
 
-    expect(hotInstance.getSettings().columns[1].title).toEqual(void 0);
+    expect(hotInstance.getSettings().columns[1].title).toEqual('test title 2');
     expect(hotInstance.getSettings().columns[1].className).toEqual(void 0);
-    expect(hotInstance.getCellMeta(0, 1).readOnly).toEqual(true);
     expect(hotInstance.getCell(0, 1).innerHTML).toEqual('<div>r2: B1</div>');
     expect(hotInstance.getCell(1, 1).innerHTML).toEqual('<div>r2: B2</div>');
     hotInstance.selectCell(0, 1);
@@ -219,7 +217,7 @@ describe('Dynamic HotColumn configuration changes', () => {
     wrapper.instance().setState({
       setup: [
         <EditorComponent hot-editor key={'1'}/>,
-        <HotColumn readOnly={true} key={'2'}>
+        <HotColumn title="test title 2" key={'2'}>
           <RendererComponent2 hot-renderer></RendererComponent2>
         </HotColumn>,
         <HotColumn title="test title" className="first-column-class-name" key={'3'}>
@@ -230,9 +228,8 @@ describe('Dynamic HotColumn configuration changes', () => {
 
     await sleep(100);
 
-    expect(hotInstance.getSettings().columns[0].title).toEqual(void 0);
+    expect(hotInstance.getSettings().columns[0].title).toEqual('test title 2');
     expect(hotInstance.getSettings().columns[0].className).toEqual(void 0);
-    expect(hotInstance.getSettings().columns[0].readOnly).toEqual(true);
     expect(hotInstance.getCell(0, 0).innerHTML).toEqual('<div>r2: A1</div>');
     expect(hotInstance.getCell(1, 0).innerHTML).toEqual('<div>r2: A2</div>');
     hotInstance.selectCell(0, 0);
@@ -244,7 +241,6 @@ describe('Dynamic HotColumn configuration changes', () => {
 
     expect(hotInstance.getSettings().columns[1].title).toEqual('test title');
     expect(hotInstance.getSettings().columns[1].className).toEqual('first-column-class-name');
-    expect(hotInstance.getCellMeta(0, 1).readOnly).toEqual(false);
     expect(hotInstance.getCell(0, 1).innerHTML).toEqual('<div>value: B1</div>');
     expect(hotInstance.getCell(1, 1).innerHTML).toEqual('<div>value: B2</div>');
     hotInstance.selectCell(0, 1);

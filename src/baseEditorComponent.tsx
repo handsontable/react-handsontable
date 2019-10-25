@@ -13,6 +13,7 @@ class BaseEditorComponent<P = {}, S = {}, SS = any> extends React.Component<P, S
   state = null;
   hotInstance = null;
   hotCustomEditorInstance = null;
+  hot = null;
 
   constructor(props) {
     super(props);
@@ -117,6 +118,14 @@ class BaseEditorComponent<P = {}, S = {}, SS = any> extends React.Component<P, S
 
   clearHooks(...args) {
     return (Handsontable.editors.BaseEditor.prototype as any).clearHooks.call(this.hotCustomEditorInstance, ...args);
+  }
+
+  getEditedCell(...args) {
+    return (Handsontable.editors.BaseEditor.prototype as any).getEditedCell.call(this.hotCustomEditorInstance, ...args);
+  }
+
+  getEditedCellsZIndex(...args) {
+    return (Handsontable.editors.BaseEditor.prototype as any).getEditedCellsZIndex.call(this.hotCustomEditorInstance, ...args);
   }
 }
 
