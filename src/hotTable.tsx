@@ -381,7 +381,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
 
       if (rendererDefined) {
         console.warn('Your `HotTable` configuration includes `autoRowSize`/`autoColumnSize` options, which are not compatible with ' +
-          'this version of `@handsontable/react`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.');
+          ' the component-based renderers`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.');
       }
     }
   }
