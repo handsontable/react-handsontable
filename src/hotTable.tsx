@@ -356,11 +356,13 @@ class HotTable extends React.Component<HotTableProps, {}> {
    */
   displayAutoSizeWarning(newGlobalSettings: Handsontable.GridSettings): void {
     if (this.hotInstance.getPlugin('autoRowSize').enabled || this.hotInstance.getPlugin('autoColumnSize').enabled) {
-      const _this = this;
-      const isNativeRenderer = function (renderer, column?) {
-        return column ? (_this.props.columns && _this.props.columns[column] && _this.props.columns[column].renderer === renderer) ||
-          (_this.props.settings && _this.props.settings.columns &&  _this.props.settings.columns[column] && _this.props.settings.columns[column].renderer === renderer) :
-          _this.props.renderer === renderer || _this.props.settings.renderer === renderer;
+      const isNativeRenderer = (renderer, column?) => {
+        const standaloneColumnRenderer = this.props.columns && this.props.columns[column] ? this.props.columns[column].renderer : null;
+        const settingsObjectColumnRenderer = this.props.settings && this.props.settings.columns && this.props.settings.columns[column] ? this.props.settings.columns[column].renderer : null;
+
+        return column ?
+          standaloneColumnRenderer === renderer || settingsObjectColumnRenderer === renderer :
+          this.props.renderer === renderer || this.props.settings.renderer === renderer;
       };
       let rendererDefined = false;
 
