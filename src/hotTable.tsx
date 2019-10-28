@@ -350,6 +350,34 @@ class HotTable extends React.Component<HotTableProps, {}> {
   }
 
   /**
+   * Detect if `autoRowSize` or `autoColumnSize` is defined, and if so, throw an incompatibility warning.
+   */
+  displayAutoSizeWarning(): void {
+    if (this.hotInstance.getPlugin('autoRowSize').enabled || this.hotInstance.getPlugin('autoColumnSize').enabled) {
+      const hotSettings = this.hotInstance.getSettings();
+      let rendererDefined = false;
+
+      if (hotSettings.renderer) {
+        rendererDefined = true;
+      }
+
+      if (!rendererDefined && hotSettings.columns) {
+        for (let i = 0; i < hotSettings.columns.length; i++) {
+          if (hotSettings.columns[i].renderer) {
+            rendererDefined = true;
+            break;
+          }
+        }
+      }
+
+      if (rendererDefined) {
+        console.warn('Your `HotTable` configuration includes `autoRowSize`/`autoColumnSize` options, which are not compatible with ' +
+          'this version of `@handsontable/react`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.');
+      }
+    }
+  }
+
+  /**
    * Sets the column settings based on information received from HotColumn.
    *
    * @param {HotTableProps} columnSettings Column settings object.
@@ -430,6 +458,8 @@ class HotTable extends React.Component<HotTableProps, {}> {
 
     // `init` missing in Handsontable's type definitions.
     (this.hotInstance as any).init();
+
+    this.displayAutoSizeWarning();
   }
 
   /**
