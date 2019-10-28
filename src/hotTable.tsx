@@ -336,17 +336,54 @@ class HotTable extends React.Component<HotTableProps, {}> {
       newSettings.editor = this.getEditorClass(globalEditorNode);
 
     } else {
-      newSettings.editor = void 0;
+      newSettings.editor = this.props.editor || this.props.settings ? this.props.settings.editor : void 0;
     }
 
     if (globalRendererNode) {
       newSettings.renderer = this.getRendererWrapper(globalRendererNode);
 
     } else {
-      newSettings.renderer = void 0;
+      newSettings.renderer = this.props.renderer || this.props.settings ? this.props.settings.renderer : void 0;
     }
 
     return newSettings;
+  }
+
+  /**
+   * Detect if `autoRowSize` or `autoColumnSize` is defined, and if so, throw an incompatibility warning.
+   *
+   * @param {Handsontable.GridSettings} newGlobalSettings New global settings passed as Handsontable config.
+   */
+  displayAutoSizeWarning(newGlobalSettings: Handsontable.GridSettings): void {
+    if (this.hotInstance.getPlugin('autoRowSize').enabled || this.hotInstance.getPlugin('autoColumnSize').enabled) {
+      const isNativeRenderer = (renderer, column?) => {
+        const standaloneColumnRenderer = this.props.columns && this.props.columns[column] ? this.props.columns[column].renderer : null;
+        const settingsObjectColumnRenderer = this.props.settings && this.props.settings.columns && this.props.settings.columns[column] ? this.props.settings.columns[column].renderer : null;
+
+        return column ?
+          standaloneColumnRenderer === renderer || settingsObjectColumnRenderer === renderer :
+          this.props.renderer === renderer || this.props.settings.renderer === renderer;
+      };
+      let rendererDefined = false;
+
+      if (newGlobalSettings.renderer && !isNativeRenderer(newGlobalSettings.renderer)) {
+        rendererDefined = true;
+      }
+
+      if (!rendererDefined && newGlobalSettings.columns) {
+        for (let i = 0; i < newGlobalSettings.columns.length; i++) {
+          if (newGlobalSettings.columns[i].renderer && !isNativeRenderer(newGlobalSettings.columns[i].renderer, i)) {
+            rendererDefined = true;
+            break;
+          }
+        }
+      }
+
+      if (rendererDefined) {
+        console.warn('Your `HotTable` configuration includes `autoRowSize`/`autoColumnSize` options, which are not compatible with ' +
+          ' the component-based renderers`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.');
+      }
+    }
   }
 
   /**
@@ -417,8 +454,9 @@ class HotTable extends React.Component<HotTableProps, {}> {
    */
   componentDidMount(): void {
     const hotTableComponent = this;
+    const newGlobalSettings = this.createNewGlobalSettings();
 
-    this.hotInstance = new Handsontable.Core(this.hotElementRef, this.createNewGlobalSettings());
+    this.hotInstance = new Handsontable.Core(this.hotElementRef, newGlobalSettings);
 
     this.hotInstance.addHook('beforeRender', function (isForced) {
       hotTableComponent.handsontableBeforeRender();
@@ -430,6 +468,8 @@ class HotTable extends React.Component<HotTableProps, {}> {
 
     // `init` missing in Handsontable's type definitions.
     (this.hotInstance as any).init();
+
+    this.displayAutoSizeWarning(newGlobalSettings);
   }
 
   /**
@@ -444,7 +484,10 @@ class HotTable extends React.Component<HotTableProps, {}> {
    * Logic performed after the component update.
    */
   componentDidUpdate(): void {
-    this.updateHot(this.createNewGlobalSettings());
+    const newGlobalSettings = this.createNewGlobalSettings();
+    this.updateHot(newGlobalSettings);
+
+    this.displayAutoSizeWarning(newGlobalSettings);
   }
 
   /**

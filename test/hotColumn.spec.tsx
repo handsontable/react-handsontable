@@ -56,6 +56,8 @@ describe('Renderer configuration using React components', () => {
                 data={Handsontable.helper.createSpreadsheetData(100, 2)}
                 width={300}
                 height={300}
+                rowHeights={23}
+                colWidths={50}
                 init={function () {
                   mockElementDimensions(this.rootElement, 300, 300);
                 }}>
