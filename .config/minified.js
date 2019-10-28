@@ -10,7 +10,13 @@ const minConfig = {
     name: 'Handsontable.react',
     indent: false,
     sourcemap: true,
-    file: `./dist/${minFilename}`
+    exports: 'named',
+    file: `./dist/${minFilename}`,
+    globals: {
+      react: 'React',
+      'react-dom': 'ReactDOM',
+      handsontable: 'Handsontable'
+    }
   },
   plugins: baseConfig.plugins.concat([
     uglify({
@@ -21,7 +27,6 @@ const minConfig = {
         pure_getters: true,
         unsafe: true,
         unsafe_comps: true,
-        warnings: false
       }
     })
   ])
