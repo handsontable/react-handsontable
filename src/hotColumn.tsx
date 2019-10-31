@@ -40,7 +40,7 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
    * @returns {Object}
    */
   getSettingsProps(): HotTableProps {
-    this.internalProps = ['_emitColumnSettings', '_columnIndex', '_getChildElementByType', '_getRendererWrapper',
+    this.internalProps = ['__componentRendererColumns', '_emitColumnSettings', '_columnIndex', '_getChildElementByType', '_getRendererWrapper',
       '_getEditorClass', '_getEditorCache', 'hot-renderer', 'hot-editor', 'children'];
 
     return Object.keys(this.props)
@@ -84,6 +84,7 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
 
     if (rendererElement !== null) {
       this.columnSettings.renderer = this.props._getRendererWrapper(rendererElement);
+      this.props._componentRendererColumns.set(this.props._columnIndex, true);
 
     } else if (this.hasProp('renderer')) {
       this.columnSettings.renderer = this.props.renderer;

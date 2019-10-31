@@ -114,6 +114,15 @@ class HotTable extends React.Component<HotTableProps, {}> {
   private editorCache: Map<string, React.Component> = new Map();
 
   /**
+   * Map with column indexes (or a string = 'global') as keys, and booleans as values. Each key represents a component-based editor
+   * declared for the used column index, or a global one, if the key is the `global` string.
+   *
+   * @private
+   * @type {Map}
+   */
+  private componentRendererColumns: Map<number | string, boolean> = new Map();
+
+  /**
    * Package version getter.
    *
    * @returns The version number of the package.
@@ -169,6 +178,8 @@ class HotTable extends React.Component<HotTableProps, {}> {
     removeEditorContainers(this.hotElementRef ? this.hotElementRef.ownerDocument : document);
 
     renderedCellCache.clear();
+
+    this.componentRendererColumns.clear();
   }
 
   /**
@@ -341,6 +352,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
 
     if (globalRendererNode) {
       newSettings.renderer = this.getRendererWrapper(globalRendererNode);
+      this.componentRendererColumns.set('global', true);
 
     } else {
       newSettings.renderer = this.props.renderer || this.props.settings ? this.props.settings.renderer : void 0;
@@ -356,30 +368,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
    */
   displayAutoSizeWarning(newGlobalSettings: Handsontable.GridSettings): void {
     if (this.hotInstance.getPlugin('autoRowSize').enabled || this.hotInstance.getPlugin('autoColumnSize').enabled) {
-      const isNativeRenderer = (renderer, column?) => {
-        const standaloneColumnRenderer = this.props.columns && this.props.columns[column] ? this.props.columns[column].renderer : null;
-        const settingsObjectColumnRenderer = this.props.settings && this.props.settings.columns && this.props.settings.columns[column] ? this.props.settings.columns[column].renderer : null;
-
-        return column ?
-          standaloneColumnRenderer === renderer || settingsObjectColumnRenderer === renderer :
-          this.props.renderer === renderer || this.props.settings.renderer === renderer;
-      };
-      let rendererDefined = false;
-
-      if (newGlobalSettings.renderer && !isNativeRenderer(newGlobalSettings.renderer)) {
-        rendererDefined = true;
-      }
-
-      if (!rendererDefined && newGlobalSettings.columns) {
-        for (let i = 0; i < newGlobalSettings.columns.length; i++) {
-          if (newGlobalSettings.columns[i].renderer && !isNativeRenderer(newGlobalSettings.columns[i].renderer, i)) {
-            rendererDefined = true;
-            break;
-          }
-        }
-      }
-
-      if (rendererDefined) {
+      if (this.componentRendererColumns.size > 0) {
         console.warn('Your `HotTable` configuration includes `autoRowSize`/`autoColumnSize` options, which are not compatible with ' +
           ' the component-based renderers`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.');
       }
@@ -513,6 +502,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
     // clone the HotColumn nodes and extend them with the callbacks
     let childClones = children.map((childNode: React.ReactElement, columnIndex: number) => {
       return React.cloneElement(childNode, {
+        _componentRendererColumns: this.componentRendererColumns,
         _emitColumnSettings: this.setHotColumnSettings.bind(this),
         _columnIndex: columnIndex,
         _getChildElementByType: getChildElementByType.bind(this),
