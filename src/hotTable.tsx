@@ -6,6 +6,7 @@ import { HotColumn } from './hotColumn';
 import * as packageJson from '../package.json';
 import { HotTableProps } from './types';
 import {
+  AUTOSIZE_WARNING,
   createEditorPortal,
   createPortal,
   getChildElementByType,
@@ -347,7 +348,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
       newSettings.editor = this.getEditorClass(globalEditorNode);
 
     } else {
-      newSettings.editor = this.props.editor || this.props.settings ? this.props.settings.editor : void 0;
+      newSettings.editor = this.props.editor || (this.props.settings ? this.props.settings.editor : void 0);
     }
 
     if (globalRendererNode) {
@@ -355,7 +356,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
       this.componentRendererColumns.set('global', true);
 
     } else {
-      newSettings.renderer = this.props.renderer || this.props.settings ? this.props.settings.renderer : void 0;
+      newSettings.renderer = this.props.renderer || (this.props.settings ? this.props.settings.renderer : void 0);
     }
 
     return newSettings;
@@ -369,8 +370,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
   displayAutoSizeWarning(newGlobalSettings: Handsontable.GridSettings): void {
     if (this.hotInstance.getPlugin('autoRowSize').enabled || this.hotInstance.getPlugin('autoColumnSize').enabled) {
       if (this.componentRendererColumns.size > 0) {
-        console.warn('Your `HotTable` configuration includes `autoRowSize`/`autoColumnSize` options, which are not compatible with ' +
-          ' the component-based renderers`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.');
+        console.warn(AUTOSIZE_WARNING);
       }
     }
   }

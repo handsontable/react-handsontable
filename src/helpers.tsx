@@ -4,6 +4,12 @@ import ReactDOM from 'react-dom';
 let bulkComponentContainer = null;
 
 /**
+ * Warning message for the `autoRowSize`/`autoColumnSize` compatibility check.
+ */
+export const AUTOSIZE_WARNING = 'Your `HotTable` configuration includes `autoRowSize`/`autoColumnSize` options, which are not compatible with ' +
+  ' the component-based renderers`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.';
+
+/**
  * Filter out and return elements of the provided `type` from the `HotColumn` component's children.
  *
  * @param {React.ReactNode} children HotTable children array.
