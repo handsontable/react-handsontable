@@ -15,6 +15,7 @@ import {
   addUnsafePrefixes,
   removeEditorContainers
 } from './helpers';
+import { warn } from 'handsontable/commonjs/helpers/console';
 
 /**
  * A Handsontable-ReactJS wrapper.
@@ -370,7 +371,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
   displayAutoSizeWarning(newGlobalSettings: Handsontable.GridSettings): void {
     if (this.hotInstance.getPlugin('autoRowSize').enabled || this.hotInstance.getPlugin('autoColumnSize').enabled) {
       if (this.componentRendererColumns.size > 0) {
-        console.warn(AUTOSIZE_WARNING);
+        warn(AUTOSIZE_WARNING);
       }
     }
   }
