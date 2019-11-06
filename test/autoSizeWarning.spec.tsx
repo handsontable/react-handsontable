@@ -26,7 +26,7 @@ beforeEach(() => {
 
 describe('`autoRowSize`/`autoColumns` warning', () => {
   it('should recognize whether `autoRowSize` or `autoColumnSize` is enabled and throw a warning, if a global component-based renderer' +
-    'is defined', async (done) => {
+    'is defined (using the default Handsontable settings - autoColumnSize is enabled by default)', async (done) => {
     console.warn = jasmine.createSpy('warn');
 
     const RendererComponent = function (props) {
@@ -43,6 +43,70 @@ describe('`autoRowSize`/`autoColumns` warning', () => {
                   mockElementDimensions(this.rootElement, 300, 300);
                 }}>
         <RendererComponent hot-renderer></RendererComponent>
+      </HotTable>, {attachTo: document.body.querySelector('#hotContainer')}
+    );
+
+    await sleep(100);
+
+    expect(console.warn).toHaveBeenCalledWith(AUTOSIZE_WARNING);
+
+    wrapper.detach();
+    done();
+  });
+
+  it('should recognize whether `autoRowSize` or `autoColumnSize` is enabled and throw a warning, if a global component-based renderer' +
+    'is defined', async (done) => {
+    console.warn = jasmine.createSpy('warn');
+
+    const RendererComponent = function (props) {
+      return <>test</>
+    };
+
+    const wrapper: ReactWrapper<{}, {}, typeof HotTable> = mount(
+      <HotTable licenseKey="non-commercial-and-evaluation"
+                id="test-hot"
+                data={Handsontable.helper.createSpreadsheetData(3, 2)}
+                width={300}
+                height={300}
+                autoRowSize={false}
+                autoColumnSize={true}
+                init={function () {
+                  mockElementDimensions(this.rootElement, 300, 300);
+                }}>
+        <RendererComponent hot-renderer></RendererComponent>
+      </HotTable>, {attachTo: document.body.querySelector('#hotContainer')}
+    );
+
+    await sleep(100);
+
+    expect(console.warn).toHaveBeenCalledWith(AUTOSIZE_WARNING);
+
+    wrapper.detach();
+    done();
+  });
+
+  it('should recognize whether `autoRowSize` or `autoColumnSize` is enabled and throw a warning, if a component-based renderer' +
+    'is defined for any column (using the default Handsontable settings - autoColumnSize enabled by default)', async (done) => {
+    console.warn = jasmine.createSpy('warn');
+
+    const RendererComponent = function (props) {
+      return <>test</>
+    };
+
+    const wrapper: ReactWrapper<{}, {}, typeof HotTable> = mount(
+      <HotTable licenseKey="non-commercial-and-evaluation"
+                id="test-hot"
+                data={Handsontable.helper.createSpreadsheetData(3, 3)}
+                width={300}
+                height={300}
+                init={function () {
+                  mockElementDimensions(this.rootElement, 300, 300);
+                }}>
+        <HotColumn/>
+        <HotColumn>
+          <RendererComponent hot-renderer></RendererComponent>
+        </HotColumn>
+        <HotColumn/>
       </HotTable>, {attachTo: document.body.querySelector('#hotContainer')}
     );
 
@@ -102,6 +166,8 @@ describe('`autoRowSize`/`autoColumns` warning', () => {
                 data={Handsontable.helper.createSpreadsheetData(3, 3)}
                 width={300}
                 height={300}
+                autoRowSize={false}
+                autoColumnSize={true}
                 columns={function(columnIndex) {
                   return {
                     renderer: function() {}
@@ -135,6 +201,8 @@ describe('`autoRowSize`/`autoColumns` warning', () => {
                 data={Handsontable.helper.createSpreadsheetData(3, 3)}
                 width={300}
                 height={300}
+                autoRowSize={true}
+                autoColumnSize={false}
                 renderer={function() {}}
                 init={function () {
                   mockElementDimensions(this.rootElement, 300, 300);
@@ -162,6 +230,8 @@ describe('`autoRowSize`/`autoColumns` warning', () => {
                 data={Handsontable.helper.createSpreadsheetData(3, 3)}
                 width={300}
                 height={300}
+                autoRowSize={true}
+                autoColumnSize={true}
                 columns={[{renderer: function() {}}]}
                 init={function () {
                   mockElementDimensions(this.rootElement, 300, 300);
@@ -190,6 +260,8 @@ describe('`autoRowSize`/`autoColumns` warning', () => {
                 data={Handsontable.helper.createSpreadsheetData(3, 3)}
                 width={300}
                 height={300}
+                autoRowSize={false}
+                autoColumnSize={true}
                 columns={function(columnIndex) {
                   return {
                     renderer: function() {}

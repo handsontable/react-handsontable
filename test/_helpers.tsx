@@ -65,7 +65,13 @@ class IndividualPropsWrapper extends React.Component<{ref?: string, id?: string}
   render(): React.ReactElement {
     return (
       <div>
-        <HotTable licenseKey="non-commercial-and-evaluation" ref={this.setHotElementRef.bind(this)} id="hot" {...this.state.hotSettings} />
+        <HotTable
+          licenseKey="non-commercial-and-evaluation"
+          ref={this.setHotElementRef.bind(this)}
+          id="hot" {...this.state.hotSettings}
+          autoRowSize={false}
+          autoColumnSize={false}
+        />
       </div>
     );
   }
@@ -91,7 +97,14 @@ class SingleObjectWrapper extends React.Component<{ref?: string, id?: string}, {
   render(): React.ReactElement {
     return (
       <div>
-        <HotTable licenseKey="non-commercial-and-evaluation" ref={this.setHotElementRef.bind(this)} id="hot" settings={this.state.hotSettings}/>
+        <HotTable
+          licenseKey="non-commercial-and-evaluation"
+          ref={this.setHotElementRef.bind(this)}
+          id="hot"
+          settings={this.state.hotSettings}
+          autoRowSize={false}
+          autoColumnSize={false}
+        />
       </div>
     );
   }
