@@ -24,7 +24,11 @@ beforeEach(() => {
 describe('Passing column settings using HotColumn', () => {
   it('should apply the Handsontable settings passed as HotColumn arguments to the Handsontable instance', async (done) => {
     const wrapper: ReactWrapper<{}, {}, typeof HotTable> = mount(
-      <HotTable licenseKey="non-commercial-and-evaluation" id="test-hot" data={[[2]]} readOnly={false}>
+      <HotTable
+        licenseKey="non-commercial-and-evaluation"
+        id="test-hot" data={[[2]]}
+        readOnly={false}
+      >
         <HotColumn title="test title"></HotColumn>
         <HotColumn readOnly={true}></HotColumn>
       </HotTable>, {attachTo: document.body.querySelector('#hotContainer')}
@@ -58,6 +62,8 @@ describe('Renderer configuration using React components', () => {
                 height={300}
                 rowHeights={23}
                 colWidths={50}
+                autoRowSize={false}
+                autoColumnSize={false}
                 init={function () {
                   mockElementDimensions(this.rootElement, 300, 300);
                 }}>
@@ -175,6 +181,8 @@ describe('Dynamic HotColumn configuration changes', () => {
                     rowHeights={23}
                     colWidths={50}
                     readOnly={false}
+                    autoRowSize={false}
+                    autoColumnSize={false}
                     init={function () {
                       mockElementDimensions(this.rootElement, 300, 300);
                     }}

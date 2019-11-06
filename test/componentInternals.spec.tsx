@@ -54,6 +54,8 @@ describe('Subcomponent state', () => {
                 height={300}
                 rowHeights={23}
                 colWidths={50}
+                autoRowSize={false}
+                autoColumnSize={false}
                 init={function () {
                   mockElementDimensions(this.rootElement, 300, 300);
                 }}>
@@ -212,6 +214,8 @@ describe('Component lifecyle', () => {
                 height={300}
                 rowHeights={23}
                 colWidths={50}
+                autoRowSize={false}
+                autoColumnSize={false}
                 init={function () {
                   mockElementDimensions(this.rootElement, 300, 300);
                 }}>
