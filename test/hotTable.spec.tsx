@@ -27,8 +27,11 @@ beforeEach(() => {
 describe('Handsontable initialization', () => {
   it('should render Handsontable when using the HotTable component', async (done) => {
     const wrapper: ReactWrapper<{}, {}, typeof HotTable> = mount(
-      <HotTable id="test-hot" data={[[2]]}
-                licenseKey="non-commercial-and-evaluation"/>, {attachTo: document.body.querySelector('#hotContainer')}
+      <HotTable
+        id="test-hot"
+        data={[[2]]}
+        licenseKey="non-commercial-and-evaluation"
+      />, {attachTo: document.body.querySelector('#hotContainer')}
     );
 
     await sleep(300);
@@ -47,9 +50,13 @@ describe('Handsontable initialization', () => {
 
   it('should pass the provided properties to the Handsontable instance', async (done) => {
     const wrapper: ReactWrapper<{}, {}, typeof HotTable> = mount(
-      <HotTable id="test-hot" contextMenu={true} rowHeaders={true} colHeaders={true}
-                data={[[2]]}
-                licenseKey="non-commercial-and-evaluation"/>, {attachTo: document.body.querySelector('#hotContainer')}
+      <HotTable
+        id="test-hot"
+        contextMenu={true}
+        rowHeaders={true}
+        colHeaders={true}
+        data={[[2]]}
+        licenseKey="non-commercial-and-evaluation"/>, {attachTo: document.body.querySelector('#hotContainer')}
     );
 
     await sleep(300);
@@ -169,6 +176,8 @@ describe('Renderer configuration using React components', () => {
                 height={300}
                 rowHeights={23}
                 colWidths={50}
+                autoRowSize={false}
+                autoColumnSize={false}
                 init={function () {
                   mockElementDimensions(this.rootElement, 300, 300);
                 }}>

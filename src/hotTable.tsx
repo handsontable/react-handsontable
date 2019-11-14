@@ -6,6 +6,7 @@ import { HotColumn } from './hotColumn';
 import * as packageJson from '../package.json';
 import { HotTableProps } from './types';
 import {
+  AUTOSIZE_WARNING,
   createEditorPortal,
   createPortal,
   getChildElementByType,
@@ -14,6 +15,7 @@ import {
   addUnsafePrefixes,
   removeEditorContainers
 } from './helpers';
+import { warn } from 'handsontable/commonjs/helpers/console';
 
 /**
  * A Handsontable-ReactJS wrapper.
@@ -114,6 +116,15 @@ class HotTable extends React.Component<HotTableProps, {}> {
   private editorCache: Map<string, React.Component> = new Map();
 
   /**
+   * Map with column indexes (or a string = 'global') as keys, and booleans as values. Each key represents a component-based editor
+   * declared for the used column index, or a global one, if the key is the `global` string.
+   *
+   * @private
+   * @type {Map}
+   */
+  private componentRendererColumns: Map<number | string, boolean> = new Map();
+
+  /**
    * Package version getter.
    *
    * @returns The version number of the package.
@@ -169,6 +180,8 @@ class HotTable extends React.Component<HotTableProps, {}> {
     removeEditorContainers(this.hotElementRef ? this.hotElementRef.ownerDocument : document);
 
     renderedCellCache.clear();
+
+    this.componentRendererColumns.clear();
   }
 
   /**
@@ -336,14 +349,15 @@ class HotTable extends React.Component<HotTableProps, {}> {
       newSettings.editor = this.getEditorClass(globalEditorNode);
 
     } else {
-      newSettings.editor = this.props.editor || this.props.settings ? this.props.settings.editor : void 0;
+      newSettings.editor = this.props.editor || (this.props.settings ? this.props.settings.editor : void 0);
     }
 
     if (globalRendererNode) {
       newSettings.renderer = this.getRendererWrapper(globalRendererNode);
+      this.componentRendererColumns.set('global', true);
 
     } else {
-      newSettings.renderer = this.props.renderer || this.props.settings ? this.props.settings.renderer : void 0;
+      newSettings.renderer = this.props.renderer || (this.props.settings ? this.props.settings.renderer : void 0);
     }
 
     return newSettings;
@@ -356,32 +370,8 @@ class HotTable extends React.Component<HotTableProps, {}> {
    */
   displayAutoSizeWarning(newGlobalSettings: Handsontable.GridSettings): void {
     if (this.hotInstance.getPlugin('autoRowSize').enabled || this.hotInstance.getPlugin('autoColumnSize').enabled) {
-      const isNativeRenderer = (renderer, column?) => {
-        const standaloneColumnRenderer = this.props.columns && this.props.columns[column] ? this.props.columns[column].renderer : null;
-        const settingsObjectColumnRenderer = this.props.settings && this.props.settings.columns && this.props.settings.columns[column] ? this.props.settings.columns[column].renderer : null;
-
-        return column ?
-          standaloneColumnRenderer === renderer || settingsObjectColumnRenderer === renderer :
-          this.props.renderer === renderer || this.props.settings.renderer === renderer;
-      };
-      let rendererDefined = false;
-
-      if (newGlobalSettings.renderer && !isNativeRenderer(newGlobalSettings.renderer)) {
-        rendererDefined = true;
-      }
-
-      if (!rendererDefined && newGlobalSettings.columns) {
-        for (let i = 0; i < newGlobalSettings.columns.length; i++) {
-          if (newGlobalSettings.columns[i].renderer && !isNativeRenderer(newGlobalSettings.columns[i].renderer, i)) {
-            rendererDefined = true;
-            break;
-          }
-        }
-      }
-
-      if (rendererDefined) {
-        console.warn('Your `HotTable` configuration includes `autoRowSize`/`autoColumnSize` options, which are not compatible with ' +
-          ' the component-based renderers`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.');
+      if (this.componentRendererColumns.size > 0) {
+        warn(AUTOSIZE_WARNING);
       }
     }
   }
@@ -513,6 +503,7 @@ class HotTable extends React.Component<HotTableProps, {}> {
     // clone the HotColumn nodes and extend them with the callbacks
     let childClones = children.map((childNode: React.ReactElement, columnIndex: number) => {
       return React.cloneElement(childNode, {
+        _componentRendererColumns: this.componentRendererColumns,
         _emitColumnSettings: this.setHotColumnSettings.bind(this),
         _columnIndex: columnIndex,
         _getChildElementByType: getChildElementByType.bind(this),
