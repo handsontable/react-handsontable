@@ -532,6 +532,6 @@ class HotTable extends React.Component<HotTableProps, {}> {
   }
 }
 
-const PrefixedHotTable = addUnsafePrefixes(HotTable);
+const PrefixedHotTable: typeof HotTable = addUnsafePrefixes(HotTable);
 export default PrefixedHotTable;
 export { PrefixedHotTable as HotTable };

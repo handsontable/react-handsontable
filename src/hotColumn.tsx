@@ -174,5 +174,5 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
   }
 }
 
-const PrefixedHotColumn = addUnsafePrefixes(HotColumn);
+const PrefixedHotColumn: typeof HotColumn = addUnsafePrefixes(HotColumn);
 export { PrefixedHotColumn as HotColumn };
