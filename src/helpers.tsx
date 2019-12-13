@@ -10,6 +10,17 @@ export const AUTOSIZE_WARNING = 'Your `HotTable` configuration includes `autoRow
   ' the component-based renderers`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.';
 
 /**
+ * Logs warn to the console if the `console` object is exposed.
+ *
+ * @param {...*} args Values which will be logged.
+ */
+export function warn(...args) {
+  if (typeof console !== 'undefined') {
+    console.warn(...args);
+  }
+}
+
+/**
  * Filter out and return elements of the provided `type` from the `HotColumn` component's children.
  *
  * @param {React.ReactNode} children HotTable children array.
