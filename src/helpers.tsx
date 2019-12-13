@@ -150,7 +150,7 @@ export function createPortal(rElement: React.ReactElement, props, callback: Func
  * @param {Function} Klass Class to have the methods renamed.
  * @returns {Function} Class with the renamed methods.
  */
-export function addUnsafePrefixes(Klass) {
+export function addUnsafePrefixes<T extends any>(Klass: T): T {
   const reactSemverArray = React.version.split('.').map((v) => parseInt(v));
   const shouldPrefix = reactSemverArray[0] >= 16 && reactSemverArray[1] >= 3;
 
