@@ -13,9 +13,9 @@ import {
   getComponentNodeName,
   getExtendedEditorElement,
   addUnsafePrefixes,
-  removeEditorContainers
+  removeEditorContainers,
+  warn
 } from './helpers';
-import { warn } from 'handsontable/commonjs/helpers/console';
 
 /**
  * A Handsontable-ReactJS wrapper.
