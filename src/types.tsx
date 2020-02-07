@@ -24,7 +24,8 @@ export interface HotColumnProps extends Handsontable.GridSettings {
   _getChildElementByType?: (children: React.ReactNode, type: string) => React.ReactElement;
   _getRendererWrapper?: (rendererNode: React.ReactElement) => Handsontable.renderers.Base;
   _getEditorClass?: (editorElement: React.ReactElement) => typeof Handsontable.editors.BaseEditor;
-  _getEditorCache?: () => Map<string, React.Component>;
+  _getEditorCache?: () => Map<Function, React.Component>;
+  _getOwnerDocument?: () => Document;
   children?: React.ReactNode;
 }
 

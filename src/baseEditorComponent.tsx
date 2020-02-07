@@ -19,7 +19,7 @@ class BaseEditorComponent<P = {}, S = {}, SS = any> extends React.Component<P, S
     super(props);
 
     if (props.emitEditorInstance) {
-      props.emitEditorInstance(this.constructor.name, this);
+      props.emitEditorInstance(this);
     }
   }
 

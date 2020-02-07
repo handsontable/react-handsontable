@@ -163,7 +163,7 @@ describe('Dynamic HotColumn configuration changes', () => {
           setup: [
             <RendererComponent hot-renderer key={'1'}/>,
             <HotColumn title="test title" className="first-column-class-name" key={'2'}>
-              <EditorComponent hot-editor/>
+              <EditorComponent className="editor-className-1" id="editor-id-1" style={{background: 'red'}} hot-editor/>
             </HotColumn>,
             <HotColumn title="test title 2" key={'3'}>
               <RendererComponent2 hot-renderer></RendererComponent2>
@@ -203,6 +203,7 @@ describe('Dynamic HotColumn configuration changes', () => {
     await sleep(300);
 
     let hotInstance = (hotTableInstanceRef.current as any).hotInstance;
+    let editorElement = document.querySelector('#editorComponentContainer');
 
     expect(hotInstance.getSettings().columns[0].title).toEqual('test title');
     expect(hotInstance.getSettings().columns[0].className).toEqual('first-column-class-name');
@@ -212,7 +213,11 @@ describe('Dynamic HotColumn configuration changes', () => {
     hotInstance.getActiveEditor().open();
     expect(hotInstance.getActiveEditor().constructor.name).toEqual('CustomEditor');
     expect(hotInstance.getActiveEditor().editorComponent.__proto__.constructor.name).toEqual('EditorComponent');
-    expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('block');
+    expect(editorElement.style.display).toEqual('block');
+    expect(editorElement.parentNode.style.background).toEqual('red');
+    expect(editorElement.parentNode.id).toEqual('editor-id-1');
+    expect(editorElement.parentNode.className.includes('editor-className-1')).toBe(true);
+
     hotInstance.getActiveEditor().close();
 
     expect(hotInstance.getSettings().columns[1].title).toEqual('test title 2');
@@ -226,7 +231,7 @@ describe('Dynamic HotColumn configuration changes', () => {
 
     wrapper.instance().setState({
       setup: [
-        <EditorComponent hot-editor key={'1'}/>,
+        <EditorComponent className="editor-className-2" id="editor-id-2" style={{background: 'blue'}} hot-editor key={'1'}/>,
         <HotColumn title="test title 2" key={'2'}>
           <RendererComponent2 hot-renderer></RendererComponent2>
         </HotColumn>,
@@ -238,6 +243,8 @@ describe('Dynamic HotColumn configuration changes', () => {
 
     await sleep(100);
 
+    editorElement = document.querySelector('#editorComponentContainer');
+
     expect(hotInstance.getSettings().columns[0].title).toEqual('test title 2');
     expect(hotInstance.getSettings().columns[0].className).toEqual(void 0);
     expect(hotInstance.getCell(0, 0).innerHTML).toEqual('<div>r2: A1</div>');
@@ -246,7 +253,10 @@ describe('Dynamic HotColumn configuration changes', () => {
     hotInstance.getActiveEditor().open();
     expect(hotInstance.getActiveEditor().constructor.name).toEqual('CustomEditor');
     expect(hotInstance.getActiveEditor().editorComponent.__proto__.constructor.name).toEqual('EditorComponent');
-    expect((document.querySelector('#editorComponentContainer') as any).style.display).toEqual('block');
+    expect(editorElement.style.display).toEqual('block');
+    expect(editorElement.parentNode.style.background).toEqual('blue');
+    expect(editorElement.parentNode.id).toEqual('editor-id-2');
+    expect(editorElement.parentNode.className.includes('editor-className-2')).toBe(true);
     hotInstance.getActiveEditor().close();
 
     expect(hotInstance.getSettings().columns[1].title).toEqual('test title');
