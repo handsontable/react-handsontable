@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HotEditorElement } from './types';
 
 let bulkComponentContainer = null;
 
@@ -47,31 +48,17 @@ export function getChildElementByType(children: React.ReactNode, type: string): 
 }
 
 /**
- * Get the component node name.
- *
- * @param {React.ReactElement} componentNode
- * @returns {String} Provided component's name.
- */
-export function getComponentNodeName(componentNode: React.ReactElement): string {
-  if (!componentNode) {
-    return null;
-  }
-
-  return (componentNode.type as Function).name || ((componentNode.type as any).WrappedComponent as Function).name;
-}
-
-/**
  * Get the reference to the original editor class.
  *
  * @param {React.ReactElement} editorElement React element of the editor class.
  * @returns {Function} Original class of the editor component.
  */
-export function getOriginalEditorClass(editorElement: React.ReactElement): Function {
+export function getOriginalEditorClass(editorElement: HotEditorElement) {
   if (!editorElement) {
     return null;
   }
 
-  return (editorElement.type as any).WrappedComponent ? (editorElement.type as any).WrappedComponent : editorElement.type;
+  return editorElement.type.WrappedComponent ? editorElement.type.WrappedComponent : editorElement.type;
 }
 
 /**
@@ -80,17 +67,10 @@ export function getOriginalEditorClass(editorElement: React.ReactElement): Funct
  * @param {Document} [doc] Document to be used.
  * @param {Map} editorCache The editor cache reference.
  */
-export function removeEditorContainers(doc = document, editorCache: Map<Function, React.Component>): void {
-  editorCache.forEach((editorComponent, key) => {
-    const mainElementRef = (editorComponent as any).mainElementRef ? (editorComponent as any).mainElementRef.current : null;
-    const mainElementContainer = mainElementRef ? mainElementRef.parentNode : null;
-
-    if (!mainElementRef || !mainElementContainer) {
-      return;
-    }
-
-    if (mainElementContainer.parentNode) {
-      mainElementContainer.parentNode.removeChild(mainElementContainer);
+export function removeEditorContainers(doc = document): void {
+  doc.querySelectorAll('[class^="hot-wrapper-editor-container"]').forEach((domNode) => {
+    if (domNode.parentNode) {
+      domNode.parentNode.removeChild(domNode);
     }
   });
 }
@@ -103,27 +83,19 @@ export function removeEditorContainers(doc = document, editorCache: Map<Function
  * @param {Map} editorCache The editor cache reference.
  * @returns {React.ReactPortal} The portal for the editor.
  */
-export function createEditorPortal(doc = document, editorElement: React.ReactElement, editorCache: Map<Function, React.Component>): React.ReactPortal {
-  let cachedEditor = editorCache.get(getOriginalEditorClass(editorElement));
-  let editorContainer = (cachedEditor && (cachedEditor as any).mainElementRef.current) ? (cachedEditor as any).mainElementRef.current.parentNode : null;
-
+export function createEditorPortal(doc = document, editorElement: HotEditorElement, editorCache: Map<Function, React.Component>): React.ReactPortal {
   if (editorElement === null) {
     return;
   }
 
-  if (!editorContainer) {
-    editorContainer = doc.createElement('DIV');
-  }
-
+  const editorContainer = doc.createElement('DIV');
   const {id, className, style} = getContainerAttributesProps(editorElement.props, false);
 
   if (id) {
     editorContainer.id = id;
   }
 
-  if (className) {
-    editorContainer.className = 'hot-wrapper-editor-container ' + className;
-  }
+  editorContainer.className = 'hot-wrapper-editor-container ' + (className !== void 0 ? className : '');
 
   if (style) {
     Object.assign(editorContainer.style, style);

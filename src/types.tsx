@@ -1,5 +1,11 @@
 import Handsontable from 'handsontable';
 import React from 'react';
+import { ConnectedComponent } from 'react-redux';
+
+/**
+ * Type of the editor component's ReactElement.
+ */
+export type HotEditorElement = React.ReactElement<{}, ConnectedComponent<React.FunctionComponent, any> | any>;
 
 /**
  * Interface for the `prop` of the HotTable component - extending the default Handsontable settings with additional,
@@ -28,4 +34,3 @@ export interface HotColumnProps extends Handsontable.GridSettings {
   _getOwnerDocument?: () => Document;
   children?: React.ReactNode;
 }
-

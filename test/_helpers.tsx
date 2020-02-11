@@ -47,7 +47,7 @@ export function simulateMouseEvent(element, type) {
   element.dispatchEvent(event);
 }
 
-class IndividualPropsWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings: object}> {
+class IndividualPropsWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings?: object}> {
   hotTable: typeof HotTable;
 
   constructor(props) {
@@ -79,7 +79,7 @@ class IndividualPropsWrapper extends React.Component<{ref?: string, id?: string}
 const PrefixedIPW = addUnsafePrefixes(IndividualPropsWrapper);
 export { PrefixedIPW as IndividualPropsWrapper };
 
-class SingleObjectWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings: object}> {
+class SingleObjectWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings?: object}> {
   hotTable: typeof HotTable;
 
   constructor(props) {
@@ -123,7 +123,7 @@ export class RendererComponent extends React.Component<any, any> {
   }
 }
 
-export class EditorComponent extends BaseEditorComponent {
+export class EditorComponent extends BaseEditorComponent<{}, {value?: any}> {
   mainElementRef: any;
   containerStyle: any;
 
