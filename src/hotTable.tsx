@@ -20,6 +20,7 @@ import {
   removeEditorContainers,
   warn
 } from './helpers';
+import PropTypes from 'prop-types';
 
 /**
  * A Handsontable-ReactJS wrapper.
@@ -94,7 +95,6 @@ class HotTable extends React.Component<HotTableProps, {}> {
    */
   portalCacheArray: React.ReactPortal[] = [];
 
-
   /**
    * Global editor portal cache.
    *
@@ -136,6 +136,15 @@ class HotTable extends React.Component<HotTableProps, {}> {
   static get version(): string {
     return (packageJson as any).version;
   }
+
+  /**
+   * Prop types to be checked at runtime.
+   */
+  static propTypes: object = {
+    style: PropTypes.object,
+    id: PropTypes.string,
+    className: PropTypes.string
+  };
 
   /**
    * Get the rendered table cell cache.
@@ -437,8 +446,6 @@ class HotTable extends React.Component<HotTableProps, {}> {
   private setPortalManagerRef(pmComponent: PortalManager): void {
     this.portalManager = pmComponent;
   }
-
-
 
   /*
   ---------------------------------------

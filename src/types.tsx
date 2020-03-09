@@ -12,7 +12,6 @@ export type HotEditorElement = React.ReactElement<{}, ConnectedComponent<React.F
  * component-related properties.
  */
 export interface HotTableProps extends Handsontable.GridSettings {
-  data?: any[][] | object[];
   id?: string,
   className?: string,
   style?: React.CSSProperties,

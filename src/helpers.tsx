@@ -11,6 +11,11 @@ export const AUTOSIZE_WARNING = 'Your `HotTable` configuration includes `autoRow
   ' the component-based renderers`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.';
 
 /**
+ * Default classname given to the wrapper container.
+ */
+const DEFAULT_CLASSNAME = 'hot-wrapper-editor-container';
+
+/**
  * Logs warn to the console if the `console` object is exposed.
  *
  * @param {...*} args Values which will be logged.
@@ -68,7 +73,7 @@ export function getOriginalEditorClass(editorElement: HotEditorElement) {
  * @param {Map} editorCache The editor cache reference.
  */
 export function removeEditorContainers(doc = document): void {
-  doc.querySelectorAll('[class^="hot-wrapper-editor-container"]').forEach((domNode) => {
+  doc.querySelectorAll(`[class^="${DEFAULT_CLASSNAME}"]`).forEach((domNode) => {
     if (domNode.parentNode) {
       domNode.parentNode.removeChild(domNode);
     }
@@ -95,7 +100,7 @@ export function createEditorPortal(doc = document, editorElement: HotEditorEleme
     editorContainer.id = id;
   }
 
-  editorContainer.className = 'hot-wrapper-editor-container ' + (className !== void 0 ? className : '');
+  editorContainer.className = `${DEFAULT_CLASSNAME} ${className !== void 0 ? className : ''}`;
 
   if (style) {
     Object.assign(editorContainer.style, style);
