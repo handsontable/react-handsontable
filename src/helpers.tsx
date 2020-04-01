@@ -128,9 +128,7 @@ export function getExtendedEditorElement(children: React.ReactNode, editorCache:
 
   return React.cloneElement(editorElement, {
     emitEditorInstance: (editorInstance) => {
-      if (!editorCache.has(editorClass)) {
         editorCache.set(editorClass, editorInstance);
-      }
     },
     isEditor: true
   } as object);
