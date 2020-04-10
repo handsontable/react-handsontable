@@ -1,6 +1,10 @@
 import React, { ReactPortal } from 'react';
 import { HotTableProps, HotColumnProps } from './types';
-import { addUnsafePrefixes, createEditorPortal, getExtendedEditorElement } from './helpers';
+import {
+  addUnsafePrefixes,
+  createEditorPortal,
+  getExtendedEditorElement
+} from './helpers';
 import { SettingsMapper } from './settingsMapper';
 import Handsontable from 'handsontable';
 
@@ -15,6 +19,18 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
    * @type {ReactPortal}
    */
   private localEditorPortal: ReactPortal = null;
+
+  /**
+   * HotColumn class constructor.
+   *
+   * @param {HotColumnProps} props Component props.
+   * @param {*} [context] Component context.
+   */
+  constructor(props: HotColumnProps, context?: any) {
+    super(props, context);
+
+    addUnsafePrefixes(this);
+  }
 
   /**
    * Get the local editor portal cache property.
@@ -174,5 +190,4 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
   }
 }
 
-const PrefixedHotColumn = addUnsafePrefixes(HotColumn);
-export { PrefixedHotColumn as HotColumn };
+export { HotColumn };

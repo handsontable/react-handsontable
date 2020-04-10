@@ -158,20 +158,22 @@ export function createPortal(rElement: React.ReactElement, props, callback: Func
 /**
  * Add the `UNSAFE_` prefixes to the deprecated lifecycle methods for React >= 16.3.
  *
- * @param {Function} Klass Class to have the methods renamed.
- * @returns {Function} Class with the renamed methods.
+ * @param {Object} instance Instance to have the methods renamed.
  */
-export function addUnsafePrefixes<T extends any>(Klass: T): T {
+export function addUnsafePrefixes(instance: {
+  UNSAFE_componentWillUpdate?: Function,
+  componentWillUpdate: Function,
+  UNSAFE_componentWillMount?: Function,
+  componentWillMount: Function
+}): void {
   const reactSemverArray = React.version.split('.').map((v) => parseInt(v));
   const shouldPrefix = reactSemverArray[0] >= 16 && reactSemverArray[1] >= 3;
 
   if (shouldPrefix) {
-    Klass.prototype.UNSAFE_componentWillUpdate = Klass.prototype.componentWillUpdate;
-    delete Klass.prototype.componentWillUpdate;
+    instance.UNSAFE_componentWillUpdate = instance.componentWillUpdate;
+    instance.componentWillUpdate = void 0;
 
-    Klass.prototype.UNSAFE_componentWillMount = Klass.prototype.componentWillMount;
-    delete Klass.prototype.componentWillMount;
+    instance.UNSAFE_componentWillMount = instance.componentWillMount;
+    instance.componentWillMount = void 0;
   }
-
-  return Klass;
 }
