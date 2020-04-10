@@ -100,7 +100,7 @@ export function createEditorPortal(doc = document, editorElement: HotEditorEleme
     editorContainer.id = id;
   }
 
-  editorContainer.className = `${DEFAULT_CLASSNAME} ${className !== void 0 ? className : ''}`;
+  editorContainer.className = [DEFAULT_CLASSNAME, className].join(' ');
 
   if (style) {
     Object.assign(editorContainer.style, style);
@@ -128,7 +128,7 @@ export function getExtendedEditorElement(children: React.ReactNode, editorCache:
 
   return React.cloneElement(editorElement, {
     emitEditorInstance: (editorInstance) => {
-        editorCache.set(editorClass, editorInstance);
+      editorCache.set(editorClass, editorInstance);
     },
     isEditor: true
   } as object);

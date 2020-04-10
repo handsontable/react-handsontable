@@ -23,6 +23,7 @@ export interface HotTableProps extends Handsontable.GridSettings {
  * Interface for the props of the component-based editors.
  */
 export interface HotEditorProps {
+  "hot-editor": any,
   id?: string,
   className?: string,
   style?: React.CSSProperties,
