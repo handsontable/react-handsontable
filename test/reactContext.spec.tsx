@@ -86,11 +86,11 @@ describe('React Context', () => {
                   }}>
           <HotColumn>
             <RendererComponent2 hot-renderer/>
-            <EditorComponent2 hot-editor/>
+            <EditorComponent2 hot-editor className="ec2"/>
           </HotColumn>
           <HotColumn>
             <RendererComponent3 hot-renderer/>
-            <EditorComponent3 hot-editor/>
+            <EditorComponent3 hot-editor className="ec3"/>
           </HotColumn>
         </HotTable>
       </TestContext.Provider>, {attachTo: document.body.querySelector('#hotContainer')}
@@ -103,12 +103,12 @@ describe('React Context', () => {
     expect(hotInstance.getCell(0, 0).innerHTML).toEqual('<div>testContextValue</div>');
     expect(hotInstance.getCell(1, 0).innerHTML).toEqual('<div>testContextValue</div>');
 
-    expect(document.querySelector('#hot-wrapper-editor-container-EditorComponent2').innerHTML).toEqual('testContextValue');
+    expect(document.querySelector('.ec2').innerHTML).toEqual('testContextValue');
 
     expect(hotInstance.getCell(0, 1).innerHTML).toEqual('<div>testContextValue</div>');
     expect(hotInstance.getCell(1, 1).innerHTML).toEqual('<div>testContextValue</div>');
 
-    expect(document.querySelector('#hot-wrapper-editor-container-EditorComponent3').innerHTML).toEqual('testContextValue');
+    expect(document.querySelector('.ec3').innerHTML).toEqual('testContextValue');
 
     wrapper.detach();
     done();

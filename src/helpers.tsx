@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HotEditorElement } from './types';
 
 let bulkComponentContainer = null;
 
@@ -8,6 +9,11 @@ let bulkComponentContainer = null;
  */
 export const AUTOSIZE_WARNING = 'Your `HotTable` configuration includes `autoRowSize`/`autoColumnSize` options, which are not compatible with ' +
   ' the component-based renderers`. Disable `autoRowSize` and `autoColumnSize` to prevent row and column misalignment.';
+
+/**
+ * Default classname given to the wrapper container.
+ */
+const DEFAULT_CLASSNAME = 'hot-wrapper-editor-container';
 
 /**
  * Logs warn to the console if the `console` object is exposed.
@@ -47,26 +53,27 @@ export function getChildElementByType(children: React.ReactNode, type: string): 
 }
 
 /**
- * Get the component node name.
+ * Get the reference to the original editor class.
  *
- * @param {React.ReactElement} componentNode
- * @returns {String} Provided component's name.
+ * @param {React.ReactElement} editorElement React element of the editor class.
+ * @returns {Function} Original class of the editor component.
  */
-export function getComponentNodeName(componentNode: React.ReactElement): string {
-  if (!componentNode) {
+export function getOriginalEditorClass(editorElement: HotEditorElement) {
+  if (!editorElement) {
     return null;
   }
 
-  return (componentNode.type as Function).name || ((componentNode.type as any).WrappedComponent as Function).name;
+  return editorElement.type.WrappedComponent ? editorElement.type.WrappedComponent : editorElement.type;
 }
 
 /**
  * Remove editor containers from DOM.
  *
- * @param [doc] Document to be used.
+ * @param {Document} [doc] Document to be used.
+ * @param {Map} editorCache The editor cache reference.
  */
 export function removeEditorContainers(doc = document): void {
-  doc.querySelectorAll('[id^="hot-wrapper-editor-container-"]').forEach((domNode) => {
+  doc.querySelectorAll(`[class^="${DEFAULT_CLASSNAME}"]`).forEach((domNode) => {
     if (domNode.parentNode) {
       domNode.parentNode.removeChild(domNode);
     }
@@ -76,22 +83,30 @@ export function removeEditorContainers(doc = document): void {
 /**
  * Create an editor portal.
  *
+ * @param {Document} [doc] Document to be used.
  * @param {React.ReactElement} editorElement Editor's element.
+ * @param {Map} editorCache The editor cache reference.
  * @returns {React.ReactPortal} The portal for the editor.
  */
-export function createEditorPortal(editorElement: React.ReactElement): React.ReactPortal {
+export function createEditorPortal(doc = document, editorElement: HotEditorElement, editorCache: Map<Function, React.Component>): React.ReactPortal {
   if (editorElement === null) {
     return;
   }
 
-  const componentName: string = getComponentNodeName(editorElement);
+  const editorContainer = doc.createElement('DIV');
+  const {id, className, style} = getContainerAttributesProps(editorElement.props, false);
 
-  let editorContainer = document.querySelector('#hot-wrapper-editor-container-' + componentName);
-  if (!document.querySelector('#hot-wrapper-editor-container-' + componentName)) {
-    editorContainer = document.createElement('DIV');
-    editorContainer.id = 'hot-wrapper-editor-container-' + componentName;
-    document.body.appendChild(editorContainer);
+  if (id) {
+    editorContainer.id = id;
   }
+
+  editorContainer.className = [DEFAULT_CLASSNAME, className].join(' ');
+
+  if (style) {
+    Object.assign(editorContainer.style, style);
+  }
+
+  doc.body.appendChild(editorContainer);
 
   return ReactDOM.createPortal(editorElement, editorContainer);
 }
@@ -103,21 +118,20 @@ export function createEditorPortal(editorElement: React.ReactElement): React.Rea
  * @param {Map} editorCache Component's editor cache.
  * @returns {React.ReactElement} An editor element containing the additional methods.
  */
-export function getExtendedEditorElement(children: React.ReactNode, editorCache: Map<string, object>): React.ReactElement | null {
+export function getExtendedEditorElement(children: React.ReactNode, editorCache: Map<Function, object>): React.ReactElement | null {
   const editorElement = getChildElementByType(children, 'hot-editor');
+  const editorClass = getOriginalEditorClass(editorElement);
 
   if (!editorElement) {
     return null;
   }
 
   return React.cloneElement(editorElement, {
-    emitEditorInstance: (editorName, editorInstance) => {
-      if (!editorCache.has(editorName)) {
-        editorCache.set(editorName, editorInstance);
-      }
+    emitEditorInstance: (editorInstance) => {
+      editorCache.set(editorClass, editorInstance);
     },
     isEditor: true
-  });
+  } as object);
 }
 
 /**
@@ -153,6 +167,23 @@ export function createPortal(rElement: React.ReactElement, props, callback: Func
     portal: ReactDOM.createPortal(extendedRendererElement, portalContainer, `${props.row}-${props.col}-${Math.random()}`),
     portalContainer
   };
+}
+
+/**
+ * Get an object containing the `id`, `className` and `style` keys, representing the corresponding props passed to the
+ * component.
+ *
+ * @param {Object} props Object containing the react element props.
+ * @param {Boolean} randomizeId If set to `true`, the function will randomize the `id` property when no `id` was present in the `prop` object.
+ * @returns An object containing the `id`, `className` and `style` keys, representing the corresponding props passed to the
+ * component.
+ */
+export function getContainerAttributesProps(props, randomizeId: boolean = true): {id: string, className: string, style: object} {
+  return {
+    id: props.id || (randomizeId ? 'hot-' + Math.random().toString(36).substring(5) : void 0),
+    className: props.className || '',
+    style: props.style || {},
+  }
 }
 
 /**

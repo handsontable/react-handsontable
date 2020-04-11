@@ -1,5 +1,6 @@
 import { baseConfig } from './base';
 import { addLicenseBanner } from './helpers/licenseBanner';
+import replace from 'rollup-plugin-replace';
 import { uglify } from 'rollup-plugin-uglify';
 
 const minFilename = 'react-handsontable.min.js';
@@ -19,6 +20,9 @@ const minConfig = {
     }
   },
   plugins: baseConfig.plugins.concat([
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production')
+    }),
     uglify({
       output: {
         comments: /^!/

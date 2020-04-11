@@ -1,17 +1,32 @@
 import Handsontable from 'handsontable';
 import React from 'react';
+import { ConnectedComponent } from 'react-redux';
+
+/**
+ * Type of the editor component's ReactElement.
+ */
+export type HotEditorElement = React.ReactElement<{}, ConnectedComponent<React.FunctionComponent, any> | any>;
 
 /**
  * Interface for the `prop` of the HotTable component - extending the default Handsontable settings with additional,
  * component-related properties.
  */
 export interface HotTableProps extends Handsontable.GridSettings {
-  data?: any[][] | object[];
   id?: string,
   className?: string,
   style?: React.CSSProperties,
   settings?: Handsontable.GridSettings
   children?: React.ReactNode
+}
+
+/**
+ * Interface for the props of the component-based editors.
+ */
+export interface HotEditorProps {
+  "hot-editor": any,
+  id?: string,
+  className?: string,
+  style?: React.CSSProperties,
 }
 
 /**
@@ -24,7 +39,7 @@ export interface HotColumnProps extends Handsontable.GridSettings {
   _getChildElementByType?: (children: React.ReactNode, type: string) => React.ReactElement;
   _getRendererWrapper?: (rendererNode: React.ReactElement) => Handsontable.renderers.Base;
   _getEditorClass?: (editorElement: React.ReactElement) => typeof Handsontable.editors.BaseEditor;
-  _getEditorCache?: () => Map<string, React.Component>;
+  _getEditorCache?: () => Map<Function, React.Component>;
+  _getOwnerDocument?: () => Document;
   children?: React.ReactNode;
 }
-

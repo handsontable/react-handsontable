@@ -41,7 +41,7 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
    */
   getSettingsProps(): HotTableProps {
     this.internalProps = ['__componentRendererColumns', '_emitColumnSettings', '_columnIndex', '_getChildElementByType', '_getRendererWrapper',
-      '_getEditorClass', '_getEditorCache', 'hot-renderer', 'hot-editor', 'children'];
+      '_getEditorClass', '_getEditorCache', '_getOwnerDocument', 'hot-renderer', 'hot-editor', 'children'];
 
     return Object.keys(this.props)
       .filter(key => {
@@ -110,10 +110,11 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
    * @param {React.ReactNode} [children] Children of the HotTable instance. Defaults to `this.props.children`.
    */
   createLocalEditorPortal(children = this.props.children): void {
-    const localEditorElement: React.ReactElement = getExtendedEditorElement(children, this.props._getEditorCache());
+    const editorCache = this.props._getEditorCache();
+    const localEditorElement: React.ReactElement = getExtendedEditorElement(children, editorCache);
 
     if (localEditorElement) {
-      this.setLocalEditorPortal(createEditorPortal(localEditorElement))
+      this.setLocalEditorPortal(createEditorPortal(this.props._getOwnerDocument(), localEditorElement, editorCache));
     }
   }
 
