@@ -129,6 +129,18 @@ class HotTable extends React.Component<HotTableProps, {}> {
   private componentRendererColumns: Map<number | string, boolean> = new Map();
 
   /**
+   * HotTable class constructor.
+   *
+   * @param {HotTableProps} props Component props.
+   * @param {*} [context] Component context.
+   */
+  constructor(props: HotTableProps, context?: any) {
+    super(props, context);
+
+    addUnsafePrefixes(this);
+  }
+
+  /**
    * Package version getter.
    *
    * @returns The version number of the package.
@@ -553,6 +565,5 @@ class HotTable extends React.Component<HotTableProps, {}> {
   }
 }
 
-const PrefixedHotTable = addUnsafePrefixes(HotTable);
-export default PrefixedHotTable;
-export { PrefixedHotTable as HotTable };
+export default HotTable;
+export { HotTable };
