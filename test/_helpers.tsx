@@ -47,11 +47,13 @@ export function simulateMouseEvent(element, type) {
   element.dispatchEvent(event);
 }
 
-class IndividualPropsWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings: object}> {
+class IndividualPropsWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings?: object}> {
   hotTable: typeof HotTable;
 
   constructor(props) {
     super(props);
+
+    addUnsafePrefixes(this);
   }
 
   componentWillMount() {
@@ -76,14 +78,16 @@ class IndividualPropsWrapper extends React.Component<{ref?: string, id?: string}
     );
   }
 }
-const PrefixedIPW = addUnsafePrefixes(IndividualPropsWrapper);
-export { PrefixedIPW as IndividualPropsWrapper };
 
-class SingleObjectWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings: object}> {
+export { IndividualPropsWrapper };
+
+class SingleObjectWrapper extends React.Component<{ref?: string, id?: string}, {hotSettings?: object}> {
   hotTable: typeof HotTable;
 
   constructor(props) {
     super(props);
+
+    addUnsafePrefixes(this);
   }
 
   private setHotElementRef(component: typeof HotTable): void {
@@ -110,8 +114,7 @@ class SingleObjectWrapper extends React.Component<{ref?: string, id?: string}, {
   }
 }
 
-const PrefixedSOW = addUnsafePrefixes(SingleObjectWrapper);
-export { PrefixedSOW as SingleObjectWrapper };
+export { SingleObjectWrapper };
 
 export class RendererComponent extends React.Component<any, any> {
   render(): React.ReactElement<string> {
@@ -123,7 +126,7 @@ export class RendererComponent extends React.Component<any, any> {
   }
 }
 
-export class EditorComponent extends BaseEditorComponent {
+export class EditorComponent extends BaseEditorComponent<{}, {value?: any}> {
   mainElementRef: any;
   containerStyle: any;
 

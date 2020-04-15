@@ -1,6 +1,10 @@
 import React, { ReactPortal } from 'react';
 import { HotTableProps, HotColumnProps } from './types';
-import { addUnsafePrefixes, createEditorPortal, getExtendedEditorElement } from './helpers';
+import {
+  addUnsafePrefixes,
+  createEditorPortal,
+  getExtendedEditorElement
+} from './helpers';
 import { SettingsMapper } from './settingsMapper';
 import Handsontable from 'handsontable';
 
@@ -15,6 +19,18 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
    * @type {ReactPortal}
    */
   private localEditorPortal: ReactPortal = null;
+
+  /**
+   * HotColumn class constructor.
+   *
+   * @param {HotColumnProps} props Component props.
+   * @param {*} [context] Component context.
+   */
+  constructor(props: HotColumnProps, context?: any) {
+    super(props, context);
+
+    addUnsafePrefixes(this);
+  }
 
   /**
    * Get the local editor portal cache property.
@@ -41,7 +57,7 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
    */
   getSettingsProps(): HotTableProps {
     this.internalProps = ['__componentRendererColumns', '_emitColumnSettings', '_columnIndex', '_getChildElementByType', '_getRendererWrapper',
-      '_getEditorClass', '_getEditorCache', 'hot-renderer', 'hot-editor', 'children'];
+      '_getEditorClass', '_getEditorCache', '_getOwnerDocument', 'hot-renderer', 'hot-editor', 'children'];
 
     return Object.keys(this.props)
       .filter(key => {
@@ -110,10 +126,11 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
    * @param {React.ReactNode} [children] Children of the HotTable instance. Defaults to `this.props.children`.
    */
   createLocalEditorPortal(children = this.props.children): void {
-    const localEditorElement: React.ReactElement = getExtendedEditorElement(children, this.props._getEditorCache());
+    const editorCache = this.props._getEditorCache();
+    const localEditorElement: React.ReactElement = getExtendedEditorElement(children, editorCache);
 
     if (localEditorElement) {
-      this.setLocalEditorPortal(createEditorPortal(localEditorElement))
+      this.setLocalEditorPortal(createEditorPortal(this.props._getOwnerDocument(), localEditorElement, editorCache));
     }
   }
 
@@ -174,5 +191,4 @@ class HotColumn extends React.Component<HotColumnProps, {}> {
   }
 }
 
-const PrefixedHotColumn = addUnsafePrefixes(HotColumn);
-export { PrefixedHotColumn as HotColumn };
+export { HotColumn };
