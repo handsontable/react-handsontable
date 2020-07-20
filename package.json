@@ -59,13 +59,13 @@
     "@types/react-dom": "^16.9.1",
     "@types/react-redux": "^7.1.7",
     "babel-core": "^7.0.0-bridge.0",
-    "cpy-cli": "^2.0.0",
+    "cpy-cli": "^3.1.1",
     "cross-env": "^5.2.0",
     "del-cli": "^1.1.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "enzyme-to-json": "^3.4.0",
-    "handsontable": "^7.2.2",
+    "handsontable": "^8.0.0-beta.2",
     "jest": "^25.1.0",
     "prop-types": "^15.7.2",
     "react": "^16.10.2",
@@ -85,7 +85,7 @@
     "uglify-js": "^3.4.9"
   },
   "peerDependencies": {
-    "handsontable": ">=7.2.2"
+    "handsontable": ">=8.0.0-beta.2"
   },
   "scripts": {
     "build": "npm run delete-build && npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:min",
