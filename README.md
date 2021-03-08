@@ -1,8 +1,11 @@
-# Moved
-The code for the `@handsontable/react` wrapper was moved to the main Handsontable repository at [handsontable/handsontable](https://github.com/handsontable/handsontable/). <br><br>
-The package is still available under the same name ([`@handsontable/react`](https://www.npmjs.com/package/@handsontable/react)), so there's no need to update your dependency configuration.
+# Important information
+
+## We permanently moved this project to the main Handsontable repository at [https://github.com/handsontable/handsontable/wrappers/react](https://github.com/handsontable/handsontable/wrappers/react)
+
+## It is still available under the same name in npm: [`@handsontable/react`](https://www.npmjs.com/package/@handsontable/react), so you don't have to update your dependency configuration.
 
 ---------
+<br><br><br>
 
 <div align="center">
   
