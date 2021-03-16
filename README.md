@@ -1,6 +1,6 @@
 # Important information
 
-## We permanently moved this project to the main Handsontable repository at [https://github.com/handsontable/handsontable/wrappers/react](https://github.com/handsontable/handsontable/wrappers/react)
+## We permanently moved this project to the main Handsontable repository at [https://github.com/handsontable/handsontable/tree/master/wrappers/react](https://github.com/handsontable/handsontable/tree/master/wrappers/react)
 
 ## It is still available under the same name in npm: [`@handsontable/react`](https://www.npmjs.com/package/@handsontable/react), so you don't have to update your dependency configuration.
 
